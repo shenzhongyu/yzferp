@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>主材商城</title>
+    <meta name="keywords" content="">
+    <meta name="renderer" content="">
+    <meta name="description" content="">
+    <!--窗口logo显示-->
+    <!--<link rel="icon" href="images/favicon.ico" type="image/x-icon">-->
+    <!--<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />-->
+
+    <!--<link rel="stylesheet" type="text/css" href="css/common.css" />-->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/erp/css/com.css" />
+    {include file="base/css" /}
+
+
+
+    <!--[if IE 6]>
+    <script type="text/javascript" src="__STATIC__/erp/js/Png.js"></script>
+    <script type="text/javascript">
+        EvPNG.fix('div, ul, img, li, input, a, p, span, em');
+    </script>
+    <![endif]-->
+</head>
+<body>
+<div class="box">
+    <div class="room_com">
+        <div id="pro_tb" style="height:auto;">
+            <a style="margin-left: 10px;">搜索条件:</a>
+            <a style="margin-left: 10px;">
+                <input class="easyui-combotree" type="text" id="category_id" name="category_id" style="width:100%;" value=""
+                       data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',url:'/erp/material/showcatejson',method:'get'
+                    ,onSelect:function(region){
+                           sear(region.id)
+                      }
+                ">
+            </a>
+            <a style="margin-left: 15px;">材料名称：<input type="text" id="name"></a>
+            <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="searName()">
+                <span class="l-btn-icon icon-search"></span>
+                <span class="l-btn-text l-btn-icon-left">搜索</span>
+            </a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="showAll()">显示全部</a>
+        </div>
+        <div class="zt_list">
+            <ul id="material_mark">
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="javascript:;" class="img"><img src="__STATIC__/erp/images/material.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>防水涂料</h3>-->
+                            <!--<p><span>类别</span>材料</p>-->
+                            <!--<p><span>上传时间</span>2017-01-02</p>-->
+                            <!--<p><span>说明</span>暂无</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="#" class="img"><img src="__STATIC__/erp/images/material.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>防水涂料</h3>-->
+                            <!--<p><span>类别</span>材料</p>-->
+                            <!--<p><span>上传时间</span>2017-01-02</p>-->
+                            <!--<p><span>说明</span>暂无</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="#" class="img"><img src="__STATIC__/erp/images/material.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>防水涂料</h3>-->
+                            <!--<p><span>类别</span>材料</p>-->
+                            <!--<p><span>上传时间</span>2017-01-02</p>-->
+                            <!--<p><span>说明</span>暂无</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="#" class="img"><img src="__STATIC__/erp/images/material.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>防水涂料</h3>-->
+                            <!--<p><span>类别</span>材料</p>-->
+                            <!--<p><span>上传时间</span>2017-01-02</p>-->
+                            <!--<p><span>说明</span>暂无</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="#" class="img"><img src="__STATIC__/erp/images/material.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>防水涂料</h3>-->
+                            <!--<p><span>类别</span>材料</p>-->
+                            <!--<p><span>上传时间</span>2017-01-02</p>-->
+                            <!--<p><span>说明</span>暂无</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="#" class="img"><img src="__STATIC__/erp/images/material.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>防水涂料</h3>-->
+                            <!--<p><span>类别</span>材料</p>-->
+                            <!--<p><span>上传时间</span>2017-01-02</p>-->
+                            <!--<p><span>说明</span>暂无</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="#" class="img"><img src="__STATIC__/erp/images/material.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>防水涂料</h3>-->
+                            <!--<p><span>类别</span>材料</p>-->
+                            <!--<p><span>上传时间</span>2017-01-02</p>-->
+                            <!--<p><span>说明</span>暂无</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="#" class="img"><img src="__STATIC__/erp/images/material.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>防水涂料</h3>-->
+                            <!--<p><span>类别</span>材料</p>-->
+                            <!--<p><span>上传时间</span>2017-01-02</p>-->
+                            <!--<p><span>说明</span>暂无</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</li>-->
+
+            </ul>
+            <div class="pages" id="pages">
+                <!--<a href="javascript:void(0);">下一页</a>-->
+                <!--<a href="javascript:void(0);">5</a>-->
+                <!--<a href="javascript:void(0);" class="more">...</a>-->
+                <!--<a href="javascript:void(0);">4</a>-->
+                <!--<a href="javascript:void(0);">3</a>-->
+                <!--<a href="javascript:void(0);">2</a>-->
+                <!--<a href="javascript:void(0);" class="current">1</a>-->
+                <!--<a href="javascript:void(0);">上一页</a>-->
+            </div>
+        </div>
+    </div>
+</div>
+{include file="base/js" /}
+<script>
+    var data;
+    $(function () {
+        getMaterialData(1,8);
+    });
+    function sear(a) {
+        var str='[{"field":"category_id","op":"contains","value":"'+a+'","type":"text"}';
+            str+=']';
+        data={filterRules:str};
+        getMaterialData(1,8);
+    }
+    function showAll() {
+        data='';
+        $("#category_id").combotree("setValue","");
+        $("#name").val("");
+        getMaterialData(1,8);
+    }
+    function searName() {
+        var name=$("#name").val();
+        var value=$("#category_id").combotree("getValue");
+        if(!name){
+            sear(value);
+        }else{
+            var str='[';
+            str+='{"field":"material_name","op":"contains","value":"'+name+'","type":"text"}';
+            if(value){
+                str+=',{"field":"category_id","op":"contains","value":"'+value+'","type":"text"}';
+            }
+            str+=']';
+            data={filterRules:str};
+            getMaterialData(1,8);
+        }
+    }
+    function getMaterialData(page,limit) {
+        var index=page?page:"1";
+        var number=limit?limit:'8';
+        var param={page:index,limit:number};
+        if(data){
+            var obj=Object.assign(param,data);
+        }else{
+            var obj=param;
+        }
+        var url='{:url("MaterialMarket/showMarketData")}';
+        $.post(url,obj,function (data) {
+            var str = '';
+            if (data.total!= 0 && data.rows.length>0) {
+                $.each(data.rows, function (i, t) {
+                    str+='<li style="min-height: 300px;margin: 0 2% 20px 0;width: 20%"><div class="img_txt" style="width:280px;"><a href="#" class="img">';
+                    str+='<img style="width: 280px;height: 280px;" src="'+t.material_photo+'" alt=""></a>';
+                    str+='<div class="txt"><h3>'+t.material_name+'</h3>';
+                    str+='<p><span>类别</span>'+t.category_id+'</p>';
+                    str+='<p><span>上传时间</span>'+t.update_time.substr(0,10)+'</p>';
+                    if(t.desc){
+                        str+='<p><span title="'+t.material_desc+'">说明</span>'+t.material_desc+'</p>';
+                    }else{
+                        str+='<p><span title="暂无">说明</span>暂无</p>';
+                    }
+
+                    str+='</div></div></li>';
+                });
+                createButton(data.total, index, number);
+            } else {
+                str+="没有更多数据了！";
+//                for (var i=0;i<8;i++){
+//                    str+='<li><div class="img_txt"><a href="#" class="img">';
+//                    str+='<img src="__STATIC__/erp/images/material.jpg" alt=""></a>';
+//                    str+='<div class="txt"><h3>防水涂料</h3>';
+//                    str+='<p><span>类别</span>材料</p>';
+//                    str+='<p><span>上传时间</span>2017-01-02</p>';
+//                    str+='<p><span>说明</span>暂无</p>';
+//                    str+='</div></div></li>';
+//                }
+//                createButton(8, index, number);
+            }
+            $("#material_mark").html('');
+            $("#material_mark").append(str);
+        })
+    }
+    function createButton(total,page,rows){
+        var str='';
+        var total=total-0;
+        var page=page-0;
+        var rows=rows-0;
+        if(total>rows){
+            var index=Math.ceil(total/rows);
+            if(page+1>index){
+                str+='<a href="javascript:small();">下一页</a>';
+            }else{
+                str+='<a href="javascript:getMaterialData('+(page+1)+','+rows+');">下一页</a>';
+            }
+            var number=index>5 ? '5':index;
+            for(var i=number;i>=1;i--){
+                if(i==number-1&&index>5){
+                    str+='<a href="javascript:void(0);" class="more">...</a>';
+                }
+                if(i==page){
+                    str+='<a href="javascript:void(0);" class="current">'+i+'</a>';
+                }else{
+                    str+='<a href="javascript:getMaterialData('+i+','+rows+');">'+i+'</a>';
+                }
+            }
+            if(page-1==0){
+                str+='<a href="javascript:small();">上一页</a>';
+            }else{
+                str+='<a href="javascript:getMaterialData('+(page-1)+','+rows+');">上一页</a>';
+            }
+
+        }else{
+            str+='<a href="javascript:small();">下一页</a>';
+            str+='<a href="javascript:void(0);" class="current">1</a>';
+            str+='<a href="javascript:small();">上一页</a>';
+        }
+
+        $("#pages").html('');
+        $("#pages").append(str);
+    }
+    function small() {
+        layer.msg('没有过多数据了',{icon:6});
+    }
+</script>
+</body>
+</html>

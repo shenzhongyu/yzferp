@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+
+
+<div style="width: 8%;float: left">
+    <table id="tree" class="easyui-datagrid" title='预算类别列' ></table>
+</div>
+<div style="width: 92%;float: left">
+    <table id="dg" class="easyui-datagrid" title="{$title}" style="width:100%;height:auto"
+           data-options="
+                nowrap:false,
+				iconCls: 'icon-edit',
+				singleSelect: true,
+				toolbar: '#tb',
+				url: '{$data_url}',
+				method: 'post',
+				nowrap:false,
+				onDblClickCell: onClickRow,
+				pagination:true,
+				pageSize:30,
+			">
+        <thead>
+        <tr>
+            <th data-options="field:'xuhao',align:'center',width:40 " rowspan='2' >序号</th>
+            <th rowspan='2'  data-options="field:'category_id',width:80,align:'center',
+						formatter:function(value,row){
+							if (eval('value_category_id')[value]){
+                                return eval('value_category_id')[value];
+                            }
+                        },
+						editor:{
+							type:'combobox',
+							options:{
+								valueField:'guid',
+								textField:'category_name',
+								method:'get',
+								url:'{$json_url}',
+								required:true
+							}
+						}">主材类别</th>
+            <th data-options="field:'name',width:120,align:'center',editor:'textbox'," rowspan='2'>主材名称</th>
+            <th data-options="field:'unit',width:70,align:'center',
+                    formatter:function(value,row){
+							if (eval('value_unit_name')[value]){
+                                return eval('value_unit_name')[value];
+                            }
+                        },
+						editor:{
+							type:'combobox',
+							options:{
+								valueField:'id',
+								textField:'name',
+								method:'get',
+								url:'/erp/Material/showUnitJson',
+								required:true
+							}
+						}" rowspan='2'>单位</th>
+            <th data-options="field:'specifications',width:70,align:'center',editor:'textbox'," rowspan='2'>规格</th>
+            <th data-options="field:'pinpai',width:70,align:'center',editor:'textbox'," rowspan='2'>品牌</th>
+            <th data-options="field:'version',width:70,align:'center',editor:'textbox'," rowspan='2'>型号</th>
+            <th colspan="2">主材金额</th>
+            <th colspan="2">辅材金额</th>
+            <th colspan="2">人工金额</th>
+            <th data-options="field:'loss_coefficient',width:80,align:'center',editor:{type:'numberbox',options:{precision:2}}" rowspan='2'>损耗</th>
+            <th data-options="field:'mechanical_coefficient',width:80,align:'center',editor:{type:'numberbox',options:{precision:2}}" rowspan='2'>机械</th>
+            <th data-options="field:'control_price',width:80,align:'center',formatter:function(value,row){
+            var value=Number(row.unit_price)+Number(row.auxiliary_unit)+Number(row.artificial_price);
+            return value.toFixed(2);
+        }" rowspan='2'>内控价</th>
+            <th data-options="field:'offer_price',width:80,align:'center',formatter:function(value,row){
+            var value=sumPrice(row);
+            return value.toFixed(2);
+        }" rowspan='2'>报价</th>
+            <th data-options="field:'desc',width:150,align:'center',editor:'textarea'" rowspan='2'>备注说明</th>
+            <th data-options="field:'opera',width:130,align:'center',
+                        formatter:function(value,row){
+							return  del(row.guid);
+                        }," rowspan='2'>操作</th>
+        </tr>
+        <tr>
+            <th data-options="field:'unit_price',width:70,align:'center',editor:'numberbox'">单价</th>
+            <th data-options="field:'unit_profit',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}">毛利润</th>
+            <th data-options="field:'auxiliary_unit',width:70,align:'center',editor:'numberbox'">单价</th>
+            <th data-options="field:'auxiliary_profit',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}">毛利润</th>
+            <th data-options="field:'artificial_price',width:70,align:'center',editor:'numberbox'">单价</th>
+            <th data-options="field:'artificial_profit',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}">毛利润</th>
+        </tr>
+        </thead>
+    </table>
+    <div id="tb" style="height:auto">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">新增</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeit()">取消当前编辑</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
+        <!--<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">返回</a>-->
+        <!--<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="getChanges()">GetChanges</a>-->
+    </div>
+</div>
+
+
+
+
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    {:widget('Easyui/showValueByUrl',["category_id","category_json",$map])}
+    {:widget('Easyui/showArrayByUrl',["category_id","category_json",$map])}
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    var editIndex = undefined;
+    var guid='';
+    var loss=0.00;
+    var mechanical=0.00;
+    setInterval(function(){
+        var rows = $('#dg').datagrid('getChanges');
+        if(rows.length!=0){
+            accept();
+        }
+    },60000);
+
+    function endEditing(){
+        if (editIndex == undefined){return true}
+        if ($('#dg').datagrid('validateRow', editIndex)){
+            var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'category_id'});
+            var categoryname = $(ed.target).combobox('getText');
+            $('#dg').datagrid('getRows')[editIndex]['category_id'] = categoryname;
+            $('#dg').datagrid('endEdit', editIndex);
+            editIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function onClickRow(index){
+        if (editIndex != index){
+            if (endEditing()){
+                $('#dg').datagrid('selectRow', index)
+                    .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dg').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    function append(){
+        if (endEditing()){
+            var options = $('#dg').datagrid('getPager').data('pagination').options;
+            var currentPage = options.pageNumber;
+            if(currentPage=="0"){
+                currentPage=1;
+            }
+            var pageSize = options.pageSize;
+            var rowsData = $("#dg").datagrid("getRows");
+            $('#dg').datagrid('appendRow',{
+                unit_price:0,
+                auxiliary_unit:0,
+                artificial_price:0,
+                unit_profit:0.00,
+                auxiliary_profit:0.00,
+                artificial_profit:0.00,
+                loss_coefficient:loss,
+                mechanical_coefficient:mechanical,
+                xuhao:(pageSize * (currentPage -1))+(rowsData.length+1),
+                unit:1,
+            });
+            editIndex = $('#dg').datagrid('getRows').length-1;
+            $('#dg').datagrid('selectRow', editIndex)
+                .datagrid('beginEdit', editIndex);
+        }
+    }
+    function removeit(){
+        if (editIndex == undefined){return}
+        $('#dg').datagrid('cancelEdit', editIndex)
+            .datagrid('deleteRow', editIndex);
+        editIndex = undefined;
+        $("#dg").datagrid('reload');
+    }
+    function accept(){
+        if (endEditing()){
+           var rows = $('#dg').datagrid('getChanges');  //获取到正在改变的行数据
+            ajax('{:url("addDataWithMaterial")}',rows[0]);
+        }
+    }
+    function reject(){
+        $('#dg').datagrid('rejectChanges');
+        editIndex = undefined;
+    }
+//    function getChanges(){
+//        var rows = $('#dg').datagrid('getChanges'); //获取到正在改变的行数据
+//        alert(rows.length);
+//    }
+    function ajax(url,obj){
+        var arr=$('#tree').treegrid('getData');
+        if(!guid){
+            guid=arr[0].guid;
+        }
+        obj['budget_id']=guid;
+        $.ajax({
+            type: "POST",
+            url: url,
+            data:obj ,
+            dataType: "json",
+            success: function(data){
+                if (data.code=="1001"){
+                    $('#dg').datagrid('acceptChanges');
+                }else{
+                    $('#dg').datagrid('acceptChanges');
+                    layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                }
+            }
+        });
+    }
+    function sumPrice(obj) {
+       //算法1
+        var u_value=Number(obj.unit_price)*(1+Number(obj.unit_profit)); //主材报价
+        var a_value=Number(obj.auxiliary_unit)*(1+Number(obj.auxiliary_profit)); //辅材报价
+        var p_value=Number(obj.artificial_price)*(1+Number(obj.artificial_profit)); //人工报价
+        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //损耗报价
+        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //机械费报价
+        //算法2
+//        var u_value=Number(obj.unit_price)/(1-Number(obj.unit_profit)); //主材报价
+//        var a_value=Number(obj.auxiliary_unit)/(1-Number(obj.auxiliary_profit)); //辅材报价
+//        var p_value=Number(obj.artificial_price)/(1-Number(obj.auxiliary_profit)); //人工报价
+//        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //损耗报价
+//        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //机械费报价
+        return u_value+a_value+p_value+l_value+m_value;
+    }
+    function del(a) {
+
+        return '<a href="javascript:delData(&apos;'+a+'&apos;);">删除</a>';
+    }
+    function delData(a){
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("delDataWithMaterial")}', {id: a}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    $("#dg").datagrid('reload');
+                }
+            }, 'json');
+        });
+
+    }
+
+    $(function(){
+        $('#tree').treegrid({
+            url:'{:url("showTreeBudget")}',
+            idField:'id',
+            treeField:'name',
+            columns:[[
+                {field:'name',title:'预算类别',width:'100%'}
+            ]],
+            onDblClickRow:function(row){
+                guid=row.guid;
+                loss=row.loss_coefficient ? row.loss_coefficient : 0.00 ;
+                mechanical=row.mechanical_coefficient ? row.mechanical_coefficient : 0.00 ;
+                var arr;
+                arr=row.guid;
+                $('#dg').datagrid({
+                    queryParams: {
+                        filterRules:'[{"field":"budget_id","op":"equal","value":'+arr+',"type":"text"}]'
+                    }
+                });
+
+            }
+        });
+    })
+
+</script>
+</body>
+</html>

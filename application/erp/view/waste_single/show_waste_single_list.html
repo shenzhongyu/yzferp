@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<table id="list" class="easyui-datagrid" title="{$title}"></table>
+<div id="apply"></div>
+
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function () {
+        $('#list').datagrid({
+            singleSelect: false,
+            rownumbers: true,
+            resizeHandle: 'both',
+            ctrlSelect: true,
+            collapsible: false,
+            method: 'post',
+            url:'{$data_url}',
+            striped: true,
+            _customTitle: true,//开启自定义表头
+            _customWidth: false,//自定义列宽
+            pagination: true,
+            showFooter: false,//是否显示合计行
+            filterBtnIconCls: 'icon-filter',
+            multiSort: true,
+            remoteFilter:false,
+            pageSize:20,
+            columns:[
+                [
+                    { field: 'project_name', title: '项目名称', width: '30%', align: 'center',},
+                    { field: 'project_address', title: '项目地址', width: '30%', align: 'center',},
+                    { field: 'op', title: '操作',width:'20%',align: 'center',
+                        formatter:function(value,row,index){
+                            var str='';
+                            str+='<a href="javascript:;" onclick="look(&apos;'+row.guid+'&apos;)">查看</a>&nbsp;&nbsp;';
+                            str+='<a href="javascript:;" onclick="apply(&apos;'+row.guid+'&apos;)">申请跟踪</a>';
+                            return str;
+                        }
+                    },
+                ]
+            ],
+            toolbar:[],
+            nowrap:false,//超出部分自动换行
+        });
+    });
+    function look(t){
+        window.parent.addTab('项目明细','{:url("lookProjectMore")}/guid/'+t,'close');
+    };
+    function apply(t) {
+        var url="{:url('apply')}/guid/"+t;
+        $("#apply").dialog({
+            title: '跟踪申请',
+            iconCls: 'icon-save',
+            width: '400',
+            height: '300',
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text: name ? name : ' 确 定 ',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        $('#apply').find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                if(!$("#apply_desc").val()){
+                                    layer.msg('申请说明不能为空', {icon: 3});
+                                    return false;
+                                }
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post(url, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else {
+                                        layer.msg(data.msg, {icon: 1});
+                                        $('#apply').dialog('close');
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },{
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $('#apply').dialog('close');
+                    }
+                }
+            ]
+        });
+    }
+</script>
+</body>
+</html>
+

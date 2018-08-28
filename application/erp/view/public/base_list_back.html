@@ -1,0 +1,150 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>显示</title>
+    <link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="/static/daterangepicker/numberrangebox.css">
+    <script type="text/javascript" src="__EASYUI151__/jquery.min.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="__LAYER__/layer.js"></script>
+    <script type="text/javascript" src="__STATIC__/daterangepicker/require.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/datagrid-filter.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#list').datagrid({
+                singleSelect: false,
+                rownumbers: true,
+                resizeHandle: 'both',
+                ctrlSelect: true,
+                collapsible: false,
+                method: 'post',
+                url: '{block name="base_url"}{/block}',
+				striped: true,
+                _customTitle: true,//开启自定义表头
+                _customWidth: false,//自定义列宽
+                columns: {block name="base_columns"}
+					[[{ field: "chk", "checkbox": true, movable: false }
+					,{ field: 'id', title: '编号', width: '60', align: 'center', sortable: true,}
+					, { field: 'guid', title: 'guid', width: '120', align: 'center'}
+                    , { field: 'pid', title: 'pid', width: '60', align: 'center', sortable: true}
+                    , { field: 'node_name', title: 'node_name', width: '100', align: 'center', sortable: true }
+				    , { field: 'module_name', title: 'module_name', align: 'center', sortable: true }
+                    , { field: 'control_name', title: 'control_name', align: 'center', sortable: true }
+				    , { field: 'action_name', title: 'action_name', width: 90, halign: 'center', align: 'center', sortable: true }
+				    , { field: 'icon', title: 'icon', width: 90, halign: 'center', align: 'center', sortable: true }
+				    , { field: 'auth_grade', title: 'auth_grade', width: 100, align: 'center',sortable: true }
+				    , { field: 'is_menu', title: '是否是目录', width: 100, align: 'center', sortable: true }
+				    , { field: 'group', title: '分组', width: 125, align: 'center', sortable: true }
+				    , { field: 'sort', title: '排序', width: 120,align: 'center', sortable: true }
+				    , { field: 'status', title: '状态', width: 60,align: 'center', sortable: true }
+				    , { field: 'create_time', title: '创建时间', width: 200,align: 'center', sortable: true }
+				    , { field: 'update_time', title: '修改时间', width: 200,align: 'center', sortable: true }
+                    ]]             	 
+                {/block},
+                pagination: true,
+                showFooter: false,//是否显示合计行
+                //initalFilter: remoteFilter,
+                filterBtnIconCls: 'icon-filter',
+                remoteFilter: true,
+				multiSort: true,
+				pageSize:20,
+				//onDblClickCell: function(){}//editForm,
+                
+            });
+
+
+            $('#list').datagrid({
+	           toolbar: [{
+				        text:'添加',
+		                iconCls: 'icon-add',
+	                	handler:addForm
+	                    },'-',{
+				        text:'修改',
+		                iconCls: 'icon-edit',
+	                	handler: editForm
+	                    },'-',{
+				        text:'删除',
+		                iconCls: 'icon-cancel',
+	                	handler: doDelete
+	                    },'-'
+						,{
+						text:'刷新',
+		               iconCls: 'icon-reload',
+		               handler: function(){$('#list').datagrid('reload');}
+	                    },'-',{
+						text:'帮助',
+		               iconCls: 'icon-help',
+		               handler: function(){alert('帮助按钮')}
+	                    }]
+            });
+
+            remoteFilter();	
+
+
+
+         })
+
+        function remoteFilter() {
+            var dg = $('#list');
+            dg.datagrid('enableFilter', [
+            {field: 'create_time', type: 'datebox', options: { precision: 1 }, op: ['betweendate'] }
+             , { field: 'update_time', type: 'datebox', options: { precision: 1 }, op: ['betweendate'] } 
+            , { field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber'] }				
+            ]);
+        }
+		
+
+        function addForm(){
+        	layer.open({
+              type: 2,
+              title: '用户权限表--数据添加',
+              shadeClose: true,
+              shade: 0.8,
+              area: ['500px', '600px'],
+              //content: {block name='base_addUrl'}{/block}//iframe的url
+              content:""
+            })
+            setTimeout(function(){
+                $('#list').datagrid('reload');
+                layer.closeAll();
+            },2000)
+        }
+
+        function editForm(){
+            var rows = $('#list').datagrid('getSelections');
+            if(rows.length>0){
+               if(rows.length==1){
+                    var row = $('#list').datagrid('getSelected'); //获取选中的数据
+                       
+                }else{ 
+                 layer.msg('修改操作只能选择一条数据！', {icon: 2});
+                }  
+            }else{
+                 layer.msg('请选择要修改的数据！', {icon: 2});
+            }
+         }
+
+        function doDelete(){
+            var rows = $('#list').datagrid('getSelections');
+            if(rows.length>0){
+               if(rows.length==1){
+                    var row = $('#list').datagrid('getSelected'); //获取选中的数据
+                    console.log(row)   
+                }else{ 
+                 layer.msg('删除操作只能选择一条数据！', {icon: 2});
+                }  
+            }else{
+                 layer.msg('请选择要删除的数据！', {icon: 2});
+            }
+        }
+
+
+
+    </script>
+</head>
+<body>
+    <table id="list" class="easyui-datagrid" title="{block name='base_title'}{/block}" ></table>
+</body>
+</html>

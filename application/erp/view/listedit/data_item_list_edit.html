@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <table id="dg" class="easyui-datagrid" title="{$title}" style="width:100%;height:auto"
+           data-options="
+                nowrap:false,
+				iconCls: 'icon-edit',
+				singleSelect: true,
+				toolbar: '#tb',
+				url: '{$data_url}',
+				method: 'post',
+				nowrap:false,
+				onDblClickCell: onDbClick,
+				onEndEdit:editRow,
+				pageSize:20,
+				pagination:true,
+			">
+        <thead>
+        <tr>
+            <th data-options="field:'xuhao',align:'center',width:100 ,editor:'textbox',"  rowspan='2' >序号</th>
+            <!--<th rowspan='2'  data-options="field:'category_id',width:80,align:'center',-->
+						<!--formatter:function(value,row){-->
+							<!--if (eval('value_category_id')[value]){-->
+                                <!--return eval('value_category_id')[value];-->
+                            <!--}-->
+                        <!--},-->
+						<!--">工程类别</th>-->
+            <th data-options="field:'name',width:200,align:'center',editor:{type:'textbox',options:{required:true}}," rowspan='2'>装饰项目名称</th>
+            <th data-options="field:'unit',width:60,align:'center',
+                    formatter:function(value,row){
+							if (eval('value_unit_name')[value]){
+                                return eval('value_unit_name')[value];
+                            }else{
+                                return value;
+                            }
+                        },
+						editor:{
+							type:'combobox',
+							options:{
+								valueField:'value',
+								textField:'text',
+								method:'get',
+								data:array_unit_name,
+								required:true,
+								editable:false
+							}
+						}" rowspan='2'>单位</th>
+            <!--<th data-options="field:'specifications',width:70,align:'center',editor:'textbox'," rowspan='2'>规格</th>-->
+            <!--<th data-options="field:'pinpai',width:70,align:'center',editor:'textbox'," rowspan='2'>品牌</th>-->
+            <!--<th data-options="field:'version',width:70,align:'center',editor:'textbox'," rowspan='2'>型号</th>-->
+            <th colspan="2">主材金额</th>
+            <th colspan="2">辅材金额</th>
+            <th colspan="2">人工金额</th>
+            <th data-options="field:'loss_coefficient',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}" rowspan='2'>损耗</th>
+            <th data-options="field:'mechanical_coefficient',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}" rowspan='2'>机械</th>
+            <th data-options="field:'control_price',width:70,align:'center',formatter:function(value,row){
+            var value=Number(row.unit_price)+Number(row.auxiliary_unit)+Number(row.artificial_price);
+                 if(value.length>3){
+                value+=0.01;
+            }
+            return value.toFixed(2);
+        }" rowspan='2'>内控价</th>
+            <th data-options="field:'offer_price',width:70,align:'center',formatter:function(value,row){
+            var value=sumPrice(row);
+            
+            return value.toFixed(2);
+        }" rowspan='2'>报价</th>
+            <th data-options="field:'desc',width:300,align:'center',editor:'textarea'" rowspan='2'>备注说明</th>
+            <th data-options="field:'type',width:10,align:'center',hidden:'true'," rowspan='2'>备注说明</th>
+            <th data-options="field:'opera',width:80,align:'center',
+                        formatter:function(value,row){
+							return  del(row.guid);
+                        }," rowspan='2'>操作</th>
+        </tr>
+        <tr>
+            <th data-options="field:'unit_price',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}">单价</th>
+            <th data-options="field:'unit_profit',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}">毛利润</th>
+            <th data-options="field:'auxiliary_unit',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}">单价</th>
+            <th data-options="field:'auxiliary_profit',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}">毛利润</th>
+            <th data-options="field:'artificial_price',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}">单价</th>
+            <th data-options="field:'artificial_profit',width:70,align:'center',editor:{type:'numberbox',options:{precision:2}}">毛利润</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div id="tb" style="height:auto;">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="addRow()">新增</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeit()">取消当前编辑</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="removeit()">刷新</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="returnStyle()">返回工程类别</a>
+        <a style="margin-left: 30%;font-weight: bold;font-size: 16px;">{$dataTitle}</a>
+        <div style="float: right;margin-right: 10px;">
+            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="window.parent.addTab('默认利润及损耗值设置','{:url("design/showdefaultrate")}')">默认值设定</a>
+            <span>默认值选择：</span>
+            <select id="cc" class="easyui-combogrid" name="dept" style="width:250px;"
+                    data-options="
+            panelWidth:600,
+            value:'',
+            panelAlign:'right',
+            idField:'id',
+            textField:'name',
+            url:'{:url('Material/showTreeBudget')}',
+            columns:[[
+                {field:'id',title:'编号',width:40},
+                {field:'name',title:'名称',width:180},
+                {field:'loss_coefficient',title:'损耗率',width:60},
+                {field:'mechanical_coefficient',title:'机械率',width:60},
+                {field:'unit_profit',title:'主材毛利润',width:80},
+                {field:'auxiliary_profit',title:'辅材毛利润',width:80},
+                {field:'artificial_profit',title:'人工毛利润',width:80},
+            ]],
+            onChange:defaultValue
+        "></select>
+        </div>
+
+    </div>
+</div>
+<div style="clear: both">
+</div>
+<div style="width: 100%;height: auto;margin-top: 15px;">
+    <!--<p>报价公式：总报价=（主材单价*（1+毛利润）=主材报价）+（辅材单价*（1+毛利润）=辅材报价）+（人工单价*（1+毛利润）=人工报价）+（（主材*损耗系数）=损耗报价）+（（主材*机械费系数）=机械费报价）</p>-->
+    <p>报价公式：总报价=（主材单价/（1-毛利润）=主材报价）+（辅材单价/（1-毛利润）=辅材报价）+（人工单价/（1-毛利润）=人工报价）+（（主材*损耗系数）=损耗报价）+（（主材*机械费系数）=机械费报价）</p>
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    {:widget('Easyui/showValueByUrl',["category_id","data_name",$map])}
+    {:widget('Easyui/showArrayByUrl',["category_id","data_name",$map])}
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    var clickIndex; //点击的下标
+    var flag;  //判断提交的数据是否成功
+    var loss=0.00 ;
+    var mechanical=0.00;
+    var unit=0.00;
+    var auxiliary=0.00;
+    var artificial=0.00;
+    //    setInterval(function(){
+    //        var rows = $('#dg').datagrid('getChanges');
+    //        if(rows.length!=0){
+    //            accept();
+    //        }
+    //    },1000);
+    function defaultValue(){
+        var g = $('#cc').combogrid('grid');
+        var r = g.datagrid('getSelected');
+        loss=r.loss_coefficient;
+        mechanical=r.mechanical_coefficient;
+        unit=r.unit_profit;
+        auxiliary=r.auxiliary_profit;
+        artificial=r.artificial_profit;
+    }
+    function returnStyle() { //返回工程类别
+        window.parent.closeTab('装饰项目');
+        window.parent.addTab('装饰工程类别','{:url("material/showDataStyleList")}','close');
+
+    }
+    function editRow(index, row, changes) {
+        if(!$.isEmptyObject(changes)){
+            flag=index;
+            layer.msg('数据保存成功',{icon:1});
+        }
+    }
+    function  onDbClick(index){
+        if(clickIndex===0||clickIndex){
+            $('#dg').datagrid('endEdit', clickIndex);
+            var  rows= $('#dg').datagrid('getChanges');
+            var obj_new=$('#dg').datagrid('getRows')[clickIndex];
+            var url='{:url("addDataWithMaterial")}/id/'+'{$id}';
+            if(flag==clickIndex){
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data:obj_new ,
+                    dataType: "json",
+                    success: function(data){
+                        if (data.code=="1001"){
+                            $('#dg').datagrid('endEdit', clickIndex);
+                            $('#dg').datagrid('selectRow', index)
+                                .datagrid('beginEdit', index);
+                            clickIndex=index;
+                        }else{
+
+                            layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                        }
+                    }
+                });
+            }else{
+                $('#dg').datagrid('endEdit', clickIndex);
+                $('#dg').datagrid('selectRow', index)
+                    .datagrid('beginEdit', index);
+                clickIndex=index;
+            }
+        }else{
+            $('#dg').datagrid('selectRow', index).datagrid('beginEdit', index);
+            clickIndex=index;
+        }
+
+    }
+    function addRow(){
+        if(loss==0.00&&mechanical==0.00&&unit==0.00&&auxiliary==0.00&&artificial==0.00){
+            layer.msg('请选择默认值方便填写',{icon:6});
+        }
+        if(clickIndex!==undefined){
+            if($('#dg').datagrid('validateRow', clickIndex)){
+                $('#dg').datagrid('endEdit', clickIndex);
+                var obj_new=$('#dg').datagrid('getRows')[clickIndex];
+                var url='{:url("addDataWithMaterial")}/id/'+'{$id}';
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data:obj_new ,
+                    dataType: "json",
+                    success: function(data){
+                        if (data.code=="1001"){
+                            $('#dg').datagrid('insertRow',{index: 0
+                                ,row:{
+                                    unit_price:0.00,
+                                    auxiliary_unit:0.00,
+                                    artificial_price:0.00,
+                                    unit_profit:unit,
+                                    auxiliary_profit:auxiliary,
+                                    artificial_profit:artificial,
+                                    loss_coefficient:loss,
+                                    mechanical_coefficient:mechanical,
+                                    unit:1,
+                                    type:{$type},
+                                    package_id:'{$package}',
+                                    package_type:'{$package_type}'
+                                }
+                            });
+                            clickIndex=0,
+                            $('#dg').datagrid('selectRow', clickIndex)
+                                .datagrid('beginEdit', clickIndex);
+                        }else{
+                            $('#dg').datagrid('selectRow', clickIndex)
+                                .datagrid('beginEdit', clickIndex);
+                            layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                        }
+                    }
+                });
+            }else{
+                return false;
+            }
+
+        }else{
+            $('#dg').datagrid('insertRow',{index: 0
+                ,row:{
+                    unit_price:0.00,
+                    auxiliary_unit:0.00,
+                    artificial_price:0.00,
+                    unit_profit:unit,
+                    auxiliary_profit:auxiliary,
+                    artificial_profit:artificial,
+                    loss_coefficient:loss,
+                    mechanical_coefficient:mechanical,
+                    unit:1,
+                    type:{$type},
+                    package_id:'{$package}',
+                    package_type:'{$package_type}'
+                }
+            });
+            clickIndex=0;
+            $('#dg').datagrid('selectRow', clickIndex)
+                .datagrid('beginEdit', clickIndex);
+        }
+
+
+    }
+    function removeit(){
+        clickIndex=undefined;
+        $("#dg").datagrid('reload');
+    }
+    function accept(){
+        $('#dg').datagrid('endEdit', clickIndex);
+        var obj_new=$('#dg').datagrid('getRows')[clickIndex];
+        ajax('{:url("addDataWithMaterial")}/id/'+'{$id}',obj_new);
+
+    }
+    function ajax(url,obj){
+        $.ajax({
+            type: "POST",
+            url: url,
+            data:obj ,
+            dataType: "json",
+            success: function(data){
+                if (data.code=="1001"){
+                    layer.msg('数据保存成功',{icon:1});
+                    removeit();
+                }else{
+                    $('#dg').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                }
+            }
+        });
+    }
+    function sumPrice(obj){
+        //算法1
+//        var u_value=Number(obj.unit_price)*(1+Number(obj.unit_profit)); //主材报价
+//        var a_value=Number(obj.auxiliary_unit)*(1+Number(obj.auxiliary_profit)); //辅材报价
+//        var p_value=Number(obj.artificial_price)*(1+Number(obj.artificial_profit)); //人工报价
+//        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //损耗报价
+//        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //机械费报价
+        //算法2
+        var u_value=Number(obj.unit_price)/(1-Number(obj.unit_profit)); //主材报价
+        var a_value=Number(obj.auxiliary_unit)/(1-Number(obj.auxiliary_profit)); //辅材报价
+        var p_value=Number(obj.artificial_price)/(1-Number(obj.artificial_profit)); //人工报价
+        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //损耗报价
+        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //机械费报价
+        return u_value+a_value+p_value+l_value+m_value;
+    }
+    function del(a) {
+        return '<a href="javascript:delData(&apos;'+a+'&apos;);">删除</a>';
+    }
+    function delData(a){
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("delDataWithMaterial")}', {id: a}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    $("#dg").datagrid('reload');
+                }
+            }, 'json');
+        });
+
+    }
+</script>
+</body>
+</html>

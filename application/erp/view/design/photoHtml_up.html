@@ -1,0 +1,66 @@
+
+<form id= "fm" method="post" enctype="multipart/form-data" style="padding: 10px;text-align: center" class=easyui-form enctype="multipart/form-data">
+    <div id="d1">
+        <input id="upload1"   class="easyui-filebox" data-options="required:true,onChange:function(newValue, oldValue){setText()}"  name="file" accept="image/*"  data-options="prompt:'选择图片...'," style="width: 60%" />
+        <div style="margin-top: 15px;">
+            <a id="text" href="javascript:uploadFiles()" class="easyui-linkbutton" style="width:60%;font-size: 14px;" >上 传</a>
+        </div>
+        <p style="text-align: left">注!图片上传的格式为（jpg,gif,png,pdf）.</p>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(function(){
+        $("#upload1").filebox({
+            buttonText:'选择图片'
+        });
+    });
+    function setText(){
+        $("#text span span").html('上 传');
+        $("#text").attr("href",'javascript:uploadFiles()');
+    }
+    function uploadFiles(){
+        var url="{:url('/api/file/uploadPicture')}";
+        $('#fm').form('submit',{
+            url: url,
+            onSubmit: function(){
+                var isValid = $(this).form('validate');
+                console.log(isValid);
+                if(isValid){
+//                     $("#d2").css("display","block");
+//                     var i=0;
+//                     setInterval(function(){
+//                         i++;
+//                         $('#p').progressbar('setValue', i);
+//                     },10);
+                    $("#text span span").html('上传中，请稍后。。。');
+                }
+                return isValid;
+            },
+            success: function (result) {
+                if(typeof result=="string"){
+                    result= eval('(' + result + ')');
+                }
+                if(result.code=="1001"){
+                    layer.msg('图片上传成功',{icon:1});
+                    changeT();
+                    setTimeout(function () {
+                        $('#log').dialog('close');
+                    },500);
+                    $('#{$idName}').textbox('setValue',result.data.path);
+                    $("#photo_m").val(result.data.md5);
+                }else{
+                    layer.msg(result.msg,{icon:2});
+                }
+                //可以写一些提示的代码等等..
+            }
+        });
+    }
+    function changeT() {
+        $("#text span span").html('上传成功，点击关闭');
+        $("#text").attr("href",'javascript:a()');
+    }
+    function a(){
+        $('#log').dialog('close');
+    }
+</script>

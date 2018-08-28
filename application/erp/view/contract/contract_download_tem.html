@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {include file="base/css" /}
+    <title>合同模板</title>
+</head>
+<body>
+
+<div style="width:100%;margin: 0 auto;font-size: 18px;">
+    <table style="width: 100%">
+        <thead>
+        <tr>
+            <th colspan="2">{$obj.title}</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        <tr>
+            <td style="width: 55%;line-height: 30px;">甲方：</td>
+            <td style="width: 55%;line-height: 30px;">乙方：{$obj['company_name']}</td>
+        </tr>
+        <tr>
+            <td style="width: 45%;line-height: 30px;">电话：</td>
+            <td style="width: 45%;line-height: 30px;">电话：{$obj['mobile']}</td>
+        </tr>
+        </tbody>
+    </table>
+    {$obj.content}
+    <table style="width: 100%">
+        <tbody>
+        <tr>
+            <td style="width: 55%;line-height: 30px;">甲方(签字)：</td>
+            <td style="width: 55%;line-height: 30px;">乙方(盖章)：</td>
+        </tr>
+        <tr>
+            <td style="width: 45%;line-height: 30px;">委托代理人：</td>
+            <td style="width: 45%;line-height: 30px;">委托代理人：</td>
+        </tr>
+        <tr></tr>
+        <tr>
+            <td colspan="2" align="center" ><a style="letter-spacing: 40px;">年月日</a>签订</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{include file="base/js" /}
+<script>
+    window.print();
+</script>
+</body>
+</html>

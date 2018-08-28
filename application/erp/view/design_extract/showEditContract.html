@@ -1,0 +1,447 @@
+project_user.html{extend name="base/base_search_list" /}
+
+
+{block name="title"}{$title}{/block}
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true,  movable: false }
+, { field: 'book_number', title: '预算书编号', width: '100', align: 'center', sortable: true}
+, { field: 'project_name', title: '项目名称', width: '100', align: 'center', sortable: true}
+, { field: 'budget', title: '项目预算', width: '150', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'transfer_name', title: '申请人', width: '120', align: 'center', sortable: true}
+, { field: 'desc',  title: '申请说明', width: '180', align: 'center', sortable: true}
+, { field: 'operate', title: '操作', width: 280,align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+]]{/block}
+
+{block name="filter"}[
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber']},
+
+{:widget('Easyui/showFilter', ["decoration_grade","combobox"])}
+{:widget('Easyui/showFilter', ["decoration_style","combobox"])}
+{:widget('Easyui/showFilter', ["decoration_type","combobox"])}
+{:widget('Easyui/showFilter', ["color_orientation","combobox"])}
+{:widget('Easyui/showFilter', ["customer_source","combobox"])}
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["decoration_grade","decoration_grade"] )}
+{:widget('Easyui/showAll', ["decoration_style","decoration_style"] )}
+{:widget('Easyui/showAll', ["decoration_type","decoration_type"] )}
+{:widget('Easyui/showAll', ["color_orientation","color_orientation"] )}
+{:widget('Easyui/showAll', ["customer_source","customer_source"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}
+else if(field=='budget'){
+return '<a href="javascript:showHtmlBudget(&apos;'+row.project_id+'&apos;);">浏览预算</a>'
+}
+
+else if (field == 'operate') {
+var str="";
+str+='<a href="javascript:;" onclick="auditContract(&apos;'+row.project_id+'&apos;,'+row.book_number+')">审核</a>&nbsp;&nbsp;&nbsp;';
+str+='<a href="javascript:;" onclick="showLog(&apos;'+row.project_id+'&apos;)">操作记录</a>';
+
+return str;
+}else if (eval("value_" + field)[value]){
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+<script>
+    function showBudget(a) {
+        window.parent.addTab('设计进度','{:url("Design/showBudgetHtml")}/guid/' + a,'close')
+    }
+    function addT(){
+        window.parent.addTab('项目录入','{:url("/erp/Project/showProjectEntry")}','');
+    };
+    function delet(id) {
+        $.messager.confirm('提示信息', '确定要删除吗？', function (result) {
+            if (!result) return false;
+            $.messager.progress({text: '处理中，请稍候...'});
+            $.post(mikkleClass.dialog_url, {id: id, action: 'del'}, function (data) {
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    mikkleClass.refresh();
+                }
+            }, 'json');
+        })
+    };
+    function delaudit(a) {
+        $.post('{:url("delAudit")}',{pro_id:a},function(data){
+            if (data.code=="1001"){
+                layer.msg('取消转部审核成功', {icon: 1});
+                $(mikkleClass.dialog).dialog('close');
+                $('#list').datagrid('showColumn','transfer_status');//显示列
+                $('#list').datagrid('showColumn','transfer_desc');
+                $('#list').datagrid('showColumn','examine_status');//显示列
+                $('#list').datagrid('showColumn','examine_desc');
+                hideAll();
+                mikkleClass.refresh();
+            }else{
+                layer.msg(data.msg, {icon: 3});
+            }
+        },'json');
+    }
+//    function auditContract(a,m){
+//        $(mikkleClass.dialog).dialog({
+//            title: '申请合同签订',
+//            iconCls: 'icon-save',
+//            width: 400,
+//            height: 280,
+//            cache: false,
+//            href: '{:url("Project/showProjectAuditEdit")}/guid/'+a,
+//            modal: true,
+//            collapsible: false,
+//            minimizable: false,
+//            resizable: false,
+//            maximizable: false,
+//            buttons:[
+//                {
+//                    text:' 确 认  ',
+//                    iconCls:'icon-save',
+//                    handler: function(){
+//                        $(mikkleClass.dialog).find('form').eq(0).form('submit', {
+//                            onSubmit: function () {
+//                                var isValid = $(this).form('validate');
+//                                if (!isValid) return false;
+//                                $.messager.progress({text: '处理中，请稍候...'});
+//                                $.post('{:url("DesignExtract/addProjectAuditEdit")}/guid/'+a+'/number/'+m, $(this).serialize(), function (data) {
+//                                    $.messager.progress('close');
+//                                    if (data.code != 1001) {
+//                                        layer.msg(data.msg, {icon: 3});
+//                                    } else {
+//                                        layer.msg('申请成功，等待审核', {icon: 1});
+//                                        $(mikkleClass.dialog).dialog('close');
+//                                        $('#list').datagrid('showColumn','transfer_status');//显示列
+//                                        $('#list').datagrid('showColumn','transfer_desc');
+//                                        $('#list').datagrid('showColumn','examine_status');//显示列
+//                                        $('#list').datagrid('showColumn','examine_desc');
+//                                        hideAll();
+//                                        hideEdit();
+//                                        mikkleClass.refresh();
+//                                    }
+//                                }, 'json');
+//                                return false;
+//                            }
+//                        });
+//                    }
+//                },
+//                {
+//                    text:' 关 闭  ',
+//                    iconCls:'icon-clear',
+//                    handler: function(){
+//                        $(mikkleClass.dialog).dialog('close');
+//                    }
+//                }],
+//        });
+//    }
+    function auditContract(a,b) {
+        var url="{:url('DesignExtract/auditContract')}/guid/"+a+'/number/'+b;
+        $(mikkleClass.dialog).dialog({
+            title: '签订合同审核',
+            iconCls: 'icon-save',
+            width: 400,
+            height: 280,
+            cache: false,
+            href: '{:url("DesignExtract/showApprovalEdit")}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text:' 确 认  ',
+                    iconCls:'icon-save',
+                    handler: function(){
+                        $(mikkleClass.dialog).find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post(url, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else{
+                                        layer.msg(data.msg, {icon: 1});
+                                        $(mikkleClass.dialog).dialog('close');
+                                        mikkleClass.refresh();
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },
+                {
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $(mikkleClass.dialog).dialog('close');
+                    }
+                }],
+        });
+
+    }
+
+
+    function showLog(id){
+        $(mikkleClass.dialog).dialog({
+            title: "操作记录",
+            iconCls: 'icon-save',
+            width: 740,
+            height: 600,
+            cache: false,
+            href: "{:url('Project/showProjectAuditLog')}/guid/"+id,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function showAll(){
+        $('#list').datagrid('showColumn','decoration_grade');//显示列
+        $('#list').datagrid('showColumn','decoration_type');
+        $('#list').datagrid('showColumn','decoration_style');//显示列
+        $('#list').datagrid('showColumn','color_orientation');
+        $('#list').datagrid('showColumn','project_description');//显示列
+
+        $('#list').datagrid('showColumn','project_budget');//显示列
+        $('#list').datagrid('showColumn','expected_duration');
+        $('#list').datagrid('showColumn','customer_source')
+        mikkleClass.refresh();
+    }
+    function showEdit(){
+        $('#list').datagrid('showColumn','transfer_status');//显示列
+        $('#list').datagrid('showColumn','transfer_desc');
+        $('#list').datagrid('showColumn','examine_status');//显示列
+        $('#list').datagrid('showColumn','examine_desc');
+        mikkleClass.refresh();
+    }
+    function hideEdit(){
+        $('#list').datagrid('hideColumn','transfer_status');//显示列
+        $('#list').datagrid('hideColumn','transfer_desc');
+        $('#list').datagrid('hideColumn','examine_status');//显示列
+        $('#list').datagrid('hideColumn','examine_desc');
+        mikkleClass.refresh();
+    }
+    function hideAll(){
+        $('#list').datagrid('hideColumn','decoration_grade');//显示列
+        $('#list').datagrid('hideColumn','decoration_type');
+        $('#list').datagrid('hideColumn','decoration_style');//显示列
+        $('#list').datagrid('hideColumn','color_orientation');
+        $('#list').datagrid('hideColumn','project_description');//显示列
+
+        $('#list').datagrid('hideColumn','project_budget');//显示列
+        $('#list').datagrid('hideColumn','expected_duration');
+        $('#list').datagrid('hideColumn','customer_source')
+    }
+
+    //    function showProjectPerson(){
+    //        var a=getSelectRows("查看");
+    //        if(!a){
+    //            return false;
+    //        }else{
+    //            $(mikkleClass.dialog).dialog({
+    //                title: "关系人",
+    //                iconCls: 'icon-save',
+    //                width: 740,
+    //                height: 450,
+    //                cache: false,
+    //                href: "{:url('Design/showProjectPerson')}/guid/"+a,
+    //                modal: true,
+    //                collapsible: false,
+    //                minimizable: false,
+    //                resizable: false,
+    //                maximizable: false,
+    //            })
+    //        }
+    //    }
+
+    function showHtmlBudget(a) {
+        window.parent.addTab('报价表','{:url("design/showbudgetbook")}/guid/'+a,'close');
+    }
+
+    function addBudget(){
+        var id=getSelectRows('预算');
+        if(!id){
+            return false;
+        }
+        var url='{:url("Design/addBudgetBookAndRate")}/id/'+id;
+        $(mikkleClass.dialog).dialog({
+            title: "预算报价费率选择",
+            iconCls: 'icon-save',
+            width: '400',
+            height: '300',
+            cache: false,
+            href: "{:url('Design/showRateItemAndBook')}/id/"+id,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $(mikkleClass.dialog).find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var rate=[];
+                            var book=$('input:radio[name="book"]:checked').val();
+                            $.each($("#dep input[name='rate']"),function(i,n){
+                                if ($(n).prop("checked")==true){
+                                    rate.push($(n).val());
+                                }
+                            });
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url, {book:book,rate:rate}, function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    window.parent.addTab('预算报价',"{:url('Design/addBudget')}/id/"+id,'close')
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $(mikkleClass.dialog).dialog('close');
+                }
+            }],
+
+        })
+//
+    }
+    function getSelectRows(name){
+        var rows = $("#list").datagrid('getSelections');
+        if (rows.length > 0) {
+            if (rows.length == 1){
+                return  $("#list").datagrid('getSelected').guid; //获取选中的数据
+            } else {
+                layer.msg(''+name+'操作只能选择一个项目！', {icon: 2});
+                return false;
+            }
+        } else {
+            layer.msg('请选择要'+name+'的项目！', {icon: 2});
+            return false;
+        }
+    }
+    function copyData() {  //个人模板
+        var a=getSelectRows('设置模板');
+        if (a){
+//            var url='{:url("DesignExtract/copySpace",["guid"=>"","type"=>"1"])}';
+            var url='{:url("DesignExtract/copySpace")}/guid/'+a+"/type/1";
+            dlog(url);
+        }else {
+            return false;
+        }
+
+    }
+    function copyDataCom() { //公司模板
+        var a=getSelectRows('设置模板');
+        if(a){
+//            var url='{:url("DesignExtract/copySpace",["guid"=>"","type"=>"2"])}';
+            var url='{:url("DesignExtract/copySpace")}/guid/'+a+"/type/2";
+            dlog(url);
+        }else {
+            return false;
+        }
+    }
+
+    function dlog(url) {
+        $('#dialog_div').dialog({
+            title: "保存模板",
+            iconCls: 'icon-save',
+            width: 380,
+            height: 200,
+            cache: false,
+            href: "{:url('DesignExtract/showTemEdit')}",
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#dialog_div").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            if(!$('#name').val()){
+                                layer.msg('模板名称不能为空',{icon:2});
+                                return false;
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg('保存成功'  , {icon: 1});
+                                    $("#dialog_div").dialog('close');
+                                }
+                            }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#dlog").dialog('close');
+                }
+            }]
+        })
+    }
+
+</script>
+
+{/block}
+{block name="my_db"}
+{/block};
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+{block name="toolbar"}[
+<!--{ text:'添加预算', iconCls: 'icon-add', handler:function(){ addBudget()} },'-',-->
+<!--{ text:'显示更多信息', iconCls: 'icon-add', handler:function(){showAll()} },'-',-->
+<!--{ text:'隐藏更多信息', iconCls: 'icon-add', handler:function(){hideAll()} },'-',-->
+<!--{ text:'显示转部信息', iconCls: 'icon-add', handler:function(){showEdit()} },'-',-->
+<!--{ text:'隐藏转部信息', iconCls: 'icon-add', handler:function(){hideEdit()} },'-',-->
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-',
+<!--{ text:'设为个人模板', iconCls: 'icon-add', handler:function(){copyData() } },'-',-->
+<!--{ text:'设为共享模板', iconCls: 'icon-add', handler:function(){ copyDataCom()} },'-'-->
+
+]{/block}

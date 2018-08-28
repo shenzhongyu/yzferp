@@ -1,0 +1,25 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section >
+        <label for="department_type" class="label_1">付款方式:</label>
+        <label for="department_type" class="label_2">
+            <input class="easyui-combobox"  id="department_type"  name="payment_id" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'name',required:true,url:'{:url('showPayStyleJson')}',method:'get',
+               ">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" style="">付款金额:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="payment_price"
+                   data-options="required:true,"
+                   style="width:75%"> 元
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">付款日期:</label>
+        <label class="label_2" style="">
+            <input class= "easyui-datebox" name="payment_date" data-options="editable:false,showSeconds:false"  style="width:80%" id="datetime">
+        </label>
+    </section>
+</form>
+

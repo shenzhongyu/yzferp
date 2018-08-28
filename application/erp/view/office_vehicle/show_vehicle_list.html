@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    {include file="base/css" /}
+</head>
+<body>
+<div  id="tool">
+    <a style="font-size: 14px;">车牌号：</a><input id="name" class="easyui-textbox" type="text" name="name" >
+    <a href="#" class="easyui-linkbutton" onclick="searName()">搜 索</a>
+    <a href="#" class="easyui-linkbutton" onclick="showAllUser()">显示全部</a>
+</div>
+<table id="list" class="easyui-datagrid" title="{$title}"></table>
+
+<div id="vehicle"></div>
+
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function () {
+        $('#list').datagrid({
+            singleSelect: false,
+            rownumbers: true,
+            resizeHandle: 'both',
+            ctrlSelect: true,
+            collapsible: false,
+            method: 'post',
+            url:'{$data_url}',
+            striped: true,
+            _customTitle: true,//开启自定义表头
+            _customWidth: false,//自定义列宽
+            pagination: true,
+            showFooter: false,//是否显示合计行
+            filterBtnIconCls: 'icon-filter',
+            multiSort: true,
+            remoteFilter:false,
+            pageSize:10,
+            columns:[
+                [
+                    { field: 'photo', title: '图片',width:'12%',align: 'center',
+                        formatter:function(value,row,index){
+                            if(value){
+                                return '<img src="'+value+'" style="width: 60px;height: 60px;">';
+                            }
+                        }
+                    },
+                    { field: 'number', title: '车牌号', width: '12%', align: 'center',},
+                    { field: 'use_status', title: '车辆状态',width:'8%',align: 'center',
+                        formatter:function(value,row,index){
+                            if(value==0){
+                                return '<a style="color: #0bb20c">可用</a>';
+                            }else{
+                                return '<a>使用中</a>';
+                            }
+
+                        }
+                    },
+                    { field: 'type', title: '类型',width:'12%',align: 'center',},
+                    { field: 'name', title: '品牌型号',width:'12%',align: 'center',},
+                    { field: 'color', title: '颜色',width:'12%',align: 'center',},
+                    { field: 'desc', title: '车辆描述',width:'18%',align: 'center',},
+                    { field: 'op', title: '操作',width:'12%',align: 'center',
+                        formatter:function(value,row,index){
+                            var str="";
+                            if(row.use_status=="0"){
+                                str+="<a href='javascript:applyUseVehicle(&apos;"+row.guid+"&apos;);'>用车申请</a>";
+                            }
+                            return str;
+                        }
+                    }
+                ]
+            ],
+            toolbar:'#tool',
+            nowrap:false,//超出部分自动换行
+        });
+    });
+    function searName() {
+        var name=$("#name").textbox('getValue');
+        if (!name){
+            showAllUser();
+            return false;
+        }
+        var str='';
+        str+='[{"field":"number","op":"contains","value":"'+name+'","type":"text"}';
+        str+=']';
+        $('#list').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+    function showAllUser() {
+        $("#name").textbox('setValue','');
+        $('#list').datagrid({
+            queryParams: {
+                filterRules:{},
+            }
+        });
+    }
+    function applyUseVehicle(a) {
+        var url="{:url('applyUseVehicle')}/guid/"+a;
+        $("#vehicle").dialog({
+            title: '用车申请',
+            iconCls: 'icon-save',
+            width: '400',
+            height: '400',
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text: name ? name : ' 确 定 ',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        $('#vehicle').find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post(url, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else {
+                                        layer.msg(data.msg, {icon: 1});
+                                        $('#vehicle').dialog('close');
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },{
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $('#vehicle').dialog('close');
+                    }
+                }
+            ]
+        });
+    }
+</script>
+</body>
+</html>
+

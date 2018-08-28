@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="tb" style="height:auto;">
+        <!--<a style="margin-left: 10px;">搜索条件:</a>-->
+        <!--<a style="margin-left: 15px;">装饰项目名称：<input type="text" id="name"></a>-->
+        <!--<a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">-->
+            <!--<span class="l-btn-icon icon-search"></span>-->
+            <!--<span class="l-btn-text l-btn-icon-left">搜索</span>-->
+        <!--</a>-->
+        <a style="margin-left: 10px;" href="javascript:void(0)" class="easyui-linkbutton" onclick="ret()"> 返 回 </a>
+        <a style="margin-left: 10px;" href="javascript:void(0)" class="easyui-linkbutton" onclick="applyBuy()">申请采购</a>
+    </div>
+</div>
+<div id="list_dlog">
+</div>
+
+<table id="list" title="{$title}"></table>
+
+
+
+
+
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    {:widget('Easyui/showValueByUrl',["category_id","category_json",$map])}
+    {:widget('Easyui/showArrayByUrl',["category_id","category_json",$map])}
+    {:widget('Easyui/showValueByUrl',["supplier_id","supplier_json",$map])}
+    {:widget('Easyui/showArrayByUrl',["supplier_id","supplier_json",$map])}
+    $(function(){
+        $('#list').treegrid({
+            url:'{$data_url}',
+            idField:'guid',
+            treeField:'name',
+            rownumbers: true,
+            columns:[[
+                { field: "chk", "checkbox": true,},
+                { field: 'supplier_id', title: '供应商', width:'7%',align: 'center',
+                    formatter:function(value,row,index){
+                        if(eval("value_supplier_id")[value]) {
+                            return eval("value_supplier_id")[value];
+                        }else if (('array_supplier_id')[value]){
+                            return ('array_supplier_id')[value];
+                        } else{
+                            return value;
+                        }
+                    }}
+                , { field: 'category_id', title: '类型', width: '7%',align: 'center',
+                    formatter:function(value,row,index){
+                        if(eval("value_category_id")[value]) {
+                            return eval("value_category_id")[value];
+                        }else if (('array_category_id')[value]){
+                            return ('array_category_id')[value];
+                        } else{
+                            return value;
+                        }
+                    }},
+                {field:'material_name',title:'材料名称',width:"14%",align:'left'},
+                { field: 'unit_name', title: '单位', width: "5%", align: 'center',
+                    formatter:function(value,row,index){
+                        if(eval("value_unit_name")[value]) {
+                            return eval("value_unit_name")[value];
+                        }else if (('array_unit_name')[value]){
+                            return ('array_unit_name')[value];
+                        } else{
+                            return value;
+                        }
+                    }
+                },
+
+                { field: 'amount_buy', title: '采购数量', width: "8%", align: 'center',
+                    formatter:function(value,row,index){
+                        if (row.number){
+                            return '<input id="num'+row.id+'" style="width: 100%" type="text" value="'+row.number+'">';
+                        }else{
+                            return '<input id="num'+row.id+'" style="width: 100%" type="text" value="0">';
+                        }
+                    }
+                },
+                { field: 'number', title: '计划数量', width: "8%", align: 'center',
+                    formatter:function(value,row,index){
+                        if (value){
+                            return value;
+                        }else{
+                            return 0;
+                        }
+                    }
+                },
+                { field: 'nobuy_number', title: '待采购数量', width: "8%", align: 'center',
+                    formatter:function(value,row,index){
+                        if (value){
+                            return value;
+                        }else{
+                            return 0;
+                        }
+                    }
+                }
+                ,{ field: 'buy_number', title: '已采购数量', width: "8%", align: 'center',
+                    formatter:function(value,row,index){
+                        if (value){
+                            return value;
+                        }else{
+                            return 0;
+                        }
+                    }
+                }
+                , { field: 'price', title: '单价(元)', width: "8%", align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }}
+                ,{ field: 'sum_price', title: '金额', width: "10%",align: 'center',
+                    formatter:function(value,row,index){
+                        if(row.price){
+                            var price=Number(row.price)* row.number;
+                            return  '<a style="color: red;">'+ price.toFixed(2)+'</a>';
+                        }
+                    }
+                },{field:'op',title:'操作',width:"15%",align:'center',
+                    formatter:function(value,row,index){
+                        var str='';
+                        str+='<a href="javascript:;" onclick="showMore(&apos;'+row.guid+'&apos;)">详细</a>&nbsp;&nbsp;';
+                        return str;
+                    }
+                }
+            ]],
+            singleSelect: false,
+            toolbar: '#tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+//    function sear(){
+//        var tex=$("#name").val();
+//        if(tex){
+//            var str='[{"field":"name","op":"contains","value":"'+tex+'","type":"text"}';
+//            str+=']';
+//            $('#list').treegrid({
+//                queryParams: {
+//                    filterRules:str,
+//                }
+//            });
+//        }else{
+//            $('#list').treegrid('reload',{});
+//        }
+//    }
+
+    function applyBuy(){
+        var rows=$('#list').treegrid('getChecked');
+        if(rows.length==0){
+            layer.msg("请选择要采购的材料",{icon:2});
+            return false;
+        }else{
+            var arr=[];
+            $.each(rows,function (i,t) {
+                if(!$("#num"+rows[i].id).val()){
+                    layer.msg("请输入材料["+rows[i].material_name+']的采购数量',{icon:2});
+                    return false;
+                }
+                arr.push({material_id:t.guid,number:$("#num"+rows[i].id).val()});
+            });
+            console.log(arr);
+            if(arr.length>0){
+                $('#list_dlog').dialog({
+                    title: '材料采购单',
+                    iconCls: 'icon-save',
+                    width: 500,
+                    height: 600,
+                    cache: false,
+                    href: '{:url("showApplyEdit",["pro_id"=>$pro_id,"number"=>$book_number])}',
+                    modal: true,
+                    collapsible: false,
+                    minimizable: false,
+                    resizable: false,
+                    maximizable: false,
+                    buttons:[{
+                        text:' 提 交 ',
+                        iconCls: 'icon-save',
+                        handler:function(){
+                            $("#list_dlog").find('form').eq(0).form('submit', {
+                                onSubmit: function () {
+                                    var isValid = $(this).form('validate');
+                                    if (!isValid) return false;
+                                    if(!$('#collect_type').combobox('getValue')){
+                                        layer.msg('请选择款项类型',{icon:2});
+                                        return false;
+                                    }
+                                    if(!$('#consignee').combobox('getValue')){
+                                        layer.msg('请选择收货人',{icon:2});
+                                        return false;
+                                    }
+                                    var data={
+                                        collect_type:$('#collect_type').combobox('getValue'),
+                                        collect_name:$('#collect_name').textbox('getValue'),
+                                        collect_date:$('#collect_date').datebox('getValue'),
+                                        consignee:$('#consignee').textbox('getValue'),
+                                        contact_number:$('#contact_number').textbox('getValue'),
+                                        address:$('#address').textbox('getValue'),
+                                        desc:$('#desc').html(),
+                                        invoice_price:$("#invoice_price").textbox('getValue'),
+                                        invoice_value:$("#invoice_value").val(),
+                                        project_id:'{$pro_id}',
+                                        number:'{$book_number}',
+                                        material_arr:arr,
+                                    };
+                                    $.messager.progress({text: '处理中，请稍候...'});
+                                    $.post('{$applyBuy_url}',data,function (data) {
+                                        $.messager.progress('close');
+                                        if (data.code=="1001"){
+                                            layer.msg("申请材料采购成功，等待审核",{icon:1});
+                                            $("#list_dlog").dialog('close');
+                                            $('#list').treegrid('reload',{});
+                                            return false;
+                                        }else{
+                                            layer.msg(data.msg,{icon:2});
+                                            return false;
+                                        }
+                                    },'json');
+                                    return false;
+
+
+                                }
+                            });
+                        }
+                    },{
+                        text:' 关 闭 ',
+                        iconCls:'icon-clear',
+                        handler:function(){
+                            $("#list_dlog").dialog('close');
+                        }
+                    }]
+                });
+            }
+
+        }
+
+
+
+    }
+    function resh() {
+        $('#dg').treegrid('reload',{});
+    }
+    function showMore(a) {
+        $("#list_dlog").dialog({
+            title: '材料详细',
+            width: 600,
+            height: 380,
+            cache: false,
+            href: '{:url("showMoreCopy")}/guid/'+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function ret() {
+        window.parent.closeTab('申请采购材料');
+        window.parent.addTab('材料采购申请','{:url("Engin/showProjectMaterialList")}','close');
+    }
+</script>
+</body>
+</html>

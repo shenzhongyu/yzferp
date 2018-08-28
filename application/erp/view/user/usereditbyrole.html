@@ -1,0 +1,65 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section >
+        <label  class="label_1" style="">用户姓名:</label>
+        <label  class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="name"
+                   data-options="required:true,validType:'maxLengthTwo[3]'" placeholder="用户姓名"
+                   style="width:80%">
+        </label>
+    </section>
+    <section >
+        <label  class="label_1" style="">手机号:</label>
+        <label  class="label_2" style="">
+            <input class="easyui-validatebox"  name="mobile"
+                   data-options="invalidMessage:'数字,长度为11位',missingMessage:'数字,长度为11位',required:true,validType:'length[11,11]'" placeholder="请填写手机号"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label for="company_id" class="label_1">所属公司:</label>
+        <label for="company_id" class="label_2">
+            <input class="easyui-combobox" id="company_id"  name="company_id" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'company_name',required:true,url:'{:url('showCompanyJson')}',method:'get',
+                ">
+        </label>
+    </section>
+    <!--<section style="display: none">-->
+        <!--<label for="department_type" class="label_1">部门类型:</label>-->
+        <!--<label for="department_type" class="label_2">-->
+            <!--<input class="easyui-combobox"  id="department_type"  name="department_type" style="width:80%;" value="1"-->
+                   <!--data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/department_type')}',method:'get',">-->
+        <!--</label>-->
+    <!--</section>-->
+    <!--<section>-->
+        <!--<label for="department_id" class="label_1">所属部门:</label>-->
+        <!--<label for="department_id" class="label_2">-->
+            <!--<input class="easyui-combobox" id="department_id" name="department_id" style="width:80%;" value=""-->
+                   <!--data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'department_name',required:true,url:'{:url('work/showDepartmentJson')}',method:'get',">-->
+        <!--</label>-->
+    <!--</section>-->
+    <!--<section>-->
+        <!--<label for="jobs_id" class="label_1">所属职位:</label>-->
+        <!--<label for="jobs_id" class="label_2">-->
+            <!--<input class="easyui-combobox" id="jobs_id"  name="jobs_id" style="width:80%;" value=""-->
+                   <!--data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',required:true,editable:false,valueField: 'jobs_id',textField: 'jobs_name',url:'{:url('work/showJobsJson')}',method:'get'">-->
+        <!--</label>-->
+    <!--</section>-->
+    <section>
+        <label for="department_id" class="label_1">所属部门:</label>
+        <label for="department_id" class="label_2">
+            <input class="easyui-combobox" id="department_id" name="department_id" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'department_name',required:true,url:'{:url('showDepartmentJson')}',method:'get',
+
+                   ">
+        </label>
+    </section>
+    <section>
+        <label for="jobs_id" class="label_1">所属职位:</label>
+        <label for="jobs_id" class="label_2">
+            <input class="easyui-combobox" id="jobs_id"  name="jobs_id" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',required:true,editable:false,valueField: 'guid',textField: 'jobs_name',url:'{:url('showJobsJson')}',method:'get'">
+        </label>
+    </section>
+
+
+</form>

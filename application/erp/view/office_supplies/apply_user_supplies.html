@@ -1,0 +1,27 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">名称：</label>
+        <label class="label_2" style="">
+            {$obj?$obj["name"]:''}
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">剩余数量：</label>
+        <label class="label_2" style="">
+            {$obj?$obj["number"]:'0'} {$obj?$obj["unit"]:''}
+        </label>
+    </section>
+    <section>
+        <label class="label_1" >领取数量:</label>
+        <label class="label_2" >
+            <input class="easyui-validatebox" value="1" type="number" name="number"
+                   data-options="required:true,validType:'length[1,15]'" >
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">领取说明:</label>
+        <label  class="label_2">
+            <textarea  name="desc" id="textara1" style="width:80%;height: 60px;outline:none;resize:none;" data-options="" ></textarea>
+        </label>
+    </section>
+</form>

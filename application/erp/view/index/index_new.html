@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>7搜装企ERP</title>
+    <link rel="shortcut icon" type="image/x-icon" href="__STATIC__/erp/images/favicon.ico" media="screen"/>
+    <link href="__STATIC__/erp/css/base.css" rel="stylesheet">
+    <link href="__STATIC__/erp/css/platform.css" rel="stylesheet">
+    <link href="__STATIC__/erp/css/index_easyui.css" rel="stylesheet">
+
+    <style>
+        html {
+            background: #fff;
+            overflow: auto
+        }
+
+        #pf_menu {
+            min-height: 95%;
+            width: 100%;
+            margin: 5px auto;
+            z-index: 123;
+            background: #078ea8;
+        }
+
+        #pf_menu .pf_menu_li {
+            box-sizing: border-box;
+            border-bottom: 1px solid #5eb5c6;
+            letter-spacing: 2px;
+            width: 100%;
+            line-height: 50px;
+            position: relative;
+            font-size: 16px;
+            color: #fff;
+            text-align: center
+        }
+
+        #pf_menu .pf_menu_li_a {
+            display: inline-block;
+            width: 100%;
+        }
+
+        #pf_menu .pf_ul {
+            display: none;
+            width: 200px;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            z-index: 123;
+            background: #078ea8
+        }
+
+        #pf_menu .pf_ul_ul {
+            display: none;
+            width: 200px;
+            position: absolute;
+            left: 100%;
+            z-index: 123;
+            background: #078ea8
+        }
+
+        #pf_menu .pf_ul_a {
+            display: inline-block;
+            width: 100%;
+        }
+
+        .pf_ul_li, .pf_ul_ul li {
+            box-sizing: border-box;
+            border-bottom: 1px solid #5eb5c6;
+        }
+
+        .over {
+            background: #02697d
+        }
+
+        #pf_menu li a:hover {
+            background: #02697d
+        }
+
+        /*@font-face {*/
+        /*font-family: custom;       !*这里是说明调用来的字体名字*!*/
+        /*src: url('__STATIC__/erp/fonts/fzjt.ttf');   !*这里是字体文件路径*!*/
+        /*}*/
+        .logo_title {
+            font-family: '微软雅黑';
+            padding-left: 20px;
+            border-left: 5px solid #078ea8;
+            font-weight: bold;
+            font-size: 26px;
+            color: #078ea8;
+            display: inline-block;
+            line-height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="height: 100%">
+    <div style="width:100%;"></div>
+    <div id="pf-hd" style="position:relative;background: #fff;border-bottom: 2px solid #078ea8">
+        <div style="background:url('__STATIC__/erp/images/login_l.png') no-repeat 20px 5px;padding-left:66px;float:left;width: 200px;height: 70px;text-align: center;line-height:70px;">
+            <a class="logo_title">装企云管家</a>
+        </div>
+
+        <div class="pf-user">
+            <div class="pf-user-photo">
+                <img id="user_img"
+                     style="margin-top:-2px;width: 100%;height: 100%;border:1px solid #ccc;border-radius: 50%"
+                     src="{$member_info.photo?$member_info.photo:'__STATIC__/mui/image/7s.jpg'}" alt="">
+            </div>
+            <h4 class="pf-user-name ellipsis" style="min-width: 20px;text-align: center;color: #000">
+                {$member_info.name }
+            </h4>
+            <i style="margin-top:20px;display:inline-block;width: 28px;height: 28px;background: url('__STATIC__/erp/images/arrow.png')"></i>
+            <div class="pf-user-panel">
+                <ul class="pf-user-opt">
+                    <li class="pf-modify-pwd">
+                        <a href="javascript:;">
+                            <i class="iconfont"></i>
+                            <span class="pf-opt-name">修改密码</span>
+                        </a>
+                    </li>
+                    <li class="pf-logout">
+                        <a href="javascript:;">
+                            <i class="iconfont"></i>
+                            <span class="pf-opt-name">退出</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="pf-bd">
+        <div id="pf-sider" style="height:100%;overflow: visible;">
+            <h2 class="pf-model-name">
+                <span class="iconfont"></span>&nbsp;
+                <span class="pf-name"></span>
+                <span class="toggle-icon" style="background: #078ea8">
+                    <div style="margin: 5px auto;width:0;height: 0;border-top: 6px solid transparent;border-right: 8px solid #fff;border-bottom: 6px solid transparent;"></div>
+                </span>
+            </h2>
+            <ul id="pf_menu">
+            </ul>
+            <div style="clear: both"></div>
+        </div>
+        <div id="pf-page" style="height: 100%">
+            <div class="easyui-tabs1" style="width:100%;height:100%;">
+                <div title="首页" style="padding:10px 5px 5px 10px;">
+                    <iframe class="page-iframe" src="{:url('erp/index/mainNew')}" frameborder="no" border="no"
+                            height="100%" width="100%" scrolling="auto"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="schedule" style="display:none;z-index:200;width: 360px;height: 150px;position: fixed;top:0;left: 0;bottom: 0;right: 0;margin: auto">
+        <div class="layui-layer-title" style="cursor: move;">更新进度</div>
+        <div style="width: 100%;background: #fff;height: 90px;padding-top: 25px;">
+            <div id="p2" class="easyui-progressbar" style="width:300px;margin: auto "></div>
+        </div>
+    </div>
+    <div id="mask"
+         style="display:none;width: 100%;height:1500px;z-index:100; background-color:#000; opacity:0.3; filter:alpha(opacity=30);position: fixed;top: 0">
+    </div>
+</div>
+    {include file="base/js" /}
+    <!--[if IE 7]>
+    <script type="text/javascript">
+        $(window).resize(function () {
+            $('#pf-bd').height($(window).height() - 76);
+        }).resize();
+
+    </script>
+    <![endif]-->
+
+
+    <script type="text/javascript">
+        var timer;
+        function startUpdate() {
+            var value = $("#p2").progressbar('getValue');
+            $('.progressbar-value .progressbar-text').css('background-color', '#ffe48d');
+            if (value + 10 > 100) {
+                $("#p2").progressbar('setValue', 99);
+                return false;
+            }
+            if (value < 100) {
+                value += Math.floor(Math.random() * 10);
+                $("#p2").progressbar('setValue', value);
+                timer = setTimeout(arguments.callee, 200);
+            }
+        }
+        ;
+        function setProgressValue() {
+            clearTimeout(timer);
+            $("#p2").progressbar('setValue', 100);
+            $("#schedule").css('display', 'none');
+            $("#mask").css('display', 'none');
+            layer.msg('更新成功',{icon:1});
+
+        }
+
+        $(function () {
+            getJson();
+            $('.easyui-tabs1').tabs({
+                tabHeight: 44,
+                onSelect: function (title, index) {
+                    var currentTab = $('.easyui-tabs1').tabs("getSelected");
+                    if (currentTab.find("iframe") && currentTab.find("iframe").size()) {
+                      //  currentTab.find("iframe").attr("src", currentTab.find("iframe").attr("src"));
+                    }
+                }
+            });
+            $(window).resize(function () {
+                $('.tabs-panels').height($("#pf-page").height() - 46);
+                $('.panel-body').height($("#pf-page").height() - 76)
+            }).resize();
+            //用户退出
+            $(document).on('click', '.pf-logout', function () {
+                layer.confirm('您确定要退出吗？', {
+                    title: '信息'
+                }, function () {
+                    var url = "/api/system/logout";
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: "",
+                        success: function (data) {
+                            if (data.code == "1001") {
+                                location.href = "/erp/login/login";
+                            } else {
+                                layer.msg(data.msg);
+                            }
+                        }
+                    });
+                });
+            });
+            //左侧菜单收起
+            $(document).on('click', '.toggle-icon', function () {
+                $(this).closest("#pf-bd").toggleClass("toggle");
+                setTimeout(function () {
+                    $(window).resize();
+                }, 300)
+            });
+            //修改密码
+            $(document).on('click', '.pf-modify-pwd', function () {
+                layer.open({
+                    type: 2,
+                    title: '密码修改',
+                    shadeClose: true,
+                    shade: 0.8,
+                    area: ['380px', '150px'],
+                    content: '/erp/system/showUserPassword'//iframe的url
+                })
+            });
+
+
+        });
+        function goToIndex() {
+            addTab('首页', "{:url('erp/index/main')}", '');
+        }
+        function getJson() {
+            $.getJSON('/erp/index/getMenuJson', function (data) {
+                postData(data);
+            });
+        }
+        function showMenu() {
+            $(".pf_menu_li").hover(function () {
+                $(this).children("a").addClass("over").parent("li").siblings().children("a").removeClass("over");
+                $(this).children("ul").stop(true, true).slideDown("fast");
+
+                $(this).addClass("over");
+            }, function () {
+                $(this).children("ul").stop(true, true).slideUp("fast");
+                $(this).children("a").removeClass("over");
+                $(this).removeClass("over");
+            });
+            $(".pf_ul_li").hover(function () {
+                $(this).children("a").addClass("over").parent("li").siblings().children("a").removeClass("over");
+                $(this).children("ul").stop(true, true).slideDown("fast");
+                $(this).children("ul").css('top', $(this).index() * $(this).height() + $(this).index());
+                $(this).addClass("over");
+            }, function () {
+                $(this).children("ul").stop(true, true).slideUp("fast");
+                $(this).children("a").removeClass("over");
+                $(this).removeClass("over");
+            });
+
+        }
+
+
+        function postData(data) {
+            if (!data) {
+                return false;
+            }
+            var str = "";
+            $.each(data, function (i, t) {
+                str += '<li class="pf_menu_li">';
+                if (!t.menus) {
+                    str += '<a class="pf_menu_li_a" style="background:url(&apos;' + t.icon + '&apos;) no-repeat 15% center" onclick="addTab(&apos;' + t.menu_name + '&apos;,&apos;' + t.url + '&apos;)">' + t.menu_name + '</a>';
+                } else {
+                    str += '<a class="pf_menu_li_a" style="background:url(&apos;' + t.icon + '&apos;) no-repeat 15% center">' + t.menu_name + '</a>'
+                    str += '<ul class="pf_ul" >';
+                }
+                if (t.menus) {
+                    $.each(t.menus, function (j, k) {
+                        str += '<li class="pf_ul_li">';
+                        if (!k.menus) {
+                            str += '<a class="pf_ul_a" onclick="addTab(&apos;' + k.menu_name + '&apos;,&apos;' + k.url + '&apos;)">' + k.menu_name + '</a>';
+                        } else {
+                            str += '<a class="pf_ul_a">' + k.menu_name + '</a><ul class="pf_ul_ul">';
+                        }
+
+                        if (k.menus) {
+                            $.each(k.menus, function (a, m) {
+                                str += '<li><a class="pf_ul_a" onclick="addTab(&apos;' + m.menu_name + '&apos;,&apos;' + m.url + '&apos;)">' + m.menu_name + '</a></li>';
+                            })
+                            str += ' </ul></li>';
+                        } else {
+                            str += '</li>';
+                        }
+
+                    });
+                    str += ' </ul></li>';
+                } else {
+                    str += '</li>';
+                }
+
+
+            });
+            str += '<div style="clear: both;height: 20px;"></div><div style="width:100%;height:60px;text-align: center;font-size: 14px;color: #fff;letter-spacing: 2px;"> ' +
+                '<p id="version" style="line-height: 30px">当前版本&nbsp;&nbsp;v{$version ? $version:"1.0.0"}</p> ' +
+                '<p>&copy;7搜网络版权所有</p> ' +
+                '</div>'
+            $('#pf_menu').html('');
+            $("#pf_menu").append(str);
+            showMenu();
+        }
+        function addTab(subtitle, url, type) {
+            if (type) {
+                $('.easyui-tabs1').tabs(type, subtitle);
+            }
+            if (!$('.easyui-tabs1').tabs('exists', subtitle)) {
+                $('.easyui-tabs1').tabs('add', {
+                    title: subtitle,
+                    content: createFrame(url),
+                    closable: true,
+                });
+            } else {
+                $('.easyui-tabs1').tabs('select', subtitle);
+            }
+        }
+        function createFrame(url) {
+            var s = '<iframe class="page-iframe" src="' + url + '" frameborder="no"   border="no" height="100%" width="100%" scrolling="auto"></iframe>';
+            return s;
+        }
+        function closeTab(title) {
+            $('.easyui-tabs1').tabs('close', title);
+        }
+    </script>
+</body>
+</html>

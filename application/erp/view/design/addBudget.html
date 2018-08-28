@@ -1,0 +1,365 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/icon.css">-->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+    <!--<link rel="stylesheet" href="__ERP__/css/submit.css">-->
+    {include file="base/css" /}
+
+</head>
+<body style="width: 99%">
+<div id="dlog" style="display: none"></div>
+<div id="p" class="easyui-panel" title="预算报价" style="width:100%;height:100%;padding:10px;">
+    <p>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="addData()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">添加空间</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="removeData()">
+            <span class="l-btn-icon icon-remove"></span>
+            <span class="l-btn-text l-btn-icon-left">移除空间</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="delData()">
+            <span class="l-btn-icon icon-remove"></span>
+            <span class="l-btn-text l-btn-icon-left">删除(主材)</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="addMaterialData()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">添加主材</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="addDataItem()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">添加基装项</span>
+        </a>
+
+    </p>
+    <div style="width: 20%;float: left">
+        <table id="space"  title='空间列表' ></table>
+    </div>
+    <div style="width:78%;float: left">
+        <table id="dg" class="easyui-datagrid"  ></table>
+        <div id="dialog_div" ></div>
+    </div>
+</div>
+<!--<script type="text/javascript" src="__EASYUI151__/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="__EASYUI151__/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="__EASYUI151__/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="__LAYER__/layer.js"></script>-->
+{include file="base/js" /}
+<script type="text/javascript" src="__STATIC__/daterangepicker/require.js"></script>
+<script type="text/javascript" src="__EASYUI151__/datagrid-filter.js"></script>
+<script>
+    var guid='';
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    $(function(){
+//        $('#tg').propertygrid({
+//            url:'{:url("showSpaceTree")}',
+//            method:'get',
+//            columns: [[
+//                { field: "chk", "checkbox": true},
+//                { title: "名称", field: "new_name",width:'40%',align: 'center',
+//                    formatter:function(value,row,index){  return '<a style="color:#0066cc">'+value+' </a>'  } },
+//                { title: "金额(元)", field: "value",width:'40%',align: 'center',
+//                    formatter:function(value,row,index){
+//                        return '<a style="color: red">'+value.toFixed(2)+'</a>'
+//                }}
+//            ]],
+//            onAfterEdit: function (rowIndex, rowData, changes) {
+//                console.log(rowData);
+//            },
+//            singleSelect:false,
+//            showGroup: false,
+//            scrollbarSize: 20
+//        });
+
+        $('#space').treegrid({
+            url:'{:url("showSpaceTree")}',
+            idField:'id',
+            treeField:'name',
+            showFooter:true,
+            singleSelect:false,
+            columns:[[
+                { field: "chk", "checkbox": true},
+                { title: "名称", field: "new_name",width:'40%',align: 'center',
+                    formatter:function(value,row,index){  return '<a style="color:#0066cc">'+value+' </a>'  } },
+                { title: "金额(元)", field: "value",width:'40%',align: 'center',
+                    formatter:function(value,row,index){
+                        return '<a style="color: red">'+value.toFixed(2)+'</a>'
+                }}
+            ]],
+            onDblClickRow:function(row){
+                console.log(row);
+                guid=row.guid;
+                $('#dg').treegrid('load', {
+                    guid: row.guid,
+                });
+//                var arr;
+//                if(row.children){
+//                    arr=[];
+//                    arr.push('"'+row.id+'"');
+//                    getArr(row.children,arr);
+//                }else{
+//                    arr='"'+row.id+'"';
+//                }
+//                $('#dg').datagrid({
+//                    queryParams: {
+//                        filterRules:'[{"field":"category_id","op":"in","value":['+arr+'],"type":"text"}]'
+//                    }
+//                });
+
+            }
+        });
+        $('#dg').treegrid({
+            url:'{:url("showSpaceDataList")}/id/'+'{$guid}',
+            height:650,
+            rownumbers:true,
+            singleSelect:false,
+            pagination:true,
+            method:'get',
+            pageSize:20,
+            idField:'guid',
+            treeField:'material_name',
+            columns:[[{ field: "chk", "checkbox": true}
+                ,{ field: 'material_name', title: '名称', width: 150, align: 'left'}
+                , { field: 'units', title: '单位', width: 100, align: 'center',
+                    formatter:function(value,row,index){
+                        if (eval("value_unit_name" )[value]) {
+                            return eval("value_unit_name")[value];
+                        }
+
+                    }
+                }
+                ,{ field: 'number', title: '数量', width: 100, align: 'center',
+                    formatter:function(value,row,index){
+                        if(!value && row.id){
+                            return '<a>'+0+'</a>'
+                        }else{
+                            return value;
+                        }
+
+                    }
+                }
+                , { field: 'old_price', title: '单价(元)', width: 100, align: 'center',
+                    formatter:function(value,row,index){
+                        if(value){
+                            return '<a>'+ Number(value).toFixed(2)+'</a>'
+                        }
+
+                    }}
+                ,{ field: 'price', title: '金额', width: 100,align: 'center',
+                    formatter:function(value,row,index){
+                        if(row.id){
+                            return  '<a style="color: red;">'+ (Number(row.old_price) * Number(row.number)).toFixed(2)+'</a>';
+                        }
+                    }
+                }
+                ,{field:'desc',title:'说明',width:120,align:'center',}
+                ,{field:'opera',title:'操作',width:150,align:'center',
+                    formatter:function(value,row,index){
+                        if( row.id){
+                            var str='<a href="javascript:editNumber(&apos;'+row.guid+'&apos;,'+1+');">修改数量</a>&nbsp;';
+                            str+='&nbsp;<a href="javascript:editNumber(&apos;'+row.guid+'&apos;,'+2+');">修改单价</a>';
+                            return str;
+                        }
+
+                    }
+                }
+            ]]
+        });
+
+    });
+    function addData(){
+        $('#dlog').dialog({
+            title: "添加空间",
+            iconCls: 'icon-save',
+            width: 440,
+            height: 350,
+            cache: false,
+            href: "{:url('showbudget')}/guid/"+"{$guid}",
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function removeData() {
+        var rows = $('#space').datagrid('getSelections');
+        if(rows.length==0){
+            layer.msg('请选择要删除的空间！', {icon: 2});
+            return false;
+        }
+        var arr=[];
+        $.each(rows,function (i,t) {
+            arr.push(t.guid);
+        });
+        $.messager.confirm('提示信息', '确定要删除空间吗？', function(result){
+            if(!result) return false;
+            var url='{:url("delSpaceData")}';
+            $.post(url,{guid:arr},function(obj){
+                if(obj.code=="1001"){
+                    layer.msg('删除成功', {icon: 1});
+                    $('#space').treegrid('reload');
+                    setTimeout(function(){
+                        $('#dg').treegrid('reload');
+                    },1);
+                }else{
+                    layer.msg('删除失败，请联系管理员', {icon: 3});
+                }
+            },"json")
+        });
+
+    }
+    function addMaterialData() {
+        if(!guid){
+           var arr=$('#space').treegrid('getData');
+           if(arr.length==0){
+               layer.msg('当前无空间，请先添加空间！', {icon: 2});
+               return false;
+           }else{
+               guid=arr[0].guid;
+           }
+        }
+        $.messager.confirm('提示信息', '确定为当前空间添加主材？', function(result){
+            if(!result) return false;
+            var url='{:url("addMaterialData")}';
+            $('#dlog').dialog({
+                title: "添加主材",
+                iconCls: 'icon-save',
+                width: '60%',
+                height: '75%',
+                cache: false,
+                href: "{:url('addMaterialData')}/guid/"+guid+'/project_id/'+'{$guid}'+'/type/1',
+                modal: true,
+                collapsible: false,
+                minimizable: false,
+                resizable: false,
+                maximizable: false,
+            })
+        });
+    }
+    function addDataItem() {
+        if(!guid){
+            var arr=$('#space').treegrid('getData');
+            if(arr.length==0){
+                layer.msg('当前无空间，请先添加空间！', {icon: 2});
+                return false;
+            }else{
+                guid=arr[0].guid;
+            }
+        }
+        $.messager.confirm('提示信息', '确定为当前空间添加基装项数据？', function(result){
+            if(!result) return false;
+            var url='{:url("addMaterialData")}';
+            $('#dlog').dialog({
+                title: "添加基装项",
+                iconCls: 'icon-save',
+                width: '60%',
+                height: '75%',
+                cache: false,
+                href: "{:url('addMaterialData')}/guid/"+guid+'/project_id/'+'{$guid}'+'/type/2',
+                modal: true,
+                collapsible: false,
+                minimizable: false,
+                resizable: false,
+                maximizable: false,
+            })
+        });
+    }
+
+    function delData() {
+        var rows = $('#dg').datagrid('getSelections');
+        if(rows.length==0){
+            layer.msg('请选择要删除的空间！', {icon: 2});
+            return false;
+        }
+        var type=0;
+        var arr=[];
+        $.each(rows,function(i,t){
+            arr[i]={id:t.guid,type:t.type};
+        });
+        $.messager.confirm('提示信息', '确定要删除空间吗？', function(result){
+            if(!result) return false;
+            var url='{:url("delMaterialData")}';
+            $.post(url,{guid:arr},function(obj){
+                if(obj.code=="1001"){
+                    layer.msg('删除成功', {icon: 1});
+                    $('#space').treegrid('reload');
+                    setTimeout(function(){
+                        $('#dg').treegrid('reload');
+                    },1);
+                }else{
+                    layer.msg('删除失败，请联系管理员', {icon: 3});
+                }
+            },"json")
+        });
+    }
+    function editNumber(id,a){
+        $('#dlog').dialog({
+            title: "修改数据",
+            iconCls: 'icon-save',
+            width: 380,
+            height: 200,
+            cache: false,
+            href: "{:url('showEdit')}/guid/"+id+'/type/'+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#dlog").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            if(a==1){
+                                if(!$('#number').val()){
+                                    layer.msg('内容不能为空',{icon:2});
+                                    return false;
+                                }
+                            }else if(a==2){
+                                if(!$('#change_price').val()){
+                                    layer.msg('内容不能为空',{icon:2});
+                                    return false;
+                                }
+                                console.log()
+                                if(parseFloat($('#change_price').val()) < parseFloat($('#stater').html())){
+                                    layer.msg('更改的价格不能小于初始价格',{icon:2});
+                                    return false;
+                                }
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                                $.post("{:url('saveData')}/guid/"+id+'/type/'+a, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                    } else {
+                                        layer.msg('数据修改成功', {icon: 1});
+                                        $("#dlog").dialog('close');
+                                        $('#space').treegrid('reload');
+                                        setTimeout(function(){
+                                            $('#dg').treegrid('reload');
+                                        },1);
+                                    }
+                                }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#dlog").dialog('close');
+                }
+            }]
+        })
+    }
+
+</script>
+</body>
+</html>

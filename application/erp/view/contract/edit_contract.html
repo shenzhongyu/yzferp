@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {include file="base/css" /}
+    <link href="__STATIC__/umeditor/themes/default/_css/umeditor.css" type="text/css" rel="stylesheet">
+    <style>
+        .edui-container{width: 860px !important;border: 1px solid #95B8E7;}
+        #container{height:450px;width: 840px !important;}
+        #fm{font-size: 16px;}
+        #fm section{margin-bottom: 18px;}
+        #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+        #button a{width: 100px !important;margin: 0 0 0 10px}
+        .myPanelHead .panel-title{font-size: 15px;padding-left: 43%;height: 25px;line-height: 25px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="p" class="easyui-panel" title="合同模板"   style="width:100%;padding:25px 10px;margin-bottom: 20px;"  data-options="headerCls:'myPanelHead'">
+        <form id="fm" style="padding:0 0px;width:100%;" method="post" name="fm">
+            <div style="width: 50%;">
+                <section>
+                    <label class="label_1"  style="font-size:14px; ">合同标题:</label>
+                    <label class="label_2"  style="">
+                        <input class="easyui-validatebox" type="text" name="notice_title" id="notice_title"
+                               placeholder="请填写标题"
+                               style="width:80%;border: 1px solid #95B8E7;height: 20px;">
+                    </label>
+                </section>
+                <section>
+                    <label class="label_1"  style="font-size:14px; ">公司名称:</label>
+                    <label class="label_2"  style="">
+                        <input class="easyui-validatebox" type="text" name="company_name" id="company_name"
+                               placeholder="请填写公司名称"
+                               style="width:50%;border: 1px solid #95B8E7;height: 20px;">
+                    </label>
+                </section>
+                <section>
+                    <label class="label_1"  style="font-size:14px; ">公司电话:</label>
+                    <label class="label_2"  style="">
+                        <input class="easyui-validatebox" type="text" name="mobile" id="mobile"
+                               placeholder="请填写公司电话"
+                               style="width:50%;border: 1px solid #95B8E7;height: 20px;">
+                    </label>
+                </section>
+                <section style="height: 480px;">
+                    <label  class="label_1"  style="font-size:14px; ">合同内容:</label>
+                    <label  class="label_2">
+                        <script id="container" name="content" type="text/plain"></script>
+                    </label>
+                </section>
+            </div>
+        </form>
+    </div>
+    <div id="button">
+        <a style="margin-left: 37%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">确 定</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重 置</a>
+    </div>
+
+</div>
+{include file="base/js" /}
+<script src="__STATIC__/umeditor/third-party/jquery.min.js"></script>
+<script src="__STATIC__/umeditor/third-party/template.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="__STATIC__/umeditor/umeditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__STATIC__/umeditor/umeditor.min.js"></script>
+<script type="text/javascript" src="__STATIC__/umeditor/lang/zh-cn/zh-cn.js"></script>
+
+<script>
+    var editor = UM.getEditor('container',{
+        autoFloatEnabled:false
+    });
+    $(function(){
+        getData();
+    })
+    function getData(){
+        $.ajax({
+            url: "{:url('showContractData')}",
+            type: "post",
+            data: {id:'{$guid}'},
+            dataType: "json",
+            success: function(data) {
+                if(data.code=="1001"){
+                    var obj=data.msg;
+                    $("#notice_title").val(obj.title) ;
+                    $("#company_name").val(obj.company_name) ;
+                    $("#mobile").val(obj.mobile) ;
+                    editor.execCommand('insertHtml', obj.content);
+
+                }else{
+
+                }
+            },
+        })
+    }
+
+    //表单提交(下一步)
+    function submitForm(){
+        var  url='{:url("Contract/editContract",["guid"=>$guid])}';
+        var content=editor.getContent();
+        var title=$("#notice_title").val();
+        var mobile=$("#mobile").val();
+        var company_name =$("#company_name").val();
+        if(!title){
+            layer.msg("请填写标题", {icon: 2});
+            return false;
+        }
+        if(!content){
+            layer.msg("请填写内容", {icon: 2});
+            return false;
+        }
+        if(!mobile){
+            layer.msg("请填写公司电话", {icon: 2});
+            return false;
+        }
+        var data={title:title,
+            content:content,
+            company_name:company_name,
+            mobile:mobile};
+        $.ajax({
+            url: url,
+            type: "post",
+            data: data,
+            dataType: "json",
+            success: function(obj) {
+                if(obj.code=="1001"){
+                    layer.msg(obj.msg, {icon: 1});
+                    clearForm();
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            },
+        })
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        $('#fm')[0].reset();
+        editor.setContent('');
+        window.parent.addTab('合同模板管理','{:url("Contract/showContractEdit")}','close')
+    }
+</script>
+</body>
+</html>

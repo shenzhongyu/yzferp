@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <table id="dg" class="easyui-datagrid" title="{$title}" style="width:100%;height:auto"
+           data-options="
+                nowrap:false,
+				iconCls: 'icon-black',
+				singleSelect: false,
+				toolbar: '#tb',
+				url: '{$data_url}',
+				method: 'post',
+
+				nowrap:false,
+
+			">
+        <thead>
+        <tr>
+            <th data-options="field:'name',align:'center',width:'20%' ">空间名称</th>
+            <th data-options="field:'desc',align:'center',width:'38%'">空间备注说明</th>
+            <th data-options="field:'op',align:'center',width:'38%',
+                formatter:function(value,row){
+							return  crt(row.guid);
+                },
+            ">操作</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div id="tb" style="height:auto;">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="accept()">提取内容</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="returnTo()">返回上一级</a>
+        <a style="margin-left: 10%;font-size: 16px;font-weight: 400">模板名称：{$name}</a>
+    </div>
+</div>
+<div id="dlog"></div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    function copyTem(a) {
+        var url='{:url("copyData")}';
+        $.post(url,{guid:a,pro_id:'{$pro_id}'}, function(data){
+            $.messager.progress('close');
+            if (data.code != 1001) {
+                layer.msg(data.msg, {icon: 2});
+            } else {
+                layer.msg(data.msg, {icon: 1});
+                $("#dg").datagrid('reload');
+            }
+        }, 'json');
+    }
+    function crt(a) {
+        return '<a style="margin-right: 15px;" href="javascript:copyTem(&apos;'+a+'&apos;);">提取内容</a><a style="margin-right: 15px;" href="javascript:lookTemData(&apos;'+a+'&apos;);">查看内容</a>';
+    }
+    function lookTemData(a) {
+        var href = "{:url('showTemData',['pro_id'=>$pro_id])}/guid/" + a;
+        window.parent.addTab("模板空间内容",href,'close');
+    }
+    function returnTo() {
+        window.parent.closeTab('模板详情')
+    }
+</script>
+</body>
+</html>

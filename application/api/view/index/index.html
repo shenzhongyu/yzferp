@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+<input id="token" type="text">
+<div onclick="click1();">点击测试</div>
+<script>
+    class New {
+        constructor() {
+
+    }
+
+
+         getToken() {
+             this.myAjax('{:url('getToken ')}','','POST',show);
+        }
+
+         myAjax(ajax_url,ajax_data,ajax_type,callback){
+
+            if (window.XMLHttpRequest) {
+                // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {
+                // IE6, IE5 浏览器执行代码
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+             xmlhttp.onreadystatechange = function(){
+
+                 if (xmlhttp.readyState == 4) {
+                     if (xmlhttp.status == 200) {
+                         data.html = xmlhttp.responseText;
+                         callback();
+                     }
+                 }
+             };
+             xmlhttp.open(ajax_type, ajax_url, true);
+             xmlhttp.send(ajax_data);
+        }
+    }
+    var data={};
+    var xmlhttp ;
+
+
+    function show(){
+        console.log(data.html);
+        document.getElementById("token").value=data.html;
+
+    }
+    function click1() {
+
+        var a = new New();//  非静态调用
+        a.getToken();    //静态调用
+
+
+
+    }
+</script>
+</body>
+</html>

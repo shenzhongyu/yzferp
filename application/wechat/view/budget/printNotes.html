@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>申请打印记录</title>
+    {include file="wechat@base_mui/weui_wechat_swiper"/}
+    <script type="text/javascript" src="__MUI__/js/mui.picker.min.js"></script>
+    <link href="__MUI__/css/mui.picker.min.css" rel="stylesheet"/>
+
+    <style type="text/css">
+        .detail_table {
+            width: 100%;
+            font-size: 0.26rem;
+        }
+
+        .detail_li{
+        padding: 0.1rem 0.2rem;
+        }
+        .picker_a{
+            margin: 0.1rem 0.3rem !important;
+        }
+        .detail_table p{
+            font-size: 0.26rem;
+            line-height: 0.34rem;
+        }
+    </style>
+</head>
+</head>
+<body>
+<div id="index">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+        <!--<a class=" mui-icon mui-icon-plusempty mui-pull-right" style="font-size:30px;"-->
+        <!--@click="add()"></a>-->
+        <h1 class="mui-title">打印申请详情</h1>
+    </header>
+    <div style="margin-top: 50px;text-align: center;width:100% !important;" id="div"></div>
+    <div class="swiper-container" id="swiper_container" style="margin-top: 50px">
+        <div class="swiper-wrapper" id="swiper_list">
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var number = 145;
+    $(document).ready(function () {
+        $("#listBoth").hover(function () {
+            $("#listBoth").css(background, "yellow")
+        });
+        initVueLoad();
+        myMuiLoad(1, 10);
+    });
+    function initVueLoad() {
+        var vue = new Vue({
+            el: '#index',
+            methods: {
+
+                add:function () {
+                    mui.openWindow({
+                        url: "{:url('budget/addDecorate')}"
+                    })
+                }
+
+            },
+            deletespace:function () {
+
+
+
+
+            }
+        })
+    }
+
+    function myMuiLoad(page, rows) {
+
+        var ajax_data = {};
+        if (search_data) {
+            ajax_data = Object.assign(search_data, {"page": page, "rows": rows});
+        }
+        mui.ajax(url, {
+                data: ajax_data,
+                dataType: 'json',//服务器返回json格式数据
+                type: 'post',//HTTP请求类型
+                success: function (response) {
+                    var index = [];
+                    for (var a = 0; a <= response.total; a++) {
+                        index.push(a * 10);
+
+                        console.log(response)
+                        if(response.status==-1){
+                            response.status="失敗 "
+                        }
+                        if(response.status==1){
+                            response.status="成功 "
+                        }
+                    }
+
+                    response.aa = index;
+
+                    buildSwiper(rows, response.total);
+                    loadVue(response, page);
+                    console.log(response.total)
+
+                },
+
+            }
+        );
+    }
+    function loadVue(data, page) {
+        var load = new Vue({
+            el: '#swiper_' + page,
+            data: data,
+            methods: {
+
+                toDelete:function () {
+                    mui.confirm("确定删除吗？", "提示");
+                    $(".mui-popup-button-bold").on('tap', function () {
+
+                        mui.ajax('{:url("erp/design/delspacedata")}', {
+                            data:{},
+                            dataType: 'json',//服务器返回json格式数据
+                            type: 'post',//HTTP请求类型
+                            success: function (response) {
+                                mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                if(response.code==1001){
+                                    setTimeout(function () {
+                                        history.back()
+                                    },1000)
+                                }
+                            }
+                        })
+                    })
+                },
+                changeNum:function () {
+                    mui.prompt('请输入数量', '', '');
+                    $(".mui-popup-button").eq(1).on('tap', function () {
+                        var num = $(".mui-popup-input input").val();
+                        mui.ajax('{:url("erp/design/savedata")}', {
+                            data:{number:num},
+                            dataType: 'json',//服务器返回json格式数据
+                            type: 'post',//HTTP请求类型
+                            success: function (response) {
+                                mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                if(response.code==1001){
+                                    setTimeout(function () {
+                                       history.back()
+                                    },1000)
+
+                                }
+                            }
+                        })
+                    })
+                },
+
+
+
+            },
+            mounted: function () {
+                if (isEmptyObject(my_swiper)) {
+                    my_swiper = new Swiper('#swiper_container', {
+                        setWrapperSize: true,
+                        observer: true,
+                        observeParents: true,
+                        onSlideChangeStart: function (swiper) {
+                            //要翻转的页数
+                            var page_i = swiper.activeIndex + 1;
+                            if (!page_finished[page_i]) {
+                                if (page_all > 0 && page_i <= page_all) {
+                                    myMuiLoad(swiper.activeIndex + 1, 10);
+
+                                }
+                            }
+                        }
+                    });
+
+                }
+                //设置page页已更新
+                page_finished[page] = true;
+            }
+        })
+    }
+    function serach() {
+        reload();
+        var data_value = $(".mui-popup-input input").val()
+
+        search_data.filterRules = [{
+            "field": "day_name",
+            "op": "contains",
+            "value": data_value
+        }];
+        myMuiLoad(1, 10);
+    }
+    function buildSwiper(rows, all) {
+        $("#div").css("display", "none");
+        if (all == 0) {
+
+            $("#div").html("暂无数据")
+            $("#div").css("display", "block");
+        }
+        if (page_all == 0) {
+            page_all = Math.ceil(all / rows);
+            page_all = page_all == 0 ? 1 : page_all;
+            for (var i = 1; i <= page_all; i++) {
+                $("#swiper_list").append(div_str.replace("{{id}}", "swiper_" + i));
+
+//                $("#span").append(div_str.replace("{{number}}", number));
+
+
+            }
+
+        } else {
+            my_swiper.updateSlidesSize();
+        }
+
+        return true;
+    }
+
+    function reload() {
+        $("#swiper_list").empty();
+        $("#swiper_list").css("transform", "translate3d(0px, 0px, 0px)");
+        page_all = 0;
+        page_finished = {};
+        search_data = {};
+    }
+
+    function isEmptyObject(obj) {
+        for (var key in obj) {
+            return false;
+        }
+        return true;
+    }
+
+    var url = "{:url('',['pro_id'=>$id])}";
+
+
+    var page_all = 0;
+    var page_finished = {};
+    var div_str = ' <div class="mui-table-view detail_table mui-content swiper-slide" id="{{id}}"  >' +
+        ' <li class="mui-table-view-cell mui-collapse detail_li" v-for ="(a,index) in rows" >' +
+        '<a class="mui-navigate-right picker_a" href="#">{{a.project_name}}</a>' +
+        ' <div class="mui-collapse-content">' +
+        ' <p style="margin-top: 0.1rem"><span style="color: red" v-if="a.status==-1" >失败  </span><span style="margin-right: 1rem;color: green" v-if="a.status==1" >成功  </span></p>' +
+        ' <p style="margin-top: 0.1rem"><span style="width: 20%;display:inline-block;">申请时间</span>{{a.create_time}}</p>' +
+        ' <p style="margin-top: 0.1rem"><span style="width: 20%;display:inline-block;">审核时间</span>{{a.update_time}}</p>' +
+        ' <p style="margin-top: 0.1rem"><span style="width: 20%;display:inline-block;">申请人</span>{{a.name}} </p>' +
+        ' <p style="margin-top: 0.1rem"><span style="width: 20%;display:inline-block;">审核人</span>{{a.examine_uuid_name}}</p>' +
+        ' <p style="margin-top: 0.1rem"><div style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">申请说明</div><div style="width: 76%;box-sizing: border-box;float: left">{{a.request_desc}}</div></p>' +
+        ' <p style="margin-top: 0.1rem"><div style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">审核说明</div><div style="width: 76%;box-sizing: border-box;float: left">{{a.examine_desc}}</div></p>' +
+//        ' <p><span style="margin-right: 1rem">操作</span><a @click="changeNum(a.guid)">修改数量</a> &nbsp;&nbsp;<a @click="toDelete(a.guid)">删除</a></p>' +
+        ' </div>' +
+        ' </li>' +
+        ' </div>';
+//    var div_str = ' <div class="mui-content swiper-slide" id="{{id}}" ><div class="listBoth" @click ="toTails(a.uuid)" v-for ="(a,index) in rows" > <span class="listLeft ml25" >{{a.serial_number}}<span class="ml25"></span><span >{{a.name}}</span></span><div class="listRight"> <i class="iocnfz mui-icon-forward"></i></div></div></div>';
+
+    var search_data = {};
+    var my_swiper = {};
+</script>
+
+</body>
+</html>

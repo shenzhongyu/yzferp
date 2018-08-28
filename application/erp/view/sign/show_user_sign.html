@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+    <link rel="stylesheet" href="__STATIC__/erp/css/submit.css">
+
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="pro_tb" style="height:auto;">
+        <a style="margin-left: 10px;">搜索条件:</a>
+        <a style="margin-left: 15px;">时间：
+            <input type="text" class= "easyui-datebox" id="time_start" data-options=" editable:false,showSeconds:false">--
+            <input type="text" class= "easyui-datebox" id="time_end" data-options=" editable:false,showSeconds:false">
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">
+            <span class="l-btn-icon icon-search"></span>
+            <span class="l-btn-text l-btn-icon-left">搜索</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="reshSign()">
+            <span class="l-btn-icon icon-filter"></span>
+            <span class="l-btn-text l-btn-icon-left">显示全部</span>
+        </a>
+    </div>
+</div>
+<div id="pro_dlog">
+</div>
+<div style="width: 60%;float: left">
+    <table id="sign_dg" title="{$title}"></table>
+</div>
+<div id="show" style="width: 38%;float: right;height: 600px">
+
+</div>
+
+
+
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function(){
+        $('#sign_dg').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:'user_name',title:'签到用户',width:'25%',align:'center'},
+                {field:'create_time',title:'时间',width:'30%',align:'center'},
+                {field:'type',title:'类型',width:"15%",align:'center',
+                    formatter:function(value,row,index){
+                        if(value=="1"){
+                            return '<a style="color: #0b93d5">签到</a>';
+                        }else if(value=="2"){
+                            return '<a style="color:orangered">签退</a>';
+                        }else{
+                            return value;
+                        }
+                    }
+                },
+                {field:'op',title:'操作',width:"20%",align:'center',
+                    formatter:function(value,row,index){
+                        var str='<a href="javascript:;" onclick="lookSignPhoto(&apos;'+row.image+'&apos;)">图片</a>&nbsp;&nbsp;&nbsp;';
+                        str+='<a href="javascript:;" onclick="lookSignAddress(&apos;'+row.guid+'&apos;)">位置</a>&nbsp;&nbsp;&nbsp;';
+                        return str;
+                    }
+                },
+            ]],
+            singleSelect: true,
+            toolbar: '#pro_tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+    function sear(){
+        if (!$('#time_start').datebox('getValue')&&!$('#time_end').datebox('getValue')){
+            $('#sign_dg').datagrid('load',{});
+        }else{
+            var time_start;
+            var time_end;
+            if ($('#time_start').datebox('getValue')){
+                time_start=$('#time_start').datebox('getValue');
+
+            }
+            if ($('#time_start').datebox('getValue')){
+                time_end= $('#time_end').datebox('getValue');
+            }
+            if(!time_start&&time_end){
+                time_start=time_end;
+            }
+            if(time_start&&!time_end){
+                time_end=time_start;
+            }
+        }
+        var str='[{"field":"create_time","op":"betweendate","value":"'+time_start+" - "+time_end +'"}';
+        str+=']';
+        $('#sign_dg').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+    function reshSign() {
+        $('#sign_dg').datagrid('load',{});
+        $('#time_start').datebox('setValue','');
+        $('#time_end').datebox('setValue','');
+    }
+    function lookSignPhoto(a) {
+        var img='<img src="'+a+'">';
+        $("#show").html('');
+        $("#show").append(img);
+    }
+    function lookSignAddress(a) {
+        var url="{:url('showAddress')}/guid/"+a;
+        var str='<iframe class="page-iframe" src="'+url+'" frameborder="no"   border="no" height="100%" width="100%" scrolling="auto"></iframe>';
+        $("#show").html('');
+        $("#show").append(str);
+    }
+</script>
+</body>
+</html>

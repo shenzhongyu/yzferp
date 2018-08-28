@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+    <title>装饰工程类别库</title>
+    <style>
+        li{ padding-left:2%;list-style: none;height: 25px;line-height: 25px;border-bottom: 1px solid #333}
+        li a{cursor:pointer;}
+    </style>
+</head>
+<body>
+    <h3 style="text-align: center" >以下类别请勿删除</h3>
+    <div id="p" class="easyui-panel" title="装饰工程类别库" style="width:100%;height:auto;padding:5px 0px 15px 10px;">
+        {volist name="dataStyle" id="vo" empty="<a>暂时没有类别，请先添加类别 <a href='javascript:void(0)' style='margin-left: 1%' class='easyui-linkbutton' onclick='addStyle()'>添加</a></a>"}
+        <li onclick="showDataItem('{$vo.guid}')"><a>{$vo.categories_name}</a></li>
+        {/volist}
+    </div>
+
+    {include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script>
+    function showDataItem(a){
+        window.parent.addTab('装饰项目','{:url("showEditListForData")}/id/'+a,'close');
+    }
+    function addStyle() {
+        window.parent.addTab('装饰工程类别','{:url("showDataStyleList")}','close');
+    }
+</script>
+</body>
+</html>

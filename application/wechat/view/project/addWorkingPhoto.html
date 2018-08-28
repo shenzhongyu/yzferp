@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>图片上传</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+<style>
+    .fileType {
+        margin-top: 60px;
+        font-size: 15px;
+        padding-left: 0.2rem;
+    }
+
+    .fileLeft {
+        width: 40%;
+        display: inline-block;
+    }
+
+    .fileRight {
+        width: 40%;
+        display: inline-block;
+    }
+
+    #topPopover {
+        position: fixed;
+        top: 1.6rem;
+        right: 0.6rem;
+    }
+
+    #topPopover .mui-popover-arrow {
+        left: auto;
+        right: 0.6rem;
+    }
+
+    .mui-popover {
+        height: 20rem;
+        width: 80%;
+
+        background-color: white;
+    }
+
+    .a-upload {
+        padding: 4px 10px;
+        line-height: 20px;
+        position: relative;
+        cursor: pointer;
+        color: #888;
+        background: #fafafa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+        display: inline-block;
+        *display: inline;
+        *zoom: 1
+    }
+
+    .a-upload input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        cursor: pointer
+    }
+
+    .a-upload:hover {
+        color: #444;
+        border-color: #ccc;
+        text-decoration: none
+    }
+
+    .mui-table-view-cell {
+        position: inherit;
+    }
+
+    .mui-table-view-cell > a:not(.mui-btn) {
+        margin: 0 0;
+    }
+
+    .tishi {
+        width: 100%;
+        position: fixed;
+        bottom: 0.2rem;
+        font-size: 12px;
+        text-align: center;
+        color: darkseagreen;
+    }
+
+
+</style>
+
+<body>
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+
+    <h1 class="mui-title">图片上传</h1>
+</header>
+<div class="fileType"></div>
+</div>
+<div class="tishi">温馨提示：上传图片及附件大小不能超过8M</div>
+
+<div>
+    <div style="padding-left: 0.2rem;padding-right: 0.2rem">
+        <form name="form" id="upload_form">
+            <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem;margin-top: 0.2rem">
+                <div style="display:inline-block; width: 25%;text-align: left;float: left" class="btn1 fz14">图片名称：</div>
+                <input type="text" style="width: 75%;display:inline-block;font-size: 14px" name="photo_name"
+                       placeholder="请输入图片名称"
+                       id="photo_name">
+            </div>
+            <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                <div style="display:inline-block; width: 25%;text-align: left;float: left;font-size: 14px">图片内容：</div>
+                <textarea style="width: 75%;display:inline-block;height: 2rem" id="remind_content"
+                          name="photo_desc"></textarea>
+            </div>
+            <input id="input" name="photo_address" type="hidden">
+            <input name="photo_m" type="hidden" id="md5">
+        </form>
+    </div>
+    <form id="uploadForm">
+        <li class="mui-table-view-cell" style="text-align: center">
+            <a href="javascript:;" class="a-upload">
+                <input type="file" name="file" multiple="multiple" onchange="PhotoupLoad()" accept="image/*"
+                       capture="camera">
+                <span id="spState" class="fz14">请选择图片</span>
+            </a>
+        </li>
+    </form>
+
+</div>
+<div class="text-center" style="width: 100%;">
+
+    <li class="mui-table-view-cell" style="text-align: center;display: none" id="upload_button">
+        <a href="javascript:;" class="a-upload">
+
+            <span>确认上传</span>
+        </a>
+    </li>
+</div>
+<img id="image" src="" style="width: 80%;display: none;margin-left: 10%;margin-bottom: 0.2rem">
+</body>
+</html>
+<script type="text/javascript">
+
+
+    function image(data) {
+        $("#input").val(data.path);
+        $("#md5").val(data.md5);
+        $("#image").attr("src", data.path);
+        $("#image").css("display", "block");
+    }
+    //	附件上传
+    function PhotoupLoad() {
+        var url = "{:url('api/file/uploadPicture')}";
+        var formData = new FormData($("#uploadForm")[0]);
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                spState.innerHTML = "正在上传图片...";
+            },
+            complete: function () {
+                spState.innerHTML = "请选择图片";
+            },
+            success: function (returndata) {
+                if (returndata.code == 1001 && returndata.data != null) {
+                    image(returndata.data);
+                    $("#upload_button").css("display", "block");
+                    var data = $("#upload_form").serialize()
+
+                } else {
+                    mui.alert(returndata.msg);
+                }
+            },
+            error: function (returndata) {
+                spState.innerHTML = "上传图片失败";
+                mui.alert("上传图片失败");
+            }
+        });
+    }
+//
+    $("#upload_button").on('tap', function () {
+
+        if ($("#photo_name").val() == "") {
+            mui.toast("图片名称不能为空", {duration: 'short', type: 'div'});
+
+        } else {
+            var data_upload = $("#upload_form").serialize();
+            console.log(data_upload);
+            var url = "{:url('erp/engin_project/showaddschedulephotohtml',['guid'=>$guid])}";
+
+            mui.ajax(url, {
+                data: data_upload,
+                dataType: 'json',//服务器返回json格式数据
+                type: 'post',//HTTP请求类型
+                success: function (response) {
+                    if(response.code==1001){
+                        mui.alert("操作成功", "", "确定", "", "div");
+                        $(".mui-popup-button-bold").on('tap', function () {
+//
+                        history.back()
+                        })
+                    }else{
+                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                    }
+
+
+                }
+
+            })
+
+        }
+
+    })
+
+
+</script>

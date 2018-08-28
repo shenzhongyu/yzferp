@@ -1,0 +1,42 @@
+
+showCollectStyleList.html{extend name="base/edit" /}
+{block name="button"}
+    <a style="margin-left: 10px;margin-right:10px">当前模板：{$name}</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="rePlan()">返回模板</a>
+{/block}
+
+
+{block name="columns"}
+<th data-options="field:'name',align:'center',width:'20%' ,editor:{type:'textbox',
+							options:{
+								required:true,}},">名称</th>
+<th data-options="field:'collect_value',width:'10%',align:'center',
+formatter:function(value,row){
+return (value*100)+'%'
+},
+editor:{type:'numberbox',options:{precision:2,required:true,}}">收款比例</th>
+<th data-options="field:'collect_days',width:'20%',align:'center',
+editor:{type:'numberbox',options:{required:true,}}">收款时间间隔(天)</th>
+<th data-options="field:'desc',align:'center',width:'35%' ,editor:'textbox',">备注说明</th>
+<th data-options="field:'op',width:'15%',align:'center',formatter:function(value,row,index){
+    if(!row.guid){
+        return '';
+    }
+    return del(row.guid);
+}">操作</th>
+{/block}
+{block name="value"}
+{/block}
+
+{block name="default_value"}
+collect_value:0.00,
+collect_days:0,
+{/block}
+
+{block name="my_js"}
+
+    function rePlan(){
+        window.parent.closeTab('计划子类编辑');
+        window.parent.addTab('收款计划编辑','{:url("collectPlanList")}','close');
+    }
+{/block}

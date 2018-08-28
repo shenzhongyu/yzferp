@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="tb" style="height:auto;">
+        <a style="margin-left: 10px;">搜索条件:</a>
+        <a style="margin-left: 15px;">项目名称：<input type="text" id="name"></a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">
+            <span class="l-btn-icon icon-search"></span>
+            <span class="l-btn-text l-btn-icon-left">搜索</span>
+        </a>
+    </div>
+</div>
+<div id="more_dlog">
+</div>
+
+<table id="material_dg" title="{$title}"></table>
+
+
+
+
+
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    $(function(){
+        $('#material_dg').treegrid({
+            url:'{$data_url}',
+            idField:'guid',
+            treeField:'collect_name',
+            columns:[[
+                {field:'collect_name',title:'单据名称',width:"15%",align:'left'},
+                { field: 'collect_type_name', title: '单据类型', width: "10%", align: 'center',
+                    formatter:function(value,row,index){
+                        if(eval("value_unit_name")[value]) {
+                            return eval("value_unit_name")[value];
+                        }else if (('array_unit_name')[value]){
+                            return ('array_unit_name')[value];
+                        } else{
+                            return value;
+                        }
+                    }
+                }
+                ,{ field: 'price', title: '单据金额(元)', width: "10%", align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }},
+                {field:'op',title:'操作',width:"15%",align:'center',
+                    formatter:function(value,row,index){
+                        var str='';
+                        if (row._parentId){
+                            str+='<a href="javascript:showMoreByMaterial(&apos;'+row.guid+'&apos;);">详细</a>&nbsp;&nbsp;&nbsp;';
+                            str+='<a href="javascript:editBuyMaterial(&apos;'+row.guid+'&apos;);">审核</a>';
+                        }
+                        return str;
+                    }
+                }
+            ]],
+            singleSelect: true,
+            toolbar: '#tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+    function sear(){
+        var tex=$("#name").val();
+        if(tex){
+            var str='[{"field":"project_name","op":"contains","value":"'+tex+'","type":"text"}';
+            str+=']';
+            $('#dg').treegrid({
+                queryParams: {
+                    filterRules:str,
+                }
+            });
+        }else{
+            $('#dg').treegrid('reload',{});
+        }
+    }
+    function showMoreByMaterial(a) {
+        $("#more_dlog").dialog({
+            title:'详细',
+            iconCls: 'icon-save',
+            width: '80%',
+            height:'400',
+            cache: false,
+            href: '{:url("showMoreByMaterial")}/guid/'+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        });
+    }
+    function editBuyMaterial(a) {
+        var url='{:url("editBuyMaterial")}/guid/'+a;
+        $("#more_dlog").dialog({
+            title:'审核',
+            iconCls: 'icon-save',
+            width: '500',
+            height:'400',
+            cache: false,
+            href: '{:url("editBuyMaterial")}/guid/'+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text:' 确 认  ',
+                    iconCls:'icon-save',
+                    handler: function(){
+                        $("#more_dlog").find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                if($("#dep_manager").combobox('getValue')=='0'){
+                                    $("#more_dlog").dialog('close');
+                                    return false;
+                                }
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post(url, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 2});
+                                    } else {
+                                        layer.msg(data.msg, {icon: 1});
+                                        $("#more_dlog").dialog('close');
+                                        $('#material_dg').treegrid('reload');
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                }
+                ,{
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $("#more_dlog").dialog('close');
+                    }
+                }],
+        });
+    }
+</script>
+</body>
+</html>

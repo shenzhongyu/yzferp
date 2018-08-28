@@ -1,0 +1,67 @@
+noticeall_list.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+{block name="my_css"}
+
+{/block}
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'title', title: '汇报主题', width: '100', align: 'center', sortable: true}
+, { field: 'department_name', title: '汇报部门', width: '100', align: 'center', sortable: true}
+, { field: 'name', title: '汇报人', width: '100', align: 'center', sortable: true}
+, { field: 'create_time', title: '汇报时间', width: '180', align: 'center', sortable: true}
+, { field: 'manager_status', title: '审阅状态', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'manager_desc', title: '审阅批注', width: '100', align: 'center', sortable: true}
+<!--,{ field: 'operate', title: '操作', width: 120,align: 'center', sortable: true,{:widget('Easyui/formatter')} }-->
+]]{/block}
+
+{block name="filter"}[
+
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["manager_status","manager_status"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status'){
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'manager_status'){
+    if(value=="1"){
+        return '<a style="color:green;"  > '+ eval("value_manager_status")[value]+'</a>';
+    }else{
+        return '<a style="color:blue;"  > '+ eval("value_manager_status")[value]+'</a>';
+    }
+
+}else if (field == 'operate'){
+var str="";
+str+='<a  href="javascript:;" style="margin-right: 10px" onclick="getManagerLine(&apos;'+row.guid+'&apos;)">详细</a>';
+return str;
+
+}else if (eval("value_" + field)[value]){
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}'
+{/block}
+
+{block name="my_js"}
+{/block}
+
+{block name="toolbar"}[
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

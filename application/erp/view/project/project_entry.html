@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>项目录入</title>
+    <link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+</head>
+<style type="text/css">
+    #fm section{width: 30%;float: left;margin-top: 10px;line-height: 35px;}
+    #fm section label{height: 35px;line-height: 35px;display: inline-block}
+    #fm section .label_1{width: 70px;text-align: center}
+    #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+    #button a{width: 100px !important;margin: 0 0 0 10px}
+</style>
+
+<body>
+    <div class="container">
+            <form id="fm" style="width: 99%" method="post" name="form">
+                <div id="p" class="easyui-panel" title="项目基本信息" style="width:100%;padding:15px;margin-bottom: 20px; ">
+                    <section>
+                        <label class="label_1" style="">项目名称:</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-validatebox" type="text" name="project_name"data-options=" required:true,validType:'length[1,10]'">
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1" style="">预算总工期:</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-validatebox" type="text" name="expected_duration"
+                                   data-options="required:true,validType:'length[1,15]'" >
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1" style="">装修面积:</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-validatebox" type="text" name="decoration_area"
+                                   data-options="required:true,validType:'length[1,15]'" >
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1" style="">工程预算:</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-validatebox" type="text" name="project_budget"
+                                   data-options="required:true,validType:'length[1,15]'" >
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1" style="">工程地址:</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-validatebox" type="text" name="project_address"
+                                   data-options="" >
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1" style="">装修档次 :</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-combobox" type="text" name="decoration_grade"
+                                   data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/decoration_grade')}',method:'get',">
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1" style="">色彩取向:</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-combobox" type="text" name="color_orientation"
+                                   data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/color_orientation')}',method:'get',">
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1" style="">装修风格:</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-combobox" type="text" name="decoration_style"
+                                   data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/decoration_style')}',method:'get',">
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1" style="">装修类型 :</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-combobox" type="text" name="decoration_type"
+                                   data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/decoration_type')}',method:'get',">
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1" style="">客户来源:</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-combobox" type="text" name="customer_source"
+                                   data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/customer_source')}',method:'get',">
+                        </label>
+                    </section>
+                    <section style="width: 100%">
+                        <label class="label_1" style="height: 36px;line-height: 36px;">项目要求:</label>
+                        <label class="label_2" style="height: 36px;line-height: 36px;" >
+                        <textarea name="project_description"  cols="50" rows="5" style="resize: none;margin-bottom: -10px;">
+                        </textarea>
+                        </label>
+                    </section>
+                    <input type="hidden" name="project_type" value="{$value}">
+                </div>
+                <div id="p1" class="easyui-panel" title="主要联系人" style="width:100%;padding:15px;height: 200px; ">
+                    <section>
+                        <label class="label_1" style="">姓名:</label>
+                        <label class="label_2" style="">
+                            <input class="easyui-validatebox" type="text" name="contact_name"
+                                   data-options="required:true, validType:'length[1,10]'" >
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1">联系电话:</label>
+                        <label class="label_2">
+                            <input class="easyui-validatebox" type="text"  data-options="required:true," name="contact_number"></label>
+                    </section>
+                    <section>
+                        <label class="label_1">性别:</label>
+                        <label class="label_2">
+                            <input class="easyui-combobox" id="sex"  name="sex"
+                                   data-options="required:true,editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/sex_value')}',method:'get',">
+                        </label>
+                    </section>
+                    <section>
+                        <label class="label_1">QQ:</label>
+                        <label class="label_2">
+                            <input class="easyui-validatebox" type="text"  data-options="validType:'length[5,11]'" name="customer_qq" ></label>
+                    </section>
+                    <section>
+                        <label class="label_1">邮箱:</label>
+                        <label class="label_2">
+                            <input class="easyui-validatebox" type="email"   name="customer_email"></label>
+                    </section>
+                    <section>
+                        <label class="label_1">与户主关系:</label>
+                        <label class="label_2">
+                            <input class="easyui-combobox"   name="householder_relation"
+                                   data-options="required:true,editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/householder_relation')}',method:'get',">
+                        </label>
+                    </section>
+                </div>
+            </form>
+            <div style="clear: both"></div>
+            <div id="button">
+                <a style="margin-left: 35%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">提 交</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重 置</a>
+            </div>
+    </div>
+    <script src="__STATIC__/erp/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="__STATIC__/erp/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/easyui_151/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+</body>
+<script>
+    //表单提交(下一步)
+    function submitForm(){
+
+        $('#fm').form('submit',{
+            url:'{:url("/erp/project/addProjectEntry")}',
+            onSubmit:function(){
+                return $(this).form('enableValidation').form('validate');
+            },
+            success:function(data){
+                var obj=JSON.parse(data);
+                if(obj.code=="1001"){
+                    layer.msg("项目添加成功", {icon: 1});
+                    $('#fm').form('clear');
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            }
+        });
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        $('#fm').form('clear');
+    }
+</script>
+
+</html>

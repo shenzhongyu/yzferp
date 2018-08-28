@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>工程详情</title>
+    {include file="wechat@base_mui/weui_wechat_swiper"/}
+    <script type="text/javascript" src="__MUI__/js/mui.picker.min.js"></script>
+    <link href="__MUI__/css/mui.picker.min.css" rel="stylesheet"/>
+
+    <style type="text/css">
+        .detail_table {
+            width: 100%;
+            font-size: 0.26rem;
+        }
+
+        .detail_li {
+            padding: 0.1rem 0.2rem;
+        }
+
+        .picker_a {
+            margin: 0.1rem 0.3rem !important;
+        }
+
+        .detail_table p {
+            font-size: 0.26rem;
+            line-height: 0.34rem;
+        }
+    </style>
+</head>
+</head>
+<body>
+<div id="index">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+        <a id="menu" class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>
+        <h1 class="mui-title">工程详情</h1>
+    </header>
+
+    <div id="topPopover" class="mui-popover "
+         style="display:none;font-size: 14px; top: 57px; left: 35px;height: 2rem;width: 2.5rem">
+        <div class="mui-popover-arrow" style="left:2.48rem"></div>
+        <div class="mui-scroll-wrapper" data-scroll="1">
+            <div class="mui-scroll" style="transform: translate3d(0px, 0px, 0px) translateZ(0px);">
+                <ul class="mui-table-view">
+                    <li class="mui_popver" @click="yusuan()"><a href="#">浏览预算</a>
+                    </li>
+                    <li class="mui_popver" @click="finish()"><a href="#">完工申请</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="mui-scrollbar mui-scrollbar-vertical">
+                <div class="mui-scrollbar-indicator"
+                     style="transition-duration: 0ms; display: none; height: 8px; transform: translate3d(0px, -8px, 0px) translateZ(0px);"></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="swiper-container" id="swiper_container" style="margin-top: 50px">
+        <div class="swiper-wrapper" id="swiper_list">
+
+
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var number = 145;
+    $(document).ready(function () {
+        $("#listBoth").hover(function () {
+            $("#listBoth").css(background, "yellow")
+        });
+        initVueLoad();
+        myMuiLoad(1, 10);
+    });
+    function initVueLoad() {
+        var vue = new Vue({
+            el: '#index',
+            methods: {
+                finish: function () {
+                    $("#topPopover").removeClass("mui-active");
+                    $("#topPopover").css("display", "none");
+                    $(".mui-backdrop").css("display", "none");
+                    mui.prompt('输入申请理由', '', '');
+                    $(".mui-popup-button").eq(1).on('tap', function () {
+                        mui.ajax('{:url("erp/engin_project/projectcompletion",["guid"=>$guid])}', {
+
+                            data: {"desc": $(".mui-popup-input input").val()},
+                            dataType: 'json',//服务器返回json格式数据
+                            type: 'post',//HTTP请求类型
+                            success: function (response) {
+                                mui.toast(response.msg, {duration: 'short', type: 'div'});
+
+                            }
+                        })
+                    })
+                },
+                yusuan: function (id) {
+                    mui.openWindow({
+                        url: "{:url('project/lookBudget',['guid'=>$guid])}"
+                    })
+                },
+                add: function () {
+                    mui.openWindow({
+                        url: "{:url('budget/addDecorate',['guid'=>$guid])}"
+                    })
+                }
+            },
+            deletespace: function () {
+            }
+        })
+    }
+    function myMuiLoad(page, rows) {
+
+        var ajax_data = {};
+        if (search_data) {
+            ajax_data = Object.assign(search_data, {"page": page, "rows": rows});
+        }
+        mui.ajax(url, {
+                data: ajax_data,
+                dataType: 'json',//服务器返回json格式数据
+                type: 'post',//HTTP请求类型
+                success: function (response) {
+                    for (var i = 0; i < response.rows.length; i++) {
+                        if (response.rows[i].type == 1) {
+                            response.rows[i].build_status = "";
+                            continue;
+                        }
+                        if (response.rows[i].build_status_type == 1) {
+                            if (response.rows[i].build_status == "") {
+                                response.rows[i].build_status = +response.rows[i].build_status
+                            } else {
+                                response.rows[i].build_status = "剩余" + response.rows[i].build_status.toFixed(1) + "天";
+                            }
+                        } else {
+                            if (response.rows[i].build_status == "") {
+                                response.rows[i].build_status = response.rows[i].build_status
+                            } else {
+                                response.rows[i].build_status = "延期" + response.rows[i].build_status.toFixed(1) + "天";
+                            }
+                        }
+                    }
+                    var index = [];
+                    for (var a = 0; a <= response.rows.total; a++) {
+                        index.push(a * 10);
+                        console.log(response)
+                    }
+                    response.aa = index;
+                    buildSwiper(rows, response.total);
+                    loadVue(response, page);
+                    console.log(response.total)
+
+                },
+            }
+        );
+    }
+    function loadVue(data, page) {
+        var load = new Vue({
+            el: '#swiper_' + page,
+            data: data,
+            methods: {
+                fabao: function (id) {
+                    mui.openWindow({
+                        url: "{:url('working/projectAwardOnWorking',['pro_id'=>$guid])}/guid/" + id
+                    })
+                },
+                details: function (id) {
+                    mui.openWindow({
+                        url: "{:url('working/projectDetailsOnWorking',['pro_id'=>$guid])}/guid/" + id
+                    })
+                }
+            },
+            mounted: function () {
+                if (isEmptyObject(my_swiper)) {
+                    my_swiper = new Swiper('#swiper_container', {
+                        setWrapperSize: true,
+                        observer: true,
+                        observeParents: true,
+                        onSlideChangeStart: function (swiper) {
+                            //要翻转的页数
+                            var page_i = swiper.activeIndex + 1;
+                            if (!page_finished[page_i]) {
+                                if (page_all > 0 && page_i <= page_all) {
+                                    myMuiLoad(swiper.activeIndex + 1, 10);
+
+                                }
+                            }
+                        }
+                    });
+                }
+                //设置page页已更新
+                page_finished[page] = true;
+            }
+        })
+    }
+    function serach() {
+        reload();
+        var data_value = $(".mui-popup-input input").val()
+        search_data.filterRules = [{
+            "field": "day_name",
+            "op": "contains",
+            "value": data_value
+        }];
+        myMuiLoad(1, 10);
+    }
+    function buildSwiper(rows, all) {
+        $("#div").css("display", "none");
+        if (all == 0) {
+            $("#div").html("暂无数据")
+            $("#div").css("display", "block");
+        }
+        if (page_all == 0) {
+            page_all = Math.ceil(all / rows);
+            page_all = page_all == 0 ? 1 : page_all;
+            for (var i = 1; i <= page_all; i++) {
+                $("#swiper_list").append(div_str.replace("{{id}}", "swiper_" + i));
+//                $("#span").append(div_str.replace("{{number}}", number));
+            }
+        } else {
+            my_swiper.updateSlidesSize();
+        }
+        return true;
+    }
+    function reload() {
+        $("#swiper_list").empty();
+        $("#swiper_list").css("transform", "translate3d(0px, 0px, 0px)");
+        page_all = 0;
+        page_finished = {};
+        search_data = {};
+    }
+    function isEmptyObject(obj) {
+        for (var key in obj) {
+            return false;
+        }
+        return true;
+    }
+    var url = "{:url('erp/build_none/lookbuild',['guid'=>$guid])}";
+    var page_all = 0;
+    var page_finished = {};
+    var div_str = ' <div class="mui-table-view detail_table mui-content swiper-slide" id="{{id}}"  >' +
+        ' <li class="mui-table-view-cell mui-collapse detail_li" v-for ="(a,index) in rows" >' +
+        '<a class="mui-navigate-right picker_a" href="#">{{a.categories_name}}</a>' +
+        ' <div class="mui-collapse-content" style="line-height: 0.40rem">' +
+        ' <div style=""><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">工程价格</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.categories_price}}&nbsp;</div></div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">开始日期</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.build_time}}&nbsp;</div></div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">结束日期</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.build_end_time}}&nbsp;</div> </div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">时间</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.build_status}}&nbsp;</div></div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">工程监理</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.sup_name}}&nbsp;</div></div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">查看</span><div style="width: 76%;box-sizing: border-box;float: left"><a @click="fabao(a.guid)">发包施工方</a></div></div>' +
+        ' <div><div style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">操作</div><div style="width: 76%;box-sizing: border-box;float: left"><a @click="details(a.guid)">查看明细</a> &nbsp;&nbsp;<a @click="toDelete(a.guid)"></a></div></div>' +
+        ' </div>' +
+        ' </li>' +
+        ' </div>';
+
+    var search_data = {};
+    var my_swiper = {};
+</script>
+
+</body>
+</html>

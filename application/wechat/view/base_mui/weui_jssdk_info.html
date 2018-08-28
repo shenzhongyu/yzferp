@@ -1,0 +1,80 @@
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script language="JavaScript">
+    $(function () {setJSAPI()});
+    function setJSAPI(){
+        var option = {
+            title: 'yzf erp, 为yzf erp 服务量身设计',
+            desc: 'yzf erp, 为yzf erp 服务量身设计',
+            link: "https://www.yzferp.com/wechat/index/",
+            imgUrl: '/static/mui/image/indexLogo.png'
+        };
+
+        $.getJSON('{:url(\'api/jsSign\')}?url=' + encodeURIComponent(location.href.split('#')[0]), function (res) {
+            if (res.err) return false;
+            wx.config({
+                beta: true,
+                debug: false,
+                appId: res.appId,
+                timestamp: res.timestamp,
+                nonceStr: res.nonceStr,
+                signature: res.signature,
+                jsApiList: [
+                    'checkJsApi',
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage',
+                    'onMenuShareQQ',
+                    'onMenuShareWeibo',
+                    'hideMenuItems',
+                    'showMenuItems',
+                    'hideAllNonBaseMenuItem',
+                    'showAllNonBaseMenuItem',
+                    'translateVoice',
+                    'startRecord',
+                    'stopRecord',
+                    'onRecordEnd',
+                    'playVoice',
+                    'pauseVoice',
+                    'stopVoice',
+                    'uploadVoice',
+                    'downloadVoice',
+                    'chooseImage',
+                    'previewImage',
+                    'uploadImage',
+                    'downloadImage',
+                    'getNetworkType',
+                    'openLocation',
+                    'getLocation',
+                    'hideOptionMenu',
+                    'showOptionMenu',
+                    'closeWindow',
+                    'scanQRCode',
+                    'chooseWXPay',
+                    'openProductSpecificView',
+                    'addCard',
+                    'chooseCard',
+                    'openCard'
+                ]
+            });
+            wx.ready(function () {
+                /*
+                 wx.invoke('setNavigationBarColor', {
+                 color: '#F8F8F8'
+                 });
+                 */
+                wx.invoke('setBounceBackground', {
+                    'backgroundColor': '#F8F8F8',
+                    'footerBounceColor' : '#F8F8F8'
+                });
+                wx.onMenuShareTimeline(option);
+                wx.onMenuShareQQ(option);
+                wx.onMenuShareAppMessage({
+                    title: 'yzf erp',
+                    desc: '为erp系统量身设计',
+                    link: location.href,
+                    imgUrl: '/static/mui/image/indexLogo.png'
+                });
+
+            });
+        });
+    }
+</script>

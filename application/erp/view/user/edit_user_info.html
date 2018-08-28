@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>员工录入</title>
+    <link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+</head>
+<style type="text/css">
+    #fm_user section{width: 30%;min-width:300px;float: left;margin-top: 10px;line-height: 35px;}
+    #fm_user section label{height: 35px;line-height: 35px;display: inline-block}
+    #fm_user section .label_1{width: 70px;text-align: center}
+    #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+    #button a{width: 100px !important;margin: 0 0 0 10px}
+</style>
+
+<body>
+<div class="container">
+    <form id="fm_user" style="width: 99%;min-height: 440px;" method="post" name="form">
+        <div id="p" class="easyui-panel" title="员工资料修改" style="min-height: 480px;width:100%;padding:15px;margin-bottom: 20px; ">
+            <section >
+                <label class="label_1" style="">登录账号:</label>
+                <label class="label_2" style="">
+                    <input value="{$user['username']}" readonly class="easyui-validatebox" type="text" name="username"
+                           data-options="invalidMessage:'格式为字母和数字,下划线_或破折号-',missingMessage:'格式为字母和数字,下划线_或破折号-',required:true,validType:'maxLengthTwo[3]'" placeholder=""
+                           style="width:100%">
+                </label>
+            </section>
+            <section >
+                <label class="label_1" style="">员工姓名:</label>
+                <label class="label_2" style="">
+                    <input value="{$user['name']}" class="easyui-validatebox" type="text" name="name"
+                           data-options="required:true,validType:'maxLengthTwo[3]'" placeholder="用户姓名"
+                           style="width:100%">
+                </label>
+            </section>
+            <section >
+                <label class="label_1" style="">手机号:</label>
+                <label class="label_2" style="">
+                    <input value="{$user['mobile']}" class="easyui-validatebox"  name="mobile"
+                           data-options="invalidMessage:'数字,长度为11位',missingMessage:'数字,长度为11位',required:true,validType:'length[11,11]'" placeholder="请填写手机号"
+                           style="width:100%">
+                </label>
+            </section>
+            <section>
+                <label for="company_id" class="label_1">所属公司:</label>
+                <label for="company_id" class="label_2">
+                    <input value="{$user['company_id']}" class="easyui-combobox" id="company_id"  name="company_id" style="width:100%"
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'company_name',required:true,url:'{:url('showCompanyJson')}',method:'get',
+                   ">
+                </label>
+            </section>
+            <section style="display: none">
+                <label for="department_type" class="label_1">部门类型:</label>
+                <label for="department_type" class="label_2">
+                    <input value="{$user['department_type']}" class="easyui-combobox"  id="department_type"  name="department_type" style="width:100%"
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/department_type')}',method:'get', onSelect:function(region){
+
+                  }
+                   ">
+                </label>
+            </section>
+            <section>
+                <label for="department_id" class="label_1">所属部门:</label>
+                <label for="department_id" class="label_2">
+                    <input value="{$user['department_id']}" class="easyui-combobox" id="department_id" name="department_id" style="width:100%"
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'department_name',required:true,url:'{:url('showDepartmentJson')}',method:'get',
+                           onSelect:function(region){
+                            $('#jobs_id').combobox('reload','/erp/user/showJobsJson?department='+region.guid);
+                            $('#jobs_id').combobox('setValue','');
+                            $('#department_type').combobox({value: region.department_type,})
+                           }" >
+
+                </label>
+            </section>
+            <section>
+                <label for="jobs_id" class="label_1">所属职位:</label>
+                <label for="jobs_id" class="label_2">
+                    <input value="{$user['jobs_id']}"  class="easyui-combobox" id="jobs_id"  name="jobs_id" style="width:100%"
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',required:true,editable:false,valueField: 'guid',textField: 'jobs_name',url:'{:url('showJobsJson')}',method:'get'">
+                </label>
+            </section>
+            <section>
+                <label for="sex" class="label_1">性别:</label>
+                <label for="sex" class="label_2">
+                    <input value="{$user['user_sex']}" class="easyui-combobox"  id="sex"  name="user_sex" style="width:100%"
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/sex_value')}',method:'get',">
+                </label>
+            </section>
+            <section >
+                <label for="sex" class="label_1">员工照片:</label>
+                <label for="sex" class="label_2">
+                    <input value="{$user['photo']}" class="easyui-textbox"  id="photo"  name="photo" style="width: 60%"
+                           data-options="editable:false,valueField: 'value',textField: 'text',onChange:function(newValue, oldValue){addImg(newValue,oldValue)}">
+                    <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="addPhoto('photo')">上传图片</a>
+                    <input type="hidden"  id="photo_m"  name="photo_m" style="width:40%" value="{$user['photo_m']}">
+                </label>
+            </section>
+            <section>
+                <label for="sex" class="label_1">学历证:</label>
+                <label for="sex" class="label_2">
+                    <input value="{$user['xue_l']}" class="easyui-textbox" id="xue_l"   name="xue_l" style="width: 60%"
+                           data-options="editable:false,valueField: 'value',textField: 'text',">
+                    <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="addField('xue_l')">上传附件</a>
+                </label>
+            </section>
+            <section >
+                <label for="sex" class="label_1">身份证正面:</label>
+                <label for="sex" class="label_2">
+                    <input value="{$user['sfz_z']}" class="easyui-textbox" id="sfz_z"   name="sfz_z" style="width: 60%"
+                           data-options="editable:false,valueField: 'value',textField: 'text',">
+                    <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="addPhoto('sfz_z')">上传图片</a>
+                </label>
+            </section>
+            <section>
+                <label for="sex" class="label_1">身份证反面:</label>
+                <label for="sex" class="label_2">
+                    <input value="{$user['sfz_f']}" class="easyui-textbox" id="sfz_f"   name="sfz_f" style="width: 60%"
+                           data-options="editable:false,valueField: 'value',textField: 'text',">
+                    <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="addPhoto('sfz_f')">上传图片</a>
+                </label>
+            </section>
+            <section>
+                <label for="sex" class="label_1">工作简历:</label>
+                <label for="sex" class="label_2">
+                    <input value="{$user['gz_jl']}" class="easyui-textbox" id="gz_jl"   name="gz_jl" style="width: 60%"
+                           data-options="editable:false,valueField: 'value',textField: 'text',">
+                    <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="addField('gz_jl')">上传附件</a>
+                </label>
+            </section>
+            <section style="">
+                <label class="label_1" style="height: 36px;line-height: 36px;">座右铭:</label>
+                <label class="label_2" style="height: 36px;line-height: 36px;" >
+                    <textarea name="desc" style="resize: none;margin-bottom: -10px;width: 300px;height: 30px;"></textarea>
+                </label>
+            </section>
+            <section style="">
+                <label for="department_type" class="label_1">优秀团队:</label>
+                <label for="department_type" class="label_2">
+                    <input class="easyui-combobox"  id="hide"  name="hide" style="width:100%" value="1"
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/hide')}',method:'get', onSelect:function(region){
+
+                  }
+                   ">
+                </label>
+            </section>
+            <section style="width: 100%">
+                <label class="label_1" style="height: 36px;line-height: 36px;">家庭背景:</label>
+                <label class="label_2" style="height: 36px;line-height: 36px;" >
+                    <textarea  name="user_family" style="resize: none;margin-bottom: -80px;width: 300px;height: 150px;">{$user['user_family']}</textarea>
+                </label>
+            </section>
+            <section style="opacity: 0">
+                <label  class="label_2">
+                    <input class="easyui-combobox" type="hidden"  name="status" style="width:100%" value="{$user['status']}">
+                </label>
+            </section>
+        </div>
+    </form>
+    <div style="position: absolute;right: 8%;top: 8%;">
+        <img id="add_img" style="width: 80px;height: 80px;" src="{$user['photo']}">
+    </div>
+    <input id="field_m" type="hidden">
+    <div style="clear: both"></div>
+    <div id="button">
+        <a style="margin-left: 35%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">提 交</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重 置</a>
+    </div>
+</div>
+<div id="log"></div>
+<div id="log2"></div>
+{include file="base/js" /}
+<!--<script src="/static/erp/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>-->
+<!--<script type="text/javascript" src="/static/erp/js/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+</body>
+<script>
+    //表单提交(下一步)
+    function submitForm(){
+        var img=$('#add_img').attr('src');
+        $('#fm_user').form('submit',{
+            url:'{:url("User/editUserInfo",["id"=>$user["uuid"]])}',
+            onSubmit:function(){
+                return $(this).form('enableValidation').form('validate');
+            },
+
+            success:function(data){
+                var obj=JSON.parse(data);
+                if(obj.code=="1001"){
+                    layer.msg("资料修改成功", {icon: 1});
+                    $("#user_img", window.top.document).attr('src',img);
+                    setTimeout(clearForm(),1000);
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            }
+        });
+    }
+
+    //清楚表单内容
+    function clearForm(){
+//        $('#fm_user').form('clear');
+        window.parent.addTab('用户资料','{:url("editUserInfo",["id"=>$user["uuid"]])}','close');
+    }
+    function addPhoto(name) {
+        $("#log").dialog({
+            title:'上传图片',
+            width:400,
+            height:300,
+            href:'/erp/design/showuploadhtml/idName/'+name,
+        });
+    }
+    function addField(name) {
+        $("#log2").dialog({
+            title:'上传附件',
+            width:400,
+            height:300,
+            href:'/erp/design/showuploadfile/idName/'+name,
+        });
+    }
+    function addImg(n,o) {
+        $("#add_img").attr('src',n);
+    }
+</script>
+
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    {include file="base/css" /}
+</head>
+<body>
+<div  id="tool">
+    <a style="font-size: 14px;">姓名：</a><input id="name" class="easyui-textbox" type="text" name="name" >
+    <a href="#" class="easyui-linkbutton" onclick="searName()">搜 索</a>
+    <a href="#" class="easyui-linkbutton" onclick="showAllUser()">显示全部</a>
+    <a style="color: #0bb20c;margin-left: 15px;">* 签到时间</a>
+    <a style="color: red;margin-left: 15px;">* 签退时间</a>
+</div>
+<table id="list" class="easyui-datagrid" title="{$title}"></table>
+
+<div id="vehicle"></div>
+
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function () {
+        $('#list').datagrid({
+            singleSelect: false,
+            rownumbers: true,
+            resizeHandle: 'both',
+            ctrlSelect: true,
+            collapsible: false,
+            method: 'post',
+            url:'{$data_url}',
+            striped: true,
+            _customTitle: true,//开启自定义表头
+            _customWidth: false,//自定义列宽
+            pagination: true,
+            showFooter: false,//是否显示合计行
+            filterBtnIconCls: 'icon-filter',
+            multiSort: true,
+            remoteFilter:false,
+            pageSize:20,
+            columns:[
+                [
+                    { field: 'department_name', title: '部门', width: '20%', align: 'center',},
+                    { field: 'user_name', title: '姓名',width:'20%',align: 'center',},
+                    { field: 'jobs_name', title: '职位', width: '20%', align: 'center',},
+                    { field: 'create_time', title: '打卡时间',width:'20%',align: 'center',
+                        formatter:function(value,row,index){
+                            if(row.type=="1"){
+                                return '<a style="color: #0bb20c">'+value+'</a>';
+                            }else if(row.type=="2"){
+                                return '<a style="color: red">'+value+'</a>';
+                            }
+                            return value;
+                        }
+                    },
+                ]
+            ],
+            toolbar:"#tool",
+            nowrap:false,//超出部分自动换行
+        });
+    });
+    function searName() {
+        var name=$("#name").textbox('getValue');
+        if (!name){
+            showAllUser();
+            return false;
+        }
+        var str={user_name:name};
+
+        $('#list').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+    function showAllUser() {
+        $("#name").textbox('setValue','');
+        $('#list').datagrid({
+            queryParams: {
+                filterRules:{},
+            }
+        });
+    }
+</script>
+</body>
+</html>
+

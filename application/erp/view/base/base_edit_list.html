@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{block name="title"}{$title?:'暂无标题'}{/block}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui/css/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui/css/icon.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+
+    <script type="text/javascript" src="__STATIC__/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/easyui/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+    <script type="text/javascript" src="__STATIC__/daterangepicker/require.js"></script>
+    <script type="text/javascript" src="__STATIC__/easyui/datagrid-filter.js"></script>
+    <script type="text/javascript">
+        var lastIndex;
+        $(function () {
+            $('#list').datagrid({
+                singleSelect: true, //当true时只允许当前选择一行。默认false
+                rownumbers: true,  //当true时显示行号
+                resizeHandle: 'both',
+                ctrlSelect: true,
+                collapsible: false,
+                method: 'post',
+                url: '{block name="url"}{$list_url??'';}{/block}',
+                striped: true,  //当true时，单元格显示条纹
+                _customTitle: {block name="_customTitle"}true{/block},//开启自定义表头
+                _customWidth: false,//自定义列宽
+                columns:
+                {block name="columns"}{$list_columns}{/block},
+                pagination: true,  //当true时在DataGrid底部显示一个分页工具栏
+                // initalFilter: remoteFilter, //去除就可以进行 行编辑
+                filterBtnIconCls: 'icon-filter', //过滤按钮的图标 class
+                remoteFilter: true,
+                multiSort: true,
+                onClickRow : function (rowIndex) {
+                    if (lastIndex != rowIndex) {
+                        $('#list').datagrid('endEdit', lastIndex);
+                        $('#list').datagrid('beginEdit', rowIndex);
+                    }
+                    lastIndex = rowIndex;
+                },
+                pageSize:20
+            })
+        })
+
+
+        {block name="my_js"}{/block}
+
+
+    </script>
+
+
+</head>
+<body>
+<table id="list" class="easyui-datagrid" title="{block name="title"}{$title}{/block}" ></table>
+
+</body>
+</html>

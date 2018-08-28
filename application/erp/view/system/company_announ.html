@@ -1,0 +1,83 @@
+company_announ.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+
+{block name="columns"}[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'announ_name', title: '公告标题', width: 200, align: 'center', sortable: true}
+, { field: 'announ_content', title: '公告内容', width:200, align: 'center', sortable: true}
+, { field: 'create_time', title: '公告时间', width:80, align: 'center', sortable: true}
+]]{/block}
+
+
+{block name="filter"}[
+
+{field: 'create_time', type: 'datebox', options: { precision: 1 }, op: ['betweendate'] }
+
+]{/block}
+
+
+{block name="value"}
+
+
+{/block}
+
+
+{block name="formatter"}function(value,row,index,field){
+
+if (field == 'status') {
+
+//这是个格式化实例
+
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+
+}else if (eval("value_" + field)[value]) {
+
+return eval("value_" + field)[value];
+
+} else if (field[value]){
+
+return field[value];
+
+} else {
+
+return value;
+
+}
+
+}{/block}
+
+
+{block name="url"}
+
+datagrid:'#list',
+
+dialog:'#dialog_div',
+
+datagrid_url:'{$data_url??url()}',
+
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+
+{/block}
+
+
+{block name="toolbar"}[
+
+{ text:'添加', iconCls: 'icon-add', handler:function(){ mikkleClass.addForm(420,250);} },'-',
+
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm(420,250);} },'-',
+
+{ text:'删除', iconCls: 'icon-cancel', handler: function(){ mikkleClass.delForm();} },'-',
+
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+
+]{/block}
+

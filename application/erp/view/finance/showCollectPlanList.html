@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    {include file="base/css" /}
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+</head>
+<body>
+<div id="dlog"></div>
+<div style="width: 92%;float: left">
+    <table id="dg" class="easyui-datagrid" title="{$title}" style="width:100%;height:auto"
+           data-options="
+                nowrap:false,
+				singleSelect: false,
+				toolbar: '#tb',
+				url: '{$data_url}',
+				method: 'post',
+				nowrap:false,
+				pageSize:20,
+				pagination:true,
+				rownumbers: true,
+			">
+        <thead>
+        <tr>
+            <th data-options=' field: "chk", "checkbox": true, movable: false'></th>
+            <th data-options="field:'collect_plan_name',align:'center',width:'20%' ,editor:{type:'textbox',
+							options:{
+								required:true,}},">名称</th>
+            <th data-options="field:'desc',align:'center',width:'35%' ,editor:'textbox',">备注说明</th>
+            <th data-options="field:'op',align:'center',width:'10%' ,editor:'textbox',formatter:function(value,row,index){
+                if(row.guid){
+                    return createA(row.guid);
+                }
+            }">操作</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div id="tb" style="height:auto;">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="closeT()"> 返 回 </a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="saveData()">绑定收款计划</a>
+    </div>
+</div>
+<div style="clear: both">
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    function closeT() {
+        window.parent.closeTab('收款模板');
+        window.parent.addTab("收款计划",'{:url("ProjectDeposit/collectionPlan",["guid"=>$guid])}','close');
+    }
+    function createA(a){
+        var str='<a href="javascript:editCon(&apos;'+a+'&apos;);">浏览内容</a>&nbsp;&nbsp;';
+        return str;
+    }
+    function editCon(a){
+        window.parent.addTab('计划子类编辑','{:url("editCon")}/guid/'+a,'close');
+    }
+    function saveData() {
+        var id=getDataSelect('绑定');
+        if (id){
+            $.post('{$url}',{id:id,pro_id:'{$pro_id}',number:'{$number}'},function(data){
+                if (data.code=="1001"){
+                    layer.msg('绑定成功',{icon:1});
+                }else{
+                    layer.msg(data.msg,{icon:2});
+                }
+            },'json');
+        }
+    }
+    function getDataSelect(name){
+        var rows = $('#dg').datagrid('getSelections');
+        if (rows.length > 0) {
+            if (rows.length == 1) {
+                return  $("#dg").datagrid('getSelected').guid
+                    ?$("#dg").datagrid('getSelected').guid
+                    :$("#dg").datagrid('getSelected').uuid; //获取选中的数据
+            } else {
+                layer.msg(''+name+'操作只能选择一条数据！', {icon: 2});
+                return false;
+            }
+        } else {
+            layer.msg('请选择要'+name+'的数据！', {icon: 2});
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

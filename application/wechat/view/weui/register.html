@@ -1,0 +1,48 @@
+{extend name="base_weui/weui_base" /}
+
+{block name="title"}{$title?:'none'}{/block}
+{block name="footer"}{__block__}{/block}
+{block name="foot_js"}{__block__}{/block}
+{block name="js_sdk"}{__block__}{/block}
+
+{block name="header"}
+<!-- 直接编写的头部内容 -->
+<head>
+	<div class="weui-msg">
+		<div><i class="weui-icon-warn weui-icon_msg"></i></div>
+		<div class="weui-msg__text-area">
+			<h2 class="weui-msg__title">您的微信账户暂未绑定!</h2>
+		</div>
+
+	</div>
+	<ul class=" weui-msg__desc">
+		<li class="wx_p2_li1">温馨提示：</li>
+		<li class="wx_p2_li2">1.绑定手机号可以保护您的账户安全。</li>
+		<li class="wx_p2_li2">2.您可以用绑定的微信手机号进行扫码登录，方便快捷。</li>
+	</ul>
+</head>
+{/block}
+
+{block name="main"}
+<div class="weui-btn-area">
+	<div class="weui-btn-area">
+		<a class="weui-btn weui-btn_primary" onclick="postData();">前往绑定</a>
+	</div>
+	<div class="weui-btn-area">
+		<a class="weui-btn weui-btn_warn" onclick="login();" >返回登录</a>
+	</div>
+</div>
+{/block}
+
+
+{block name="my_js"}
+<script type="text/javascript">
+	function postData(){
+		location.href="{:url('binding')}";
+	}
+    function login(){
+        location.href="{:url('index/login')}";
+    }
+</script>
+{/block}
+

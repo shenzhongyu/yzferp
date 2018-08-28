@@ -1,0 +1,28 @@
+
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section style="margin-top: 10px;">
+        <label class="label_1" style="height: 36px;line-height: 36px;">记录人:</label>
+        <label class="label_2" style="height: 36px;line-height: 36px;" >
+            {$user}
+        </label>
+    </section>
+    <section style="margin-top: 10px;">
+        <label class="label_1" style="height: 36px;line-height: 36px;">记录时间:</label>
+        <label class="label_2" style="height: 36px;line-height: 36px;" >
+            {$logData}
+        </label>
+    </section>
+    <section style="margin-top: 10px;">
+        <label class="label_1" style="height: 36px;line-height: 36px;">内容:</label>
+        <label class="label_2" style="height: 36px;line-height: 36px;" >
+            <textarea id="content"  name="log_content"  cols="27" rows="3" style="resize: none;margin-bottom: -10px;" ></textarea>
+        </label>
+    </section>
+    <section style="margin-top: 50px;">
+        <label class="label_1" style="height: 36px;line-height: 36px;">备注:</label>
+        <label class="label_2" style="height: 36px;line-height: 36px;" >
+            <textarea  name="log_desc"   cols="27" rows="3" style="resize: none;margin-bottom: -10px;"></textarea>
+        </label>
+    </section>
+    <input name="log_time" type="hidden" value="{$logData}">
+</form>

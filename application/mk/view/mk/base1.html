@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>豪德商户系统</title>
+    <link rel="stylesheet" type="text/css" href="http://cf.haodecaifu.com/MkCms_Html/HaoDeShangHu_Admin/css/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/static/easyui/css/icon.css">
+    <link rel="stylesheet" type="text/css" href="/static/daterangepicker/numberrangebox.css">
+
+    <script type="text/javascript" src="/static/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/easyui/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/static/layui/lay/modules/layer.js"></script>
+    <script type="text/javascript" src="../../../../static/daterangepicker/require.js"></script>
+    <script type="text/javascript" src="/static/easyui/datagrid-filter.js"></script>
+
+    <script type="text/javascript">
+
+        var Json_MY_UserName
+        Json_MY_UserName =[{"value":"","text":"全部"},{"value":"chenruibing","text":"\u9648\u745E\u51B0"},{"value":"duyueying","text":"\u675C\u60A6\u83B9"},{"value":"gaofei","text":"\u9AD8\u98DE"},{"value":"haode","text":"\u8C6A\u5FB7\u516C\u7528"},{"value":"huangruixing","text":"\u9EC4\u745E\u5174"},{"value":"kuangshuangping","text":"\u909D\u53CC\u840D"},{"value":"lvxiaoting","text":"\u5415\u5C0F\u5A77"},{"value":"lvxiumeng","text":"\u5415\u79C0\u840C"},{"value":"sunfeifan","text":"\u5B59\u975E\u51E1"},{"value":"tenghaifeng","text":"\u817E\u6D77\u51E4"},{"value":"wangruixue","text":"\u738B\u745E\u96EA"},{"value":"xiaolijun","text":"\u8096\u4E3D\u541B"},{"value":"xuyingxuan","text":"\u5F90\u6620\u7487"},{"value":"xuxiaoli","text":"\u8BB8\u5C0F\u4E3D"},{"value":"yexiuzhen","text":"\u53F6\u79C0\u73CD"},{"value":"zengpinghua","text":"\u66FE\u840D\u534E"},{"value":"zhangwei","text":"\u5F20\u4F1F"}]
+
+
+        $(function () {
+            $('#list').datagrid({
+                singleSelect: false,
+                rownumbers: true,
+                resizeHandle: 'both',
+                ctrlSelect: true,
+                collapsible: false,
+                method: 'post',
+                url: '{:url('json')}',
+                striped: true,
+                _customTitle: true,//开启自定义表头
+                _customWidth: false,//自定义列宽
+                columns: [[
+                    { field: 'Id', title: 'Id', width: '40', align: 'center', sortable: true }
+                    , { field: 'username', title: '操作人', width: '120', align: 'center', sortable: true , formatter:show_MY_UserName}
+                    , { field: 'Log_type', title: '操作类型', width:'120', align: 'center', sortable: true}
+                    , { field: 'Log_content', title: '操作内容', width:'180', align: 'left', sortable: true }
+                    , { field: 'Log_data', title: '数据详情', width:'500', align: 'left', sortable: true, formatter:show_Log_data }
+                    , { field: 'Log_Url', title: '操作网址', width:'300', align: 'left', sortable: true , formatter:show_Log_Url}
+                    , { field: 'Ip', title: '操作IP', width:'120',align: 'center', sortable: true }
+                    , { field: 'AddTime', title: '时间', width:'120',align: 'center', sortable: true }
+
+                ]],
+                pagination: true,
+                initalFilter: remoteFilter,
+                filterBtnIconCls: 'icon-filter',
+                remoteFilter: true,
+                multiSort: true,
+                pageSize:20
+            });
+
+            $('#list').datagrid({
+                toolbar: [
+                    {
+                        text:'刷新',
+                        iconCls: 'icon-reload',
+                        handler: function(){$('#list').datagrid('reload');}
+                    },'-',{
+                        text:'帮助',
+                        iconCls: 'icon-help',
+                        handler: function(){alert('帮助按钮')}
+                    }]
+            });
+            remoteFilter();
+        })
+
+
+        function remoteFilter() {
+            var dg = $('#list');
+            dg.datagrid('enableFilter', [
+                { field: 'AddTime', type: 'datebox', options: { precision: 1 }, op: ['betweendate'] }
+                , { field: 'Id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber'] }
+                , {
+                    field: 'username',
+                    type: 'combobox',
+                    options: {
+                        panelHeight: 'auto',
+                        data:Json_MY_UserName,
+                        onChange: function (value) {
+                            if (value == '') {
+                                dg.datagrid('removeFilterRule', 'username');
+                            } else {
+                                dg.datagrid('addFilterRule', {
+                                    field: 'username',
+                                    op: 'equal',
+                                    value: value,
+                                    type: 'text'
+                                });
+                            }
+                            dg.datagrid('doFilter');
+                        }
+                    }
+                    ,
+                }
+
+            ]);
+        }
+
+
+
+        function show_Log_Url(value, row, index) {
+            if(row.Log_Url.length>40){
+                return '<span id="Log_Url_'+row.Id+'" onmouseover="ShowTip(\'' + row.Log_Url + '\',\'Log_Url_'+row.Id+'\');">'+row.Log_Url.substring(0,40)+'......</span>';
+            }
+            else {return '<span id="Log_Url_'+row.Id+'" onmouseover="ShowTip(\'' + row.Log_Url + '\',\'Log_Url_'+row.Id+'\');">'+row.Log_Url+'</span>'}
+        }
+
+        function show_Log_Url(value, row, index) {
+            if(row.Log_Url.length>40){
+                return '<span id="Log_Url_'+row.Id+'" onmouseover="ShowTip(\'' + row.Log_Url + '\',\'Log_Url_'+row.Id+'\');">'+row.Log_Url.substring(0,40)+'......</span>';
+            }
+            else {return '<span id="Log_Url_'+row.Id+'" onmouseover="ShowTip(\'' + row.Log_Url + '\',\'Log_Url_'+row.Id+'\');">'+row.Log_Url+'</span>'}
+        }
+
+
+        function show_Log_data(value, row, index) {
+            if(row.Log_data.length>50){
+                return '<span id="Log_data_'+row.Id+'" onmouseover="ShowTip(\'' + row.Log_data + '\',\'Log_data_'+row.Id+'\');">'+row.Log_data.substring(0,50)+'......</span>';
+            }
+            else {return '<span id="Log_data_'+row.Id+'" onmouseover="ShowTip(\'' + row.Log_data + '\',\'Log_data_'+row.Id+'\');">'+row.Log_data+'</span>'}
+        }
+
+
+        function show_MY_UserName(value, row, index) {
+            var showok=false;
+            for(var item in Json_MY_UserName){
+                if(Json_MY_UserName[item].value==row.username){
+                    return Json_MY_UserName[item].text;
+                    showok=true;
+                    return false;
+                }
+            }
+            if (showok==false){return row.username}
+        }
+
+
+
+    </script>
+
+
+</head>
+<body>
+<table id="list" class="easyui-datagrid" title="操作员记录列表" ></table>
+<input name = 'list' class="easyui-combotree" data-options="url:'/erp/system/showNodeJson',method:'get'" style="width:200px;">
+</body>
+</html>

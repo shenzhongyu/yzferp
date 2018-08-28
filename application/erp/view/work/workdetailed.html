@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+
+    <style>
+    </style>
+</head>
+<body >
+<div style="padding: 10px;">
+    <h2 style="height: 35px;line-height: 35px;text-align: center;font-size: 16px;font-weight: 600">工作计划表</h2>
+    <div id="p" style="width:100%;height:300px;font-size: 14px;border:1px solid #95B8E7; ">
+        <p style="border-bottom: 1px solid #95B8E7;height: 30px;line-height: 30px;">
+            <a style="width: 25%;display: inline-block;text-align: center;border-right: 1px solid #95B8E7;">计划名称</a>
+            <a style="width: 24%;display: inline-block;text-align: center;border-right: 1px solid #95B8E7;">{$plan_name}</a>
+            <a style="width: 24%;display: inline-block;text-align: center;border-right: 1px solid #95B8E7;">重要程度</a>
+            <a style="width: 23%;display: inline-block;text-align: center;" id="plan_grade">{$plan_grade}</a>
+        </p>
+        <p style="border-bottom: 1px solid #95B8E7;height: 30px;line-height: 30px;">
+            <a style="width: 25%;display: inline-block;text-align: center;border-right: 1px solid #95B8E7;">计划完成时间</a>
+            <a style="width: 70%;display: inline-block;text-align: center;">{$start_time}&nbsp;&nbsp;至&nbsp;&nbsp;{$end_time}</a>
+        </p>
+        <p style="border-bottom: 1px solid #95B8E7;height: 50px;line-height: 50px;">
+            <a style="width: 25%;display: inline-block;text-align: center;border-right: 1px solid #95B8E7;">工作内容</a>
+            <a style="width: 73%;display: inline-block;text-align: center;">{$plan_content}</a>
+        </p>
+        <p style="border-bottom: 1px solid #95B8E7;height:50px;line-height: 50px;">
+            <a style="width: 25%;display: inline-block;text-align: center;border-right: 1px solid #95B8E7;">备注</a>
+            <a style="width: 73%;display: inline-block;text-align: center;">{$plan_desc}</a>
+        </p>
+        <p style="border-bottom: 1px solid #95B8E7;height: 30px;line-height: 30px;">
+            <a style="width: 25%;display: inline-block;text-align: center;border-right: 1px solid #95B8E7;">计划审批情况</a>
+            <a style="width: 73%;display: inline-block;text-align: center;" id="dep_manager">{$dep_manager}</a>
+        </p>
+        <p style="border-bottom: 1px solid #95B8E7;height: 30px;line-height: 30px;">
+            <a style="width: 25%;display: inline-block;text-align: center;border-right: 1px solid #95B8E7;">计划审批意见</a>
+            <a style="width: 73%;display: inline-block;text-align: center;">{$manager_content}</a>
+        </p>
+        <p style="border-bottom: 1px solid #95B8E7;height: 30px;line-height: 30px;">
+            <a style="width: 25%;display: inline-block;text-align: center;border-right: 1px solid #95B8E7;">计划进度</a>
+            <a style="width: 73%;display: inline-block;text-align: center;" id="audit_status">{$audit_status}</a>
+        </p>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/easyui_151/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/easyui_151/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__STATIC__/easyui_151/easyui-lang-zh_CN.js"></script>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

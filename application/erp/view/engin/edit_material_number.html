@@ -1,0 +1,57 @@
+<link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+<form id="fm" style="padding:0 30px;" method="post" name="form" style="width: 100%;padding-top: 10px;">
+    <section style="margin-bottom: 15px;">
+        <label class="label_1" style="width: 80px;display: inline-block">旧需求量:</label>
+        <label class="label_2" style="width: 200px;display: inline-block">
+            {$number}
+        </label>
+        <label class="label_1" style="width: 80px;display: inline-block">新需求量:</label>
+        <label class="label_2" style="width: 200px;display: inline-block">
+            <input class="easyui-validatebox" type="text" name="number" id="number"
+                   style="width:60%;">
+        </label>
+    </section>
+    <section style="text-align: center">
+        <a href="JavaScript:editMaterialNumber();" class="easyui-linkbutton"  style="width:80px;margin-right: 10px;">确认修改</a>
+        <a href="JavaScript:closePassword();" class="easyui-linkbutton"  style="width:80px">取消修改</a>
+    </section>
+
+</form>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script>
+    function editMaterialNumber(){
+        if(!$("#number").val()){
+            layer.msg("新的需求量不能为空", {icon: 3});
+        }else{
+            $.ajax({
+                type: "POST",
+                url: "{:url('editMaterialNumber',['guid'=>$guid])}",
+                data: {number:$("#number").val()},
+                dataType: "json",
+                success: function(data){
+                    if(data.code=="1001"){
+                        layer.msg("需求量修改成功",{icon:1 });
+                        window.parent.resh();
+
+                        setTimeout(function(){
+                                window.parent.layer.closeAll();
+
+                            },500
+                        )
+                    }else{
+                        layer.msg(data.msg, {icon: 2});
+                    };
+
+                }
+            });
+        }
+    }
+    function closePassword(){
+        window.parent.layer.closeAll();
+    }
+</script>

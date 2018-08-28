@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>首页</title>
+    <link href="__STATIC__/erp/css/index_easyui.css" rel="stylesheet">
+    {include file="erp@base/css" /}
+    <style>
+        *{margin: 0;padding: 0;font-family: '微软雅黑';box-sizing: border-box; }
+    </style>
+</head>
+<body>
+<div class="container" style="width: 100%;font-family: '微软雅黑';box-sizing: border-box">
+    <div style="width: 80%;margin: auto">
+        <div style="width: 400px;margin: auto">
+            <div id="p" class="easyui-progressbar" style="width:400px;margin-top: 100px;"></div>
+            <div id="update_title" style="width: 100%;text-align: center;margin-top: 30px;font-size: 16px;">正在版本检测中....</div>
+        </div>
+        <div style="width: 600px;margin: auto;display: none" id="update_content">
+            <p style="width:100%;text-align: left;margin-top: 20px;" class="">更新说明：</p>
+            <ol type="1" style="max-height: 300px;margin:10px;overflow-y: scroll;padding-left:2rem;width: 100%;line-height: 25px;letter-spacing: 2px;word-break: break-all;" id="desc">
+
+            </ol>
+            <div style="margin:20px 0 10px 0;justify-content: center;display: flex">
+                <a id="update_button"  href="javascript:versionUpdate();" style="width:100px;height: 25px;letter-spacing: 5px;margin: auto"  class="easyui-linkbutton" >更新</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+{include file="erp@base/js" /}
+<script type="text/javascript">
+    var check;
+    var version;
+    $(function () {
+        checkUpdate();
+    });
+    function start(obj){
+        var id=obj?obj:'#p';
+        var value = $(id).progressbar('getValue');
+        if(value+10>100){
+            $(id).progressbar('setValue', 99);
+            return false;
+        }
+        if (value < 100){
+            value += Math.floor(Math.random() * 10);
+            $(id).progressbar('setValue', value);
+            check=setTimeout(arguments.callee, 200);
+        }
+    };
+    function checkUpdate() {
+        start();
+        var url='{:url("Update/checkUpdate")}';
+        $.post(url,{},function (data) {
+            if (data.code=="1001"){
+                var obj=data.data;
+                var str="";
+                for (var i=0;i<obj.desc.length;i++){
+                    str+="<li>"+obj.desc[i]+"</li>";
+                }
+                $("#desc").append(str);
+                version=obj.version;
+                setTimeout(function () {
+                    clearTimeout(check);
+                    $("#p").progressbar('setValue', 100);
+                    $("#update_title").html('检测到新版本（'+obj.version+'）');
+                    $("#update_content").css('display','block');
+                },2000);
+            }else if(data.code=="1002"){
+                $("#p").progressbar('setValue', 100);
+                $("#update_title").html('已是最新版本');
+                clearTimeout(check);
+            }else{
+                $("#update_title").html('检测版本错误,请联系管理员');
+            }
+        })
+    }
+    function versionUpdate() {
+        $("#schedule",window.parent.document).css('display','block');
+        $("#mask",window.parent.document).css('display','block');
+        window.parent.startUpdate();
+        var url='{:url("Update/update")}';
+        $.post(url,{},function (data) {
+            if (data.code=="1001"){
+                setTimeout(function () {
+                    $("#version",window.parent.document).html("当前版本&nbsp;&nbsp;v"+version);
+                    window.parent.setProgressValue();
+                    $("#update_button").attr('href','javascript:layer.msg("版本已更新",{icon:1});');
+                },1200);
+            }else{
+               layer.msg(data.msg,{icon:2})
+            }
+        })
+    }
+</script>
+</body>
+</html>

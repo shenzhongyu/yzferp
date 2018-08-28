@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/daterangepicker/numberrangebox.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+
+    <style>
+        #fm{font-size: 16px;}
+        #fm section{margin-bottom: 3px;width: 60%;}
+        #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+        #button a{width: 100px !important;margin: 0 0 0 10px}
+        .myPanelHead .panel-title{font-size: 15px;padding-left: 43%;height: 25px;line-height: 25px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="p" class="easyui-panel" title="材料信息录入"   style="width:100%;padding:15px;margin-bottom: 20px;min-height:700px;"  data-options="headerCls:'myPanelHead'">
+        <form id="fm_material" style="width: 70%;margin-left: 25%" method="post" name="form">
+                <section>
+                    <label class="label_1" style="">供应商:</label>
+                    <label class="label_2" style="width:57%">
+                        <input class="easyui-combobox"  name="supplier_id" id="supplier_id"
+                               data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'supplier_name',required:true,url:'{:url('showSupplierJson')}',method:'get',">
+                    </label>
+                </section>
+                <section>
+                    <label class="label_1" style="">材料名称:</label>
+                    <label class="label_2" style="">
+                        <input class="easyui-validatebox" type="text" name="material_name" id="material_name"
+                               data-options="required:true,validType:'length[1,15]'" style="width:60%">
+                    </label>
+                </section>
+            <section >
+                <label class="label_1" >规格:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox"  name="specifications"
+                           data-options="validType:'length[1,15]'"
+                           style="width:60%">
+                </label>
+            </section>
+            <section >
+                <label class="label_1" >品牌:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox"  name="material_pin"
+                           data-options="validType:'length[1,15]'"
+                           style="width:60%">
+                </label>
+            </section>
+            <section >
+                <label class="label_1" >型号:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox"  name="material_version"
+                           data-options="validType:'length[1,35]'"
+                           style="width:60%">
+                </label>
+            </section>
+            <!--<section >-->
+                <!--<label class="label_1" >库存:</label>-->
+                <!--<label class="label_2" >-->
+                    <!--<input class="easyui-validatebox"  name="material_stock" id="material_stock"-->
+                           <!--data-options="required:true,validType:'length[1,25]'"-->
+                           <!--style="width:60%">-->
+                <!--</label>-->
+            <!--</section>-->
+            <section>
+                <label class="label_1">单位:</label>
+                <label class="label_2" style="width:57%">
+                    <input class="easyui-combobox"  name="unit_name"  value="1"
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/unit_name')}',method:'get',">
+                </label>
+            </section>
+            <section>
+                <label class="label_1">类别:</label>
+                <label class="label_2" style="width:57%">
+                    <!--<input class="easyui-combobox"  name="category_id" id="category_id"-->
+                           <!--data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'category_name',required:true,url:'{:url('showCategoryJson')}',method:'get',">-->
+                    <input class="easyui-combotree" type="text" id="category_id" name="category_id" style="width:100%;" value=""
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',required:true,url:'{:url('showCateJson')}',method:'get'">
+                </label>
+            </section>
+            <section>
+                <label class="label_1">售价(元):</label>
+                <label class="label_2">
+                    <input class="easyui-validatebox" type="number" name="material_price" id="material_price"
+                           data-options="required:true,validType:'length[1,10]'"
+                           style="width:60%">
+                </label>
+            </section>
+            <section>
+                <label class="label_1">内部价(元):</label>
+                <label class="label_2">
+                    <input class="easyui-validatebox" type="number" name="inside_price" id="inside_price"
+                           data-options="required:true,validType:'length[1,10]'"
+                           style="width:60%">
+                </label>
+            </section>
+            <section>
+                <label class="label_1">活动价格(元):</label>
+                <label class="label_2">
+                    <input class="easyui-validatebox" type="number" name="active_price" id="active_price"
+                           data-options="validType:'length[1,10]'"
+                           style="width:60%">
+                </label>
+            </section>
+            <section>
+                <label class="label_1">进价(元):</label>
+                <label class="label_2">
+                    <input class="easyui-validatebox" type="number" name="floor_price" id="floor_price"
+                           data-options="required:true,validType:'length[1,10]'"
+                           style="width:60%">
+                </label>
+            </section>
+            <section>
+                <label class="label_1">材料所属:</label>
+                <label class="label_2">
+                    <input type="radio" name="type" value="1" checked>主材   <input type="radio" name="type" value="2">辅材
+                </label>
+            </section>
+            <section>
+                <label class="label_1">展厅展示:</label>
+                <label class="label_2">
+                    <input type="radio" name="show_mark" value="1" checked>是   <input type="radio" name="show_mark" value="-1">否
+                </label>
+            </section>
+            <section>
+                <label class="label_1">材料图片:</label>
+                <label class="label_2">
+                    <input id="material_photo"  name="material_photo" class="easyui-textbox" data-options="editable:false,valueField: 'value',textField: 'text',onChange:function(newValue, oldValue){}" >
+                    <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="addPhoto('material_photo')">上传图片</a>
+                    <input type="hidden"  id="photo_m"  name="photo_m" style="width:40%" value="">
+                </label>
+            </section>
+            <section>
+                <label class="label_1">材料说明:</label>
+                <label class="label_2">
+                    <textarea placeholder="请填写材料说明" name="material_desc" style="width:60%;height: 60px;outline:none;resize:none;"></textarea>
+                </label>
+            </section>
+
+        </form>
+    </div>
+    </div>
+    <div id="button">
+        <a style="margin-left: 37%;" href="javascript:;" class="easyui-linkbutton" onclick="submitForm()">材 料 录 入</a>
+        <a href="javascript:;" class="easyui-linkbutton" onclick="clearForm()">关 闭</a>
+    </div>
+    <div id="log"></div>
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script>
+    function addPhoto(name) {
+        $("#log").dialog({
+            title:'上传图片',
+            width:400,
+            height:300,
+            href:'{:url("design/showUploadHtml")}/idName/'+name,
+        });
+    }
+    //表单提交(下一步)
+    function submitForm(){
+        var  url='{:url("Material/addMaterialData")}';
+        var num=$("input[name='show_mark']:checked").val();
+        $('#fm_material').form('submit',{
+            onSubmit:function(){
+                if(!$("#supplier_id").combobox('getValue')){
+                    layer.msg("供应商不能为空", {icon: 2});
+                    return false;
+                }
+                if(!$("#material_name").val()){
+                    layer.msg("材料名称不能为空", {icon: 2});
+                    return false;
+                }
+                if(num==1){
+                    if(!$('#material_photo').textbox('getValue')){
+                        layer.msg("未上传展厅展示的材料图片", {icon: 2});
+                        return false;
+                    }
+                }
+                if(!$("#category_id").combobox('getValue')){
+                    layer.msg("请选择材料类别", {icon: 2});
+                    return false;
+                }
+                if(!$("#material_price").val()){
+                    layer.msg("请填写售价价格", {icon: 2});
+                    return false;
+                }
+                if($("#material_price").val()){
+                    var val=$("#material_price").val();
+                    if(isNaN(val)){
+                        layer.msg('售价价格只能为数字类型', {icon: 2});
+                        return false;
+                    }
+                }
+                if(!$("#inside_price").val()){
+                    layer.msg("请填写发包价格", {icon: 2});
+                    return false;
+                }
+                if($("#inside_price").val()){
+                    var val=$("#inside_price").val();
+                    if(isNaN(val)){
+                        layer.msg('发包价格只能为数字类型', {icon: 2});
+                        return false;
+                    }
+                }
+                if(!$("#floor_price").val()){
+                    layer.msg("请填写进价价格", {icon: 2});
+                    return false;
+                }
+                if($("#floor_price").val()){
+                    var val=$("#floor_price").val();
+                    if(isNaN(val)){
+                        layer.msg('进价价格只能为数字类型', {icon: 2});
+                        return false;
+                    }
+                }
+                $.messager.progress({text: '材料入库中，请稍候...'});
+//                console.log($(this).serialize());
+                $.post(url, $(this).serialize(), function (data) {
+                    $.messager.progress('close');
+                    if (data.code == 1001) {
+                        layer.msg("材料已录入成功", {icon: 1});
+                            $('#fm').form('clear');
+                    }else{
+                        if(data.msg!=""){
+                            layer.msg(data.msg, {icon: 2});
+                        }else{
+                            layer.msg("材料录入失败，请联系管理员", {icon: 2});
+                        }
+                    }
+                }, 'json');
+                    return false;
+
+            }
+        });
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        $('#fm').form('clear');
+    }
+</script>
+</body>
+</html>

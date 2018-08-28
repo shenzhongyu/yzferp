@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>项目信息</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+<body>
+<div id="app">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back"></a>
+        <h1 class="mui-title">转部申请</h1>
+    </header>
+    <div class="addBoss" v-if="code == 1001" v-for="item in res" v-cloak>
+
+
+        <div class="addFirst">
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">转移方式：</div>
+                <div class="detailRightOnly">
+                    <span v-if="item.transfer_type == 1">业务部转设计部</span>
+                    <span v-if="item.transfer_type == 2">设计部转工程部</span>
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">项目名称：</div>
+                <div class="detailRightOnly">
+                    {{item.project_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">申请人：</div>
+                <div class="detailRightOnly">
+                    {{item.transfer_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">所在部门：</div>
+                <div class="detailRightOnly">
+                    {{item.department_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">申请说明：</div>
+                <div style=class="detailRightOnly">
+                    {{item.transfer_desc}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">申请时间：</div>
+                <div class="detailRightOnly">
+                    {{item.update_time}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">转部状态：</div>
+                <div class="detailRightOnly">
+
+                    <span v-if="item.examine_status==1">转部成功</span>
+                    <span v-if="item.examine_status==-1">转部失败</span>
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">转部说明：</div>
+                <div class="detailRightOnly">
+                    {{item.transfer_desc}}
+
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">审核状态：</div>
+                <div class="detailRightOnly"
+                     :class="{'red':item.examine_status == -1,'b':item.examine_status == 2}">
+                    {{item.examine_status_name}}
+                </div>
+            </div>
+            <div class="detailBoss ">
+                <div class="detailLeftOnly">审核说明：</div>
+                <div class="detailRightOnly">
+                    {{item.examine_desc}}
+                </div>
+            </div>
+        </div>
+
+        <!--<div v-if="length.examine_status== -1" style="font-size: 0.32rem;margin-bottom: 0.2rem">-->
+
+
+        <!--<div class="d_both " style="margin-left: 0px !important;font-size: 0.32rem !important;">-->
+        <!--<div style="display: inline-block"> 请选择部门:</div>-->
+        <!--<div type="text" style="display: inline-block;width: 73%">-->
+        <!--<select name="into_department_id">-->
+        <!--<option value="1" v-for="a in departant" :value="a.guid">{{a.department_name}}</option>-->
+        <!--</select>-->
+        <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="text-center">-->
+
+        <!--<div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;margin-top: 0.2rem;">-->
+        <!--<div style="display: inline-block;width: 25%;float: left;">转部说明：</div>-->
+        <!--<form class="addForm">-->
+        <!--<textarea style="display: inline-block;width: 75%;" name="transfer_desc">-->
+        <!--</textarea>-->
+        <!--</form>-->
+        <!--</div>-->
+        <!--<button @click="toTails" style=" ">再次申请转部</button>-->
+        <!--</div>-->
+        <!--</div>-->
+    </div>
+
+
+    <div style="font-size: 0.26rem;padding-left: 0.1rem;margin-top: 50px" v-cloak>
+        <div class="text-center">
+            <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;">
+                <div style="margin-bottom: 0.2rem" v-if="code == 1010">暂无申请信息</div>
+                <form class="addForm">
+                    <div class="d_both " style="margin-left: 0px !important;">
+                        <!--<div style="display: inline-block"> 选择部门:</div>-->
+                        <div style="display: inline-block;width: 23%;float: left;">选择部门：</div>
+                        <div type="text" style="display: inline-block;width: 73%">
+                            <select name="into_department_id">
+                                <option value="1" v-for="a in departant" :value="a.guid">{{a.department_name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d_both " style="margin-left: 0px !important;">
+                        <div style="display: inline-block;width: 23%;float: left;">转部说明：</div>
+
+                        <textarea style="display: inline-block;width: 73%;" name="transfer_desc">
+                </textarea>
+                    </div>
+                </form>
+            </div>
+            <button @click="toTails" style=" margin-bottom: 0.2rem">申请转部</button>
+        </div>
+    </div>
+
+</div>
+</div>
+</body>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('{:url("",["guid"=>$guid])}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                console.log(response.code);
+                console.log(response);
+                var length = response.data.length - 1;
+                console.log(length)
+//                    dataA.examine = response.data[length].examine_status
+                dataA.length = (response.data[length]);
+
+                dataA.res = response.data;
+                dataA.code = response.code;
+                dataA.msg = response.msg;
+                console.log(dataA.length)
+                mui.ajax('{:url("erp/project/showdepartmentjson")}', {
+                    dataType: 'json',//服务器返回json格式数据
+                    type: 'post',//HTTP请求类型
+                    success: function (department) {
+                        dataA.departant = department;
+
+                        var vue = new Vue({
+                            el: '#app',
+                            data: dataA,
+                            methods: {
+                                toTails: function () {
+                                    var data = $(".addForm").serialize()
+                                    mui.ajax('{:url("erp/project/addprojectauditedit",["guid"=>$guid])}', {
+                                        data: data,
+                                        dataType: 'json',//服务器返回json格式数据
+                                        type: 'post',//HTTP请求类型
+                                        success: function (response) {
+
+                                            mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                            if (response.code == 1001) {
+                                                setTimeout(function () {
+                                                    history.back()
+                                                }, 2000)
+                                            }
+
+                                        }
+                                    })
+                                },
+//                        listBack: function () {
+//                            mui.openWindow({
+//                                url: "{:url('project/projectDetails',['guid'=>$guid])}"
+//                            })
+//                        }
+                            }
+                        });
+                    }
+                });
+
+            }
+        });
+    }
+</script>
+</html>

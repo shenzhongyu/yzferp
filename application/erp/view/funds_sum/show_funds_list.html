@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<table id="list" class="easyui-datagrid" title="{$title}"></table>
+<div id="apply"></div>
+
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function () {
+        $('#list').datagrid({
+            rownumbers: true,
+            method: 'post',
+            url:'{$data_url}',
+            showFooter: true,
+            columns:[
+                [
+                    { field: 'name', title: '账户名称', width: '25%', align: 'center',},
+                    { field: 'uuid_name', title: '账户管理者', width: '10%', align: 'center',},
+                    { field: 'profit_price', title: '总收入(元)', width: '15%', align: 'center',},
+                    { field: 'loss_price', title: '总支出(元)', width: '15%', align: 'center',},
+                    { field: 'balance_price', title: '盈利(元)', width: '15%', align: 'center',},
+                    { field: 'op', title: '操作',width:'16%',align: 'center',
+                        formatter:function(value,row,index){
+                            if(row.guid){
+                                var str='';
+                                str+='<a href="javascript:;" onclick="lookMore(&apos;'+row.guid+'&apos;)">账户明细</a>&nbsp;&nbsp;';
+                                return str;
+                            }
+
+                        }
+                    },
+                ]
+            ],
+            toolbar:[],
+            nowrap:false,//超出部分自动换行
+        });
+    });
+    function lookMore(a){
+        window.parent.addTab('账户流水明细','{:url("finance/lookbanklog")}/guid/'+a,'close');
+    }
+
+</script>
+</body>
+</html>
+

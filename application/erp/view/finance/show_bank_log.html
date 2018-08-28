@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <table id="bank_log" class="easyui-datagrid" title="{$title}" style="width:100%;height:auto"
+    </table>
+
+    <div id="tb" style="height:auto;">
+        <a href="javascript:returnBack()" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" > 返 回 </a>
+        <a style="margin-left: 10px;">搜索条件:</a>
+        <a style="margin-left: 15px;">交易时间：
+            <input type="text" class= "easyui-datebox" id="time_start" data-options=" editable:false,showSeconds:false">--
+            <input type="text" class= "easyui-datebox" id="time_end" data-options=" editable:false,showSeconds:false">
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="searTime()">
+            <span class="l-btn-icon icon-search"></span>
+            <span class="l-btn-text l-btn-icon-left">搜索</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="showAllData()">
+            <span class="l-btn-icon icon-filter"></span>
+            <span class="l-btn-text l-btn-icon-left">显示全部</span>
+        </a>
+    </div>
+</div>
+<div id="dlog">
+
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    $(function(){
+        $("#bank_log").datagrid({
+            url:'{$data_url}',
+            toolbar: '#tb',
+            showFooter:true,
+            columns:[[
+                {field: 'bank_id', title: '账号',width: '15%', align: 'center', formatter:function(value,row){
+                    if(value.length==2){
+                        return value;
+                    }
+                    return  '{$bank_name}';
+                }}
+                , {field: 'income_price', title: '收入金额',width: '10%', align: 'center',}
+                , { field: 'expenditure_price', title: '支出金额', width: '10%',align: 'center',}
+                , { field: 'balance_price', title: '剩余金额', width: '10%',align: 'center', }
+                , { field: 'desc', title: '资金说明',width: '25%', align: 'center', }
+                , { field: 'create_time', title: '交易时间', width: '15%',align: 'center', }
+                , { field: 'name', title: '审核人', width: '10%',align: 'center', }
+
+            ]],
+            singleSelect: true,
+            method: 'post',
+            rownumbers: true,
+            pageSize:20,
+            pagination:true,
+            nowrap:false,
+        })
+    })
+    function searTime() {
+        if (!$('#time_start').datebox('getValue')&&!$('#time_end').datebox('getValue')){
+            $('#bank_log').datagrid('load',{});
+        }else{
+            var time_start;
+            var time_end;
+            if ($('#time_start').datebox('getValue')){
+                time_start=$('#time_start').datebox('getValue');
+
+            }
+            if ($('#time_start').datebox('getValue')){
+                time_end= $('#time_end').datebox('getValue');
+            }
+            if(!time_start&&time_end){
+                time_start=time_end;
+            }
+            if(time_start&&!time_end){
+                time_end=time_start;
+            }
+        }
+        var str='[{"field":"create_time","op":"betweendate","value":"'+time_start+" - "+time_end +'"}';
+        str+=']';
+        $('#bank_log').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+    function showAllData() {
+        $('#time_start').datebox('setValue','');
+        $('#time_end').datebox('setValue','');
+        $('#bank_log').datagrid('load',{});
+    }
+    function returnBack() {
+        window.parent.addTab('资金账户管理','{:url("finance/showBankList")}');
+        window.parent.closeTab('交易记录');
+
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<form id="fmq" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">施工内容:</label>
+        <label class="label_2" style="">
+            <input id="build_name" style="width:60%" class="easyui-textbox" data-options="required:true,editable:false," name="day_name"/>
+            <a href="javascript:addPlan();">选择</a>
+        </label>
+    </section>
+    <input type="hidden" id="build_id" style="width:60%"  name="day_build_id"/>
+    <section >
+        <label class="label_1" >人员(人):</label>
+        <label class="label_2" >
+            <input class="easyui-textbox"  name="day_user" id="build_days"
+                   data-options="required:true,"
+                   style="width:60%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">时间(天):</label>
+        <label class="label_2" style="">
+            <input id="build_time" style="width:60%" class="easyui-textbox" data-options="required:true,editable:false," name="day_build_time"/>
+            <a href="javascript:addTime();">选择</a>
+        </label>
+    </section>
+    <input type="hidden" id="build_time_id" style="width:60%"  name="day_time_id"/>
+    <section>
+        <label class="label_1">备注:</label>
+        <label class="label_2">
+            <textarea  name="desc" style="width:80%;height: 70px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+</form>
+<div id="add"></div>
+<script>
+    function addPlan() {
+        $("#add").dialog({
+            title: "添加工作内容",
+            iconCls: 'icon-save',
+            width: '50%',
+            height: '400',
+            cache: false,
+            href: '{:url("showAddCon")}/id/{$build}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function addTime() {
+        $("#add").dialog({
+            title: "选择时间",
+            iconCls: 'icon-save',
+            width: '50%',
+            height: '400',
+            cache: false,
+            href: '{:url("showAddTime")}/id/{$day_id}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+</script>

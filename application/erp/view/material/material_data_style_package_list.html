@@ -1,0 +1,59 @@
+data_list.html{extend name="base/base_search_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false}
+, { field: 'package_name', title: '类别', width: '100', align: 'center', sortable: true}
+, { field: 'package_desc', title: '备注',width: 180, align: 'center', sortable: true}
+, { field: 'op', title: '操作',width: 180, align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+]]{/block}
+
+{block name="filter"}[
+]{/block}
+
+{block name="value"}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if(field=="op"){
+return '<a href="javascript:manage(&apos;'+row.guid+'&apos;);">管理此类别的装饰项目</a>';
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+}else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+<script>
+
+    function manage(a) {
+        window.parent.addTab('装饰项目工程类别','{:url("showPackageStyleList")}/type/{$type}/package/'+a,'close');
+    }
+
+</script>
+{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'添加', iconCls: 'icon-add', handler:function(){ mikkleClass.addForm(420,300)} },'-',
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm(420,300);} },'-',
+<!--{ text:'删除', iconCls: 'icon-cancel', handler:function(){  delDataStyle() } },'-',-->
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

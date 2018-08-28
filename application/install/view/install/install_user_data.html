@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="__STATIC__/erp/images/favicon.ico" media="screen" />
+    <title>7搜装企ERP</title>
+    <link href="__STATIC__/erp/css/base.css" rel="stylesheet">
+    <link href="__STATIC__/erp/css/login.css" rel="stylesheet">
+
+    <link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+    <!--<script src="/static/erp/js/login.js" type="text/javascript" charset="utf-8"></script>-->
+    <style>
+        #applyTrail{width: 100%;padding-top: 50px;}
+        #applyTrail #applyTrail_div{width: 40%;margin: 15px auto;font-size: 18px;letter-spacing: 2px;}
+        #applyTrail #applyTrail_div form{width: 100%;min-height: 400px;min-width: 400px;}
+        .apply_a{color: #ffffff;margin:0px 5px;letter-spacing: 1px;text-decoration: none;display: inline-block;min-width:90px;width: 25%;height: 35px;line-height: 35px;text-align: center}
+        .progressbar-value .progressbar-text{background-color: #95B8E7 !important;}
+    </style>
+</head>
+<body>
+
+{include file="erp@base/login_head" /}
+<div id="applyTrail">
+    <div id="applyTrail_div" >
+        <form id="apply_form">
+            <p id="msg" style="text-align: center;height: 30px;line-height: 30px;margin-bottom: 50px;">管理员数据配置中，请稍后...！</p>
+            <div id="p" class="easyui-progressbar" style="width:400px;margin: auto "></div>
+        </form>
+        <div  style="margin-top: 50px;min-width:300px;width: 100%;text-align: center">
+            <a style="background:#999;" class="apply_a"  href="javascript:;"  disabled="true"     >上一步</a>
+            <a id="retry" style="background:#999" class="apply_a" href="javascript:;" >下一步</a>
+        </div>
+    </div>
+</div>
+
+{include file="erp@base/login_footer" /}
+<script src="__WEUI__/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/erp/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script>
+    var timeout;
+    $(function(){
+        myBrowser();
+        getCreate();
+    });
+    function myBrowser(){  //检测浏览器
+        var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+        var isOpera = userAgent.indexOf("Opera") > -1; //判断是否Opera浏览器
+        var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera; //判断是否IE浏览器
+        var isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
+        var isSafari = userAgent.indexOf("Safari") > -1; //判断是否Safari浏览器
+        if (isIE) {
+            var IE5 = IE55 = IE6 = IE7 = IE8 = false;
+            var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+            reIE.test(userAgent);
+            var fIEVersion = parseFloat(RegExp["$1"]);
+            IE55 = fIEVersion == 5.5;
+            IE6 = fIEVersion == 6.0;
+            IE7 = fIEVersion == 7.0;
+            IE8 = fIEVersion == 8.0;
+            if (IE55) {
+                alert('建议使用高版本浏览器打开本系统！');
+                return "IE55";
+            }
+            if (IE6) {
+                alert('建议使用高版本浏览器打开本系统！');
+                return "IE6";
+            }
+            if (IE7) {
+                alert('建议使用高版本浏览器打开本系统！');
+                return "IE7";
+            }
+            if (IE8) {
+                alert('建议使用高版本浏览器打开本系统！');
+                return "IE8";
+            }
+        }//isIE end
+        if (isFF) {
+            return "FF";
+        }
+        if (isOpera) {
+            return "Opera";
+        }
+    }//myBrowser() end
+    //以下是调用上面的函数
+    function service() {
+        location.href="{:url('erp/PublicView/service')}";
+    }
+    function statement() {
+        location.href="{:url('erp/PublicView/statement')}";
+    }
+    function aboutUs() {
+        location.href="{:url('erp/PublicView/aboutUs')}";
+    }
+    function returnLogin() {  //返回登陆
+//        $("#login_ center").css('display','block');
+//        $("#applyTrail").css('display','none');
+        location.href="{:url('erp/Login/Login')}";
+    }
+    function start(){
+        var value =$('#p').progressbar('getValue');
+        if(value>100-10){
+            $('#p').progressbar('setValue', 99);
+            return false;
+        }
+        if (value < 100){
+            value += Math.floor(Math.random() * 10);
+            $('#p').progressbar('setValue', value);
+            timeout= setTimeout(arguments.callee, 300);
+        }
+    }
+
+    function getCreate(){
+        start();
+        var url='{:url("install/createUserData")}';
+        $.post(url,{},function (data){
+            if(data.code=="1001"){
+                $('#p').progressbar('setValue', 100);
+                $("#msg").html('管理员数据配置成功!');
+//                $('#retry').html('完成');
+                $('#retry').html('下一步');
+                $('#retry').css('background',' #1296af');
+//                $('#retry').attr('onclick','success()');
+                $('#retry').attr('onclick','nextStep()');
+                clearTimeout(timeout);
+//                location.href='{:url("install/createUserData")}';
+            }else{
+                $("#msg").html(data.msg);
+                $('#retry').html('重试');
+                $('#retry').css('background',' #1296af');
+                $('#retry').attr('onclick','retry()');
+                clearTimeout(timeout);
+            }
+        },'json')
+    }
+    function retry() {  //重试按钮
+        $('#p').progressbar('setValue', 0);
+        console.log($('#p').progressbar('getValue'));
+        $("#msg").html('管理员数据配置中，请稍后...！');
+        getCreate();
+    }
+    function nextStep() {
+        location.href='{:url("install/createRoleMarket")}';
+    }
+    function success() { //完成
+        location.href = '{:url("erp/login/login")}';
+    }
+</script>
+</body>
+
+</html>
+

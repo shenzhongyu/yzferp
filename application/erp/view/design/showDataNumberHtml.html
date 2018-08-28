@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <table id="dg" class="easyui-datagrid" title="项目装饰项目的数量修改" style="width:100%;height:auto"
+           data-options="
+                nowrap:false,
+				iconCls: 'icon-black',
+				singleSelect: true,
+				toolbar: '#tb',
+				url: '{$list_url}',
+				method: 'post',
+				idField:'guid',
+                treeField:'name',
+				nowrap:false,
+				onClickRow: onDbClick,
+				onEndEdit:editRow,
+
+			">
+        <thead>
+        <tr>
+            <th data-options="field:'name',align:'center',width:'20%' ">装饰项目名称</th>
+            <th data-options="field:'unit',align:'center',width:'5%'">单位</th>
+            <th data-options="field:'number',align:'center',width:'10%' ,editor:{type:'numberbox',options:{precision:2}}">数量</th>
+            <th data-options="field:'price',align:'center',width:'10%' ">单价</th>
+            <th data-options="field:'price_sum',align:'center',width:'15%'">金额</th>
+            <th data-options="field:'desc',align:'center',width:'40%'">说明</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div id="tb" style="height:auto;">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeit()">取消当前编辑</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="removeit()">刷新</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="returnTo()">返回预算报价</a>
+        <a style="margin-left: 1%;color: #859416">温馨提示：请修改完毕后及时进行保存，否则修改不成功！</a>
+        <a style="margin-left: 10%;font-size: 16px;font-weight: 400">项目名称：{$title}</a>
+    </div>
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    var clickIndex; //点击的下标
+    var flag;
+    function editRow(index, row, changes) {
+        if(!$.isEmptyObject(changes)){
+            flag=index;
+            layer.msg('数据保存成功',{icon:1});
+        }
+    }
+    function removeit(){
+        clickIndex=undefined;
+        $("#dg").datagrid('reload');
+    }
+    function returnTo() {
+        window.parent.closeTab('修改数量');
+        window.parent.addTab('预算报价',"{:url('addBudget',['id'=>$pro_id])}",'close');
+    }
+    function  onDbClick(index){
+        var a=$('#dg').datagrid('getRows')[index];
+        if (!a._parentId){
+            return;
+        }
+        if(clickIndex===0||clickIndex){
+            $('#dg').datagrid('endEdit', clickIndex);
+            var  rows= $('#dg').datagrid('getChanges');
+            var obj_new=$('#dg').datagrid('getRows')[clickIndex];
+            var url='{:url("saveData")}';
+            $.ajax({
+                type: "POST",
+                url: url,
+                data:obj_new ,
+                dataType: "json",
+                success: function(data){
+                    if (data.code=="1001"){
+                        $('#dg').datagrid('endEdit', clickIndex);
+                        $('#dg').datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                        clickIndex=index;
+                    }else{
+
+                        layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                    }
+                }
+            });
+        }else{
+            $('#dg').datagrid('selectRow', index).datagrid('beginEdit', index);
+            clickIndex=index;
+        }
+
+    }
+    function accept(){
+        $('#dg').datagrid('endEdit', clickIndex);
+        var obj_new=$('#dg').datagrid('getRows')[clickIndex];
+        var url='{:url("saveData")}';
+        ajax(url,obj_new);
+
+    }
+    function ajax(url,obj){
+        $.ajax({
+            type: "POST",
+            url: url,
+            data:obj ,
+            dataType: "json",
+            success: function(data){
+                if (data.code=="1001"){
+                    layer.msg('数据保存成功',{icon:1});
+                    removeit();
+                }else{
+                    $('#dg').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

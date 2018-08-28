@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+    <!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+    <!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+    {include file="base/js" /}
+</head>
+<body>
+<p>
+    <button style="margin-left: 10px;cursor: pointer" onclick="addData()">批量移入</button>
+    <a style="margin-left: 10px;margin-right: 15px;">搜索条件:</a>
+    装饰项类别：<input id="dataId" class="easyui-combobox"  name="datastyle" value=""
+                 data-options="valueField: 'guid',textField: 'categories_name',url:'{:url('Material/showdatastylejson')}',method:'get',
+        onSelect:function(a){
+            if(a.guid){
+                addFiled(a.guid,'category_id','baseId','base_id');
+            }else{
+                var id=$('#baseId').combobox('getValue');
+
+                if(id){
+                    remData(id,'base_id');
+                }else{
+
+                }
+            }
+        }">
+    项目名称：<input class="easyui-textbox" id="name_data">
+    <button style="margin-left: 10px;cursor: pointer;" onclick="searchName()">搜索</button>
+    <button style="margin-left: 10px;cursor: pointer;" onclick="showAll()">显示全部</button>
+</p>
+<table id="ag">
+</table>
+<script type="text/javascript">
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    $(function(){
+        $('#ag').datagrid({
+            url:'{$url}',
+            height:600,
+            rownumbers:true,
+            singleSelect:false,
+            pagination:true,
+            method:'get',
+            pageSize:20,
+            columns:[[{ field: "chk", "checkbox": true},
+                {field:'name',title:'项目名称',width:'20%',align:'center'},
+//                {field:'specifications',title:'规格',width:120,align:'center'},
+                {field:'unit',title:'单位',width:'10%',align:'center',
+                    formatter:function(value,row,index){
+                        if (eval("value_unit_name")[value]) {
+                            return eval("value_unit_name" )[value];
+                        }else{
+                            return value;
+                        }
+                    }
+                },
+                {field:'price',title:'单价(元)',width:'10%',align:'center',formatter:function(value,row){
+                    if(value){
+                        return value.toFixed(2);
+                    }
+                    var str=sumPrice(row);
+                    return str.toFixed(2);
+                }},
+                {field:'desc',title:'工艺说明',width:'45%',align:'center'},
+                {field:'item_status',title:'项目状态',width:"10%",align:'center',
+                    formatter:function(value,row,index){
+                        if(value>="1"){
+                            return '<a style="color: #0c9d72">已移入</a>'
+                        }else{
+                            return '<a>未移入</a>';
+                        }
+                    }
+                }
+            ]],
+            nowrap:false,
+        });
+    });
+    function showAll() {
+        $("#baseId").combobox('setValue','');
+        $("#dataId").combobox('setValue','');
+        $('#ag').datagrid('load',{});
+    }
+    function searchName(){
+
+        FieldName($("#name_data").textbox('getValue'),'name');
+
+    }
+    function addFiled(a,txt,id,t){
+        var str="";
+        str+='[{"field":"'+txt+'","op":"equal","value":"'+a+'","type":"text"}';
+        str+=']';
+        $('#ag').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+    function FieldName(value,name){
+        var str="";
+        str+='[{"field":"'+name+'","op":"contains","value":"'+value+'"}';
+        str+=']';
+        $('#ag').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+    function addData(){
+        var rows = $('#ag').datagrid('getSelections');
+        if(rows.length==0){
+            layer.msg('请选择要移入的数据！', {icon: 2});
+            return false;
+        }
+        var arr=[];
+        $.each(rows,function (i,t) {
+            arr.push(t.guid);
+        });
+        var url='{:url("saveSpaceMaterial")}';
+        $.post(url,{project_id:'{$project_id}',pid:'{$guid}',chi_id:arr,type:'{$type}'},function(obj){
+            if(obj.code=="1001"){
+                layer.msg('添加成功', {icon: 1});
+                $('#space').datagrid('reload');
+                $('#rate').datagrid('reload');
+                $('#ag').datagrid('reload');
+
+                setTimeout(function(){
+                    $('#dg').treegrid('reload');
+                },1);
+            }else{
+                layer.msg('添加失败，请联系管理员', {icon: 3});
+            }
+        },"json")
+    }
+</script>
+</body>
+</html>

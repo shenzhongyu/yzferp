@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="tb" style="height:auto;">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="returnLookPurchaseList()"> 返 回 </a>
+        <a style="margin-left: 10px;">搜索条件:</a>
+        <a style="margin-left: 15px;">材料名称：<input type="text" id="name"></a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">
+            <span class="l-btn-icon icon-search"></span>
+            <span class="l-btn-text l-btn-icon-left">搜索</span>
+        </a>
+    </div>
+</div>
+<div id="dlog">
+</div>
+<div style="float: left;width: 25%">
+    <table id="tree_buy" title="供应商"></table>
+</div>
+<div style="float: left;width: 75%">
+    <table id="dg_buy" title="材料"></table>
+</div>
+
+
+
+{include file="base/js" /}
+
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    {:widget('Easyui/showValueByUrl',["category_id","category_json",$map])}
+    {:widget('Easyui/showArrayByUrl',["category_id","category_json",$map])}
+    {:widget('Easyui/showValueByUrl',["supplier_id","supplier_json",$map])}
+    {:widget('Easyui/showArrayByUrl',["supplier_id","supplier_json",$map])}
+    $(function(){
+        $('#tree_buy').datagrid({
+            url:'{$tree_url}',
+            columns:[[
+                {field:'supplier_name',title:'供应商名称',width:'40%',align:'center'},
+                {field:'supplier_desc',title:'说明',width:'60%',align:'center'},
+            ]],
+            singleSelect: true,
+            method: 'post',
+            nowrap:false,
+            onClickRow:onClickRowBySup,
+            onLoadSuccess:function (data) {
+                console.log(data);
+                onClickRowBySup(0,data['rows'][0]);
+            }
+        });
+        $('#dg_buy').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                { field: 'supplier_id', title: '供应商', width:'7%',align: 'center', sortable: true,
+                    formatter:function(value,row,index){
+                        if(eval("value_supplier_id")[value]) {
+                            return eval("value_supplier_id")[value];
+                        }else if (('array_supplier_id')[value]){
+                            return ('array_supplier_id')[value];
+                        } else{
+                            return value;
+                        }
+                    }}
+                , { field: 'category_id', title: '类型', width: '7%',align: 'center', sortable: true,
+                    formatter:function(value,row,index){
+                        if(eval("value_category_id")[value]) {
+                            return eval("value_category_id")[value];
+                        }else if (('array_category_id')[value]){
+                            return ('array_category_id')[value];
+                        } else{
+                            return value;
+                        }
+                    }},
+                { field: 'material_name', title: '材料名称', width: '10%', align: 'center', sortable: true}
+                , { field: 'specifications', title: '规格', width:'7%',align: 'center', sortable: true}
+                , { field: 'material_pin', title: '品牌', width: '7%',align: 'center', sortable: true}
+                , { field: 'material_version', title: '型号', width: '7%',align: 'center', sortable: true}
+
+                , { field: 'unit_name', title: '单位',width: '5%', align: 'center', sortable: true,
+                    formatter:function(value,row,index){
+                        if(eval("value_unit_name")[value]) {
+                            return eval("value_unit_name")[value];
+                        }else if (('array_unit_name')[value]){
+                            return ('array_unit_name')[value];
+                        } else{
+                            return value;
+                        }
+                    }}
+//        , { field: 'material_price', title: '售价(元)', width: 100, align: 'center', sortable: true}
+//        , { field: 'inside_price', title: '内部价(元)',width:100, align: 'center', sortable: true}
+                , { field: 'number', title: '数量',width: '7%', align: 'center', sortable: true}
+                , { field: 'floor_price', title: '单价(元)',width: '10%', align: 'center', sortable: true}
+                ,{ field: 'sum_price', title: '金额(元)', width: "10%",align: 'center',
+                    formatter:function(value,row,index){
+                        if(row.floor_price){
+                            var price=Number(row.floor_price)* row.number;
+                            return  '<a style="color: red;">'+ price.toFixed(2)+'</a>';
+                        }
+                    }
+                }
+                , { field: 'material_desc', title: '说明',width: '10%', align: 'center', sortable: true},
+//                {field:'op',title:'操作',width:"10%",align:'center',
+//                    formatter:function(value,row,index){
+//                        var str='<a href="javascript:;" onclick="look(&apos;'+row.id+'&apos;)">查看</a>&nbsp;&nbsp;&nbsp;';
+//                        str+='<a href="javascript:;" onclick="addMaterial(&apos;'+row.guid+'&apos;)">选材</a>&nbsp;&nbsp;&nbsp;';
+//                        if (row.is_material&&row.is_material!=0){
+//                            str+='<a href="javascript:;" onclick="lookPurchaseList(&apos;'+row.guid+'&apos;,&apos;'+row.book_number+'&apos;)">采购清单</a>';
+//                        }
+//                        return str;
+//                    }
+//                },
+            ]],
+            singleSelect: false,
+            toolbar: '#tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+    function onClickRowBySup(index,row) {
+        var str='[{"field":"supplier_id","op":"contains","value":"'+row.guid+'","type":"text"}';
+        str+=']';
+        $('#dg_buy').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+
+    function sear(){
+        var tex=$("#name").val();
+        if(tex){
+            var str='[{"field":"material_name","op":"contains","value":"'+tex+'","type":"text"}';
+            str+=']';
+            $('#dg_buy').datagrid({
+                queryParams: {
+                    filterRules:str,
+                }
+            });
+        }else{
+            $('#dg_buy').datagrid('load',{});
+        }
+    }
+    function addMaterial(t){
+        window.parent.addTab('预算选材','{:url("addMaterial")}/pro_id/'+t,'close');
+    }
+    function returnLookPurchaseList() {
+        window.parent.closeTab('材料采购');
+        window.parent.addTab('采购清单','{:url("lookPurchaseList",["pro_id"=>$pro_id,"number"=>$number])}','close');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>材料清单</title>
+    {include file="base_mui/weui_wechat"/}
+    <script type="text/javascript" src="/static/mui/js/mui.picker.min.js"></script>
+    <link href="/static/mui/css/mui.picker.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="app">
+
+
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <h1 class="mui-title">材料清单</h1>
+
+    </header>
+    <div class="addBoss" >
+        <div id="topPopover" class="mui-popover "
+             style="display:none; top: 57px; left: 35px;height: 2.0rem;width: 2.5rem">
+            <div class="mui-popover-arrow" style="left:2.48rem"></div>
+            <div class="mui-scroll-wrapper" data-scroll="1">
+                <div class="mui-scroll" style="transform: translate3d(0px, 0px, 0px) translateZ(0px);">
+                    <ul class="mui-table-view">
+
+                        <li class="mui_popver" id="addT"><a href="#">新增进度</a>
+                        </li>
+                        <!--<li class="mui-table-view-cell" @click="ask" id="ask"><a href="#">申请转部</a>-->
+                        <!--</li>-->
+                        <!--<li class="mui_popver" @click="addLogclick"><a href="#">项目详情</a>-->
+                        <!--</li>-->
+
+
+                    </ul>
+                </div>
+                <div class="mui-scrollbar mui-scrollbar-vertical">
+                    <div class="mui-scrollbar-indicator"
+                         style="transition-duration: 0ms; display: none; height: 8px; transform: translate3d(0px, -8px, 0px) translateZ(0px);"></div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <ul class="mui-table-view">
+        <div class="" >
+        <li class="mui-table-view-cell mui-collapse fz26"  style="position: relative" v-for="(item,index) in father" v-cloak>
+            <div class="purchaseBoth" >
+
+                <div  class="purchaseLeft"> 工程名称：</div>
+                <div class=" red purchaseRight" >
+                    {{item.c.name}}
+                </div>
+            </div>
+            <a class="mui-navigate-right" href="#" style="display: inline-block;position: fixed;right: 0.2rem;">
+            </a>
+            <div class="mui-collapse-content">
+                    <div class="detailBoss detail_line" >
+
+                        <div  class="purchaseLeft"> 单价：</div>
+                        <div class="purchaseRight red">
+                            {{item.c.price}}<span style="text-align: right"></span>(预算)
+
+                        </div>
+                    </div>
+                    <div class="detailBoss detail_line" >
+
+                        <div  class="purchaseLeft"> 数量：</div>
+                        <div class="purchaseRight red">
+                            {{item.c.number}}(预算)
+
+                        </div>
+                    </div>
+
+                    <div class="detailBoss detail_line" >
+
+                        <div  class="purchaseLeft">  总价：</div>
+                        <div class="purchaseRight red">
+                            {{item.c.price*item.c.number}}(预算)
+
+                        </div>
+                    </div>
+
+                    <div class="detailBoss " v-for="(i,indexs) in item.b">
+                        <div class="detailBoss detail_line">
+                            <div class="purchaseLeft">主材名称：</div>
+                            <div class="purchaseRight">
+                                {{i.material_name}}
+                            </div>
+                        </div>
+                        <div class="detailBoss detail_line">
+
+                            <div class="purchaseLeft">数量：</div>
+                            <div class="purchaseRight">
+                                {{i.number}}
+                            </div>
+                        </div>
+                        <div class="detailBoss detail_line">
+                            <div class="purchaseLeft">主材名称：</div>
+                            <div class="purchaseRight">
+                                {{i.material_name}}
+                            </div>
+                        </div>
+                        <div class="detailBoss detail_line">
+
+                            <div class="purchaseLeft">单价：</div>
+                            <div class="purchaseRight">
+                                {{i.inside_price}}
+                            </div>
+                        </div>
+                        <div class="detailBoss detail_line red">
+
+                            <div class="purchaseLeft">总价：</div>
+                            <div class="purchaseRight">
+                                {{i.inside_price*i.number}}
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+
+                </div>
+
+
+
+        </li>
+
+        </div>
+
+    </ul>
+</div>
+
+<div class="addColl">
+    <div class="text-center">新增进度</div>
+    <form method="post" name="form" id="form_add">
+        <div class="progress_title">
+            <div class="btn1 " style="width: 23%;display: inline-block">设计阶段：</div>
+            <input type="text" style="width: 72%;height:0.5rem; display:inline-block;" name="design_phase" id="step">
+        </div>
+        <div style="width: 100%;padding-top: 0.1rem;">
+            <div  class="btn1 " style="width: 23%;display: inline-block">阶段类型：</div>
+            <!--<input type="text" style="width: 75%;height:0.5rem; display:inline-block;" name="design_phase">-->
+            <select style="width: 75%;height:0.5rem; display:inline-block;background: lavender;font-size: 12px;padding-top: 0rem;padding-bottom: 0rem" name="design_type">
+                <option value="1">量房阶段</option>
+                <option value="2">设计阶段</option>
+            </select>
+        </div>
+        <div style="width: 100%;">
+            <div  class="btn1 " style="width: 23%;display: inline-block">开始日期：</div>
+            <input type="text" style="width: 75%;height:0.5rem;background: lavender; display:inline-block;"
+                   id="remind_time" name="start_data">
+        </div>
+        <div style="width: 100%;">
+            <div style="display:inline-block; width: 23%;text-align: left;float: left" class="btn1">预计天数：</div>
+            <input type="text" style="width: 75%;height:0.5rem; display:inline-block;" name="expected_days" id="design_days">
+        </div>
+        <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+            <div style="display:inline-block; width: 23%;text-align: left;float: left">备注：</div>
+            <textarea style="width: 75%;display:inline-block;;height: 1.5rem" id="remind_content"
+                      name="design_desc"></textarea>
+        </div>
+
+        <div style="margin-top: 0.3rem;text-align: center">
+            <button id="addColl" type="button">添加</button>
+            <button style="margin-left: 0.3rem" id="closeColl" type="button">关闭</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('{:url("",["pro_id"=>$pro_id])}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                var father=[];
+                var son=[];
+                var c = 0
+                console.log(response.rows);
+                var ro = response.rows
+                dataA.res = response.rows;
+                for (var i = 0 ; i<ro.length;i++){
+                    if(  response.rows[i]._parentId){
+                        son.push(response.rows[i]);
+                    }else{
+                        father.push({c:response.rows[i],b:[]});
+                    }
+                }
+                for (var i = 0 ; i<father.length;i++){
+                    for (var j = 0 ; j<son.length;j++){
+                        if(son[j]._parentId == father[i].c.guid){
+                            father[i].b.push(son[j]);
+                        }
+                    }
+                }
+                console.log(father);
+                console.log(father[0].b)
+                dataA.father = father;
+
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    mounted: function () {
+                        $("#addT").on("tap", function () {
+                            $(".addColl").css("display", "block");
+                                $("#topPopover").css("display", "none");
+                            $(".mui-backdrop").css("display", "none")
+
+                        });
+
+                        $("#closeColl").on("tap", function () {
+                            $(".addColl").css("display", "none")
+                        });
+
+                        $("#addColl").on('tap', function () {
+                            if(!$("#step").val()){
+                                mui.toast("设计阶段不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if(!$("#remind_time").val()){
+                                mui.toast("开始日期不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if(!$("#design_days").val()){
+                                mui.toast("预计天数不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            var text = $("#form_add").serialize();
+                            var url = "{:url('erp/design/saveaddbudgetdata',['guid'=>$Request.param.guid])}";
+                            mui.ajax(url, {
+                                data: text,
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+                                success: function (response) {
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    $(".addColl").css("display", "none");
+                                    window.location.reload();
+                                },
+                                error: function (error) {
+                                    //异常处理；
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                }
+                            })
+                        });
+                        var content;
+                        (function (rr) {
+                            var result1 = document.getElementById("remind_time");
+                            var btn1 = $('#remind_time');
+                            btn1.each(function (i, btn) {
+                                btn.addEventListener('tap', function () {
+                                    var optionsJson = this.getAttribute('data-options') || '{}';
+                                    var options = JSON.parse(optionsJson);
+                                    var id = this.getAttribute('id');
+                                    var picker = new rr.DtPicker(options);
+                                    picker.show(function (rs) {
+                                        result1.value = rs.text;
+                                        picker.dispose();
+                                        content = rs.text;
+                                    });
+                                }, false);
+                            });
+                        })(mui, document);
+
+                    },
+                    methods: {
+                        addLogclick: function () {
+
+
+                            mui.openWindow({
+
+                                url: "{:url('designer/projectDetailsDesigner',['guid'=>$Request.param.guid])}"
+                            })
+//                            mui.openWindow({
+//
+//                                url: "{:url('project/projectdetails',['guid'=>$Request.param.guid])}"
+//                            })
+                        },
+//                        linkBack: function () {
+//
+//                            mui.openWindow({
+//                                url: "{:url('index/index')}"
+//                            })
+//                        },
+                        img: function (id) {
+                            mui.openWindow({
+                                url: "{:url('designer/progressImg',['id'=>$Request.param.guid])}/guid/" + id
+                            })
+                        },
+                        appendix: function (id) {
+                            mui.openWindow({
+                                url: "{:url('designer/progressFile',['id'=>$Request.param.guid])}/guid/" + id
+                            })
+                        },
+                        ask: function () {
+
+                            $(".add_ask").css("display", "block");
+                            $("#topPopover").css("display", "none");
+                            $(".mui-backdrop").css("display", "none");
+                            $("#close_ask").on('tap', function () {
+                                $(".add_ask").css("display", "none")
+                            });
+                            $("#add_ask").on('click', function () {
+                                if ($("#content").val() == '') {
+                                    mui.toast("申请原因不能为空", {duration: 'short', type: 'div'});
+                                    return false;
+                                }
+                                var dataa = {};
+                                dataa.transfer_desc = $("#content").val();
+                                var url = "{:url('erp/project/addprojectauditedit',['guid'=>$Request.param.guid,'type'=>'2'])}";
+                                mui.ajax(url, {
+                                    data: dataa,
+                                    dataType: 'json',//服务器返回json格式数据
+                                    type: 'post',//HTTP请求类型
+                                    success: function (response) {
+                                        if(response.code == 1001){
+                                            mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                            setTimeout(function () {
+                                                window.location.reload()
+                                            },2000)
+                                        }
+                                    },
+                                    error: function (error) {
+                                        //异常处理；
+                                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    }
+                                })
+
+                            })
+                        },
+                        yanshou:function (id) {
+                            $(".addprogress").css("display", "block");
+                            $("#close").on('tap', function () {
+                                $(".addprogress").css("display", "none")
+                            });
+                            $("#add").on('click', function () {
+                                if ($("#remind").val() == '') {
+                                    mui.toast("申请原因不能为空", {duration: 'short', type: 'div'});
+                                    return false;
+                                }
+                                var dataa = {};
+                                console.log(id);
+                                dataa.pro_id = "{$Request.param.guid}";
+                                dataa.guid = id;
+                                dataa.desc = $("#remind").val();
+                                var url = "{:url('erp/design/applycheck')}";
+                                mui.ajax(url, {
+                                    data: dataa,
+                                    dataType: 'json',//服务器返回json格式数据
+                                    type: 'post',//HTTP请求类型
+                                    success: function (response) {
+                                        if(response.code == 1001){
+                                            mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                            $(".addprogress").css("display", "none");
+                                            setTimeout(function () {
+                                                window.location.reload();
+                                            },2000)
+                                        }
+                                    },
+                                    error: function (error) {
+                                        //异常处理；
+                                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    }
+                                })
+
+                            })
+
+                        }
+                    }
+                })
+            }
+        })
+    }
+</script>

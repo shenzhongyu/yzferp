@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>公告明细</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">公告明细</h1>
+</header>
+
+
+<div class="addBoss" >
+    <div class="" style="padding-left: 0.2rem;padding-right: 0.2rem">
+
+        <div class="text-center" style="margin-bottom: 0.5rem;font-size: 0.4rem" id="title"></div>
+
+        <div id="center" style="font-size: 0.32rem;color: black !important;"></div>
+        <div style="margin-top: 0.2rem;text-align: right;margin-right: 0.1rem">
+        <div >
+            <span id="control"></span>
+            <span id="name"></span>
+        </div>
+
+        <span id="time"></span>
+        </div>
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+<div  class="text-center" id="tishi"></div>
+
+
+</div>
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('{:url("",["guid"=>$guid])}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                console.log(response.rows[0].title);
+                dataA.res = response.rows;
+                $("#title").html(response.rows[0].title)
+                $("#center").html(response.rows[0].content)
+                $("#control").html(response.rows[0].jobs_name);
+                $("#name").html(response.rows[0].name);
+                $("#time").html(response.rows[0].create_time);
+                if(!response.rows[0]){
+                    $("#tishi").html("暂无信息")
+                }
+            }
+        })
+    }
+</script>

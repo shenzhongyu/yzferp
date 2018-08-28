@@ -1,0 +1,31 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section >
+        <label class="label_1" style="">菜单:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="title"
+                   data-options="invalidMessage:'格式为汉字',missingMessage:'格式为汉字',required:true,validType:'length[1,25]'" placeholder="请填写菜单"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">微信:</label>
+        <label class="label_2">
+            <input class="easyui-combobox" id="appid"  name="appid" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'id',textField: 'text',required:true,url:'{:url('showAppIdJson')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">tag_id:</label>
+        <label class="label_2">
+            <input class="easyui-combobox"  id="tag_id"  name="tag_id" style="width:80%;" value="1"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/tag_id')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">client_platform_type:</label>
+        <label class="label_2">
+            <input class="easyui-combobox"  id="client_platform_type"  name="client_platform_type" style="width:80%;" value="1"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/client_platform_type')}',method:'get',">
+        </label>
+    </section>
+</form>

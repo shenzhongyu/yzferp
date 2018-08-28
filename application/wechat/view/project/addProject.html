@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>项目信息录入</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+<body>
+<div id="app"v-cloak>
+    <form id="ff" method="post">
+        <div id="nomalinform">
+            <div class="d_top"></div>
+
+            <header class="mui-bar mui-bar-nav ">
+                <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back" ></a>
+                <h1 class="mui-title">项目基本信息</h1>
+            </header>
+
+            <div class="d_both">
+                <div class="d_left">项目名称:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass border_red" maxlength="10" type='text' name="project_name">
+                </div>
+            </div>
+            <div class="d_both">
+                <div class="d_left">预算总工期:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass border_red" maxlength="10" type='text' name="expected_duration">
+                </div>
+            </div>
+            <div class="d_both">
+                <div class="d_left">装修面积:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass border_red" maxlength="10" type='text' name="decoration_area">
+                </div>
+            </div>
+            <div class="d_both">
+                <div class="d_left">工程预算:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass border_red" maxlength="10" type='text' name="project_budget">
+                </div>
+            </div>
+            <div class="d_both">
+                <div class="d_left">工程地址:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass border_red" maxlength="20" type='text' name="project_address">
+                </div>
+            </div>
+            <div class="d_both ">
+                <div class="d_left">装修档次:</div>
+                <div type="text" class="d_right">
+                    <select name="decoration_grade">
+                        <option v-for="a in res.decoration_grade" :value="a.value">{{a.text}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d_both ">
+                <div class="d_left">色彩取向:</div>
+                <div type="text" class="d_right">
+                    <select name="color_orientation">
+                        <option value=1"" v-for="a in res.color_orientation" :value="a.value">{{a.text}}</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="d_both ">
+                <div class="d_left">装修风格:</div>
+                <div type="text" class="d_right">
+                    <select name="decoration_style">
+                        <option value="1" v-for="a in res. decoration_style" :value="a.value">{{a.text}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d_both ">
+                <div class="d_left">装修类型:</div>
+                <div type="text" class="d_right">
+                    <select name="decoration_style">
+                        <option value="1" v-for="a in res.decoration_type" :value="a.value">{{a.text}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d_both ">
+                <div class="d_left">客户来源:</div>
+                <div type="text" class="d_right">
+                    <select name="customer_source">
+                        <option value="1" v-for="a in res.customer_source" :value="a.value">{{a.text}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d_both ">
+                <div class="d_left ofh">项目要求</div>
+                <div type="text" class="d_right">
+                    <textarea name="project_description"></textarea>
+                </div>
+            </div>
+            <div class="d_bottom">
+                <button id="nextbtn" @click="next" type="button">下一步</button>
+            </div>
+        </div>
+
+
+        <div id="personinform" style="display: none;z-index: 2">
+            <header class="mui-bar mui-bar-nav">
+                <a class=" mui-icon mui-icon-left-nav mui-pull-left" @click="leftBack"></a>
+                <h1 class="mui-title">个人信息</h1>
+            </header>
+
+            <div class="d_top"></div>
+            <div class="d_both">
+                <div class="d_left">姓名:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass border_red" maxlength="11" type='text' name="contact_name">
+                </div>
+            </div>
+            <div class="d_both">
+                <div class="d_left">联系电话:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass border_red" maxlength="11" type='text' name="contact_number">
+                </div>
+            </div>
+            <div class="d_both ">
+                <div class="d_left">性别:</div>
+                <div type="text" class="d_right">
+                    <select name="sex">
+                        <option value="1" v-for="a in res.sex_value" :value="a.value">{{a.text}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d_both ">
+                <div class="d_left">与户主关系:</div>
+                <div type="text" class="d_right">
+                    <select name="householder_relation">
+                        <option value="1" v-for="a in res.householder_relation" :value="a.value">{{a.text}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d_both">
+                <div class="d_left">QQ:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass" maxlength="11" type='text' name="customer_qq">
+                </div>
+            </div>
+            <div class="d_both">
+                <div class="d_left">邮箱:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass" maxlength="30" type='text' name="customer_email">
+                </div>
+            </div>
+    </form>
+
+    <div class="d_bottom ">
+        <button class="mui-btn mui-btn-primary w200" @click="d_tioajiao" type="button">提交</button>
+        <button class="ml20 mui-btn mui-btn-danger w200" @click="relay" type="button">重置</button>
+    </div>
+</div>
+</div>
+</body>
+
+</html>
+<script type="text/javascript">
+    var mikkleAjax = {
+        ajaxUrl: "{:url('/erp/project/addProjectEntry')}",
+        dataType: "json",
+
+        init: function (data) {
+            this.post(data);
+        },
+        post: function (data, url, dataType, suc_fn, err_fn) {
+            url = url ? url : this.ajaxUrl;
+            var uri = $.trim(url) + '?' + Math.random();
+            dataType = dataType ? dataType : this.dataType;
+            suc_fn = suc_fn ? suc_fn : this.successFunction;
+            err_fn = err_fn ? err_fn : this.errorFunction;
+            jQuery.ajax({
+                    type: "POST",
+                    url: uri,
+                    async: false,
+                    data: data,
+                    dataType: dataType,
+                    success: function (response) {
+                        suc_fn(response);
+                    },
+                    error: err_fn
+                }
+            );
+        },
+        successFunction: function (response) {
+            if (response.code == 1001) {
+                mui.toast(response.msg, {duration: 'short', type: 'div'});
+                setTimeout(function () {
+                    history.back();
+                },2000)
+            } else {
+                mui.toast(response.msg, {duration: 'short', type: 'div'});
+            }
+        },
+        errorFunction: function () {
+            mui.toast("服务器错误", {duration: 'short', type: 'div'});
+
+        }
+    };
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('../Api/showFieldJsonArray', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'get',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                dataA.res = response;
+
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {
+                        next: function () {
+
+                            if (!( $("input[type='text']").get(0).value)) {
+                                mui.toast("项目名称不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if ($("input[type='text']").get(0).value.match(/[^\u4e00-\u9fa5]/)) {
+                                mui.toast('项目名称只能为汉字', {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if (( $("input[type='text']").get(1).value) == "") {
+                                mui.toast("预算总工期不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if (( $("input[type='text']").get(2).value) == "") {
+                                mui.toast("装修面积不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if (( $("input[type='text']").get(3).value) == "") {
+                                mui.toast("工程预算不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            $("#nomalinform").hide();
+                            $("#personinform").show();
+                            return false;
+                        },
+                        leftBack: function () {
+                            $("#personinform").hide();
+                            $("#nomalinform").show();
+                            return false;
+                        },
+//                        addProBack: function () {
+//                            mui.openWindow({
+//                                url: "{:url('index/index')}"
+//                            })
+//                        },
+                        relay: function () {
+
+                            $("input[type='text']").val("");
+                            $("#app").find("textarea").val("");
+                            var SelectArr = $("select")
+                            for (var i = 0; i < SelectArr.length; i++) {
+                                $('select').prop('selectedIndex', 0);
+                            }
+                            $("#personinform").hide();
+                            $("#nomalinform").show();
+                        },
+                        d_tioajiao: function () {
+
+
+                            if (( $("input[type='text']").get(5).value) == "") {
+                                mui.toast("姓名不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if ($("input[type='text']").get(5).value.match(/[^\u4e00-\u9fa5]/)) {
+
+                                mui.toast('姓名只能为汉字', {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if (( $("input[type='text']").get(6).value) == "") {
+                                mui.toast("联系电话不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if ($("input[type='text']").get(6).value.match(/^[0-9]*$/)) {
+                            } else {
+                                mui.toast('电话号码格式为数字', {duration: 'short', type: 'div'});
+                                return false;
+                            }
+
+                            var ff_data = $("#ff").serialize();
+
+                            mikkleAjax.init(ff_data);
+
+
+                        }
+
+                    }
+                });
+            },
+
+            error: function (xhr, type, errorThrown) {
+                //异常处理；
+                return false;
+            }
+        });
+
+
+    };
+</script>
+
+
+
+
+
+
+
+

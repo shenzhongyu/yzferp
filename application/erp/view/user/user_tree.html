@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/icon.css">
+    <title>通讯录</title>
+</head>
+<body>
+
+    <div style="width: 13%;float: left">
+        <table id="tree" class="easyui-datagrid" title='{$tree_title}' ></table>
+    </div>
+    <div style="width:84%;float: left">
+        <table id="list" class="easyui-datagrid" title='{$list_title}' ></table>
+        <div id="dialog_div" ></div>
+    </div>
+    <script type="text/javascript" src="__EASYUI151__/jquery.min.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/easyui-lang-zh_CN.js"></script>
+    <script>
+        $('#list').datagrid({
+            url:'{$data_url}',
+            columns:[[{ field: 'photo', title: '员工照片', width: '100', align: 'center', sortable: true,}
+        , { field: 'name', title: '用户姓名', width: '100', align: 'center', sortable: true}
+        , { field: 'department_type', title: '部门类型',width: '180', align: 'center', sortable: true,}
+        , { field: 'department_id', title: '所属部门',width: '180', align: 'center', sortable: true ,}
+        , { field: 'jobs_id', title: '所属职位', width: 180,align: 'center', sortable: true,}
+        , { field: 'role_id', title: '所属角色', width: 180,align: 'center', sortable: true ,}
+        , { field: 'mobile', title: '用户手机', width: '100', align: 'center', sortable: true}
+        , { field: 'create_time', title: '创建时间', width: 180,align: 'center', sortable: true }
+            ]]
+        });
+        $('#tree').treegrid({
+            url:'{$tree_url}',
+            idField:'id',
+            treeField:'name',
+            columns:[
+                { field: 'department_id', title: '部门名称',width: '180', align: 'center', sortable: true ,}
+            ],
+            onDblClickRow:function(row){
+
+            }
+        });
+    </script>
+</body>
+</html>

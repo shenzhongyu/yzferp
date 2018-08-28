@@ -1,0 +1,14 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <div id="dep" style="width: 90%;margin-top:10px;padding:0px 5% 10px 5%;border: 1px solid #95B8E7;">
+        <p style="margin-left: 10px;">预算书模板选择</p>
+        {volist name="bookDefault" id="vo"  empty="暂时没有预算书封面信息，请联系管理员添加"}
+        <label><input name="book" {$i==1 ? 'checked' : ''} type="radio" value="{$vo.guid}" />{$vo.style} </label>
+        {/volist}
+        <br/>
+        <p style="margin-left: 10px;">固定费率选择</p>
+        {volist name="rateDefault" id="data"  empty="暂时没有固定费率，请联系联系管理员添加"}
+        <label style="width: 40%;display: inline-block"><input name="rate"   {$data.type=='1' ? 'checked disabled' : ''  }    type="checkbox" value="{$data.guid}" />{$data.rate_name}</label>
+        {$i%2!=0 ? '': '<br/>' }
+        {/volist}
+    </div>
+</form>

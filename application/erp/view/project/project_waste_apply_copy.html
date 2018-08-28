@@ -1,0 +1,155 @@
+project_audit.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+{block name="columns"}
+[[ { field: 'project_name', title: '项目名称', width: '15%', align: 'center', sortable: true}
+, { field: 'name', title: '申请人', width: '15%', align: 'center', sortable: true}
+, { field: 'apply_desc', title: '申请说明', width: '15%', align: 'center', sortable: true}
+, { field: 'operate', title: '操作', width: '20%',align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+]]{/block}
+
+{block name="filter"}[
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber']},
+{ field: 'department_name', type: 'combobox', options: {
+url:'{:url("Project/showDepartmentData")}',
+valueField:'guid',
+textField:'department_name',
+panelHeight:'auto',
+onChange: function (value) {
+if (value == ''|| value == 'all' ) {
+$(mikkleClass.datagrid).datagrid('removeFilterRule', 'department_id');
+} else {
+$(mikkleClass.datagrid).datagrid('addFilterRule', {
+field: 'department_id',
+op: 'equal',
+value: value,
+type: 'text'
+});
+}
+$(mikkleClass.datagrid).datagrid('doFilter');
+}
+}
+},
+{ field: 'name', type: 'combobox',options: {
+url:'{:url("Project/showUserData")}',
+valueField:'uuid',
+textField:'name',
+panelHeight:'auto',
+onChange: function (value) {
+if (value == ''|| value == 'all' ) {
+$(mikkleClass.datagrid).datagrid('removeFilterRule', 'uuid');
+} else {
+$(mikkleClass.datagrid).datagrid('addFilterRule', {
+field: 'uuid',
+op: 'equal',
+value: value,
+type: 'text'
+});
+}
+$(mikkleClass.datagrid).datagrid('doFilter');
+}
+}
+},
+{:widget('Easyui/showFilter', ["decoration_grade","combobox"])}
+{:widget('Easyui/showFilter', ["decoration_style","combobox"])}
+{:widget('Easyui/showFilter', ["decoration_type","combobox"])}
+{:widget('Easyui/showFilter', ["color_orientation","combobox"])}
+{:widget('Easyui/showFilter', ["customer_source","combobox"])}
+
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["decoration_grade","decoration_grade"] )}
+{:widget('Easyui/showAll', ["decoration_style","decoration_style"] )}
+{:widget('Easyui/showAll', ["decoration_type","decoration_type"] )}
+{:widget('Easyui/showAll', ["color_orientation","color_orientation"] )}
+{:widget('Easyui/showAll', ["customer_source","customer_source"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'operate') {
+return '<a href="javascript:;" onclick="audit(&apos;'+row.guid+'&apos;,&apos;'+row.project_id+'&apos;)">审核</a>';
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+<script>function look(t){
+    window.parent.addTab('项目明细','{:url("Project/showProjectOfCompany")}/guid/'+t,'close');
+};
+function audit(id,guid) {
+    $(mikkleClass.dialog).dialog({
+        title: '废单审核',
+        iconCls: 'icon-save',
+        width: 400,
+        height: 280,
+        cache: false,
+        href: '{:url("Project/showWasteApplyEditCopy")}/guid/'+guid,
+        modal: true,
+        collapsible: false,
+        minimizable: false,
+        resizable: false,
+        maximizable: false,
+        buttons:[
+            {
+                text:' 确 认  ',
+                iconCls:'icon-save',
+                handler: function(){
+                    $(mikkleClass.dialog).find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post('{:url("Project/showWasteApplyEditCopy")}/guid/'+id, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg, {icon: 3});
+                                } else{
+                                    layer.msg(data.msg, {icon: 1});
+                                    $(mikkleClass.dialog).dialog('close');
+                                    mikkleClass.refresh();
+                                }
+                            }, 'json');
+                            return false;
+                        }
+                    });
+                }
+            },
+            {
+                text:' 关 闭  ',
+                iconCls:'icon-clear',
+                handler: function(){
+                    $(mikkleClass.dialog).dialog('close');
+                }
+            }],
+    });
+};
+</script>
+
+{/block}
+{block name="my_db"}
+{/block};
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

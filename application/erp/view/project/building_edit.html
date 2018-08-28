@@ -1,0 +1,33 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">楼盘名称:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="building_name"
+                   data-options="validType:'length[1,14]'" placeholder="请填写楼盘名称"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">楼盘地址:</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text"  name="building_adress" style="width:80%" placeholder="请填写楼盘地址"
+                   data-options="required:true,validType:'length[1,20]'">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">楼盘均价:</label>
+        <label class="label_2">
+            <input class="easyui-combobox"   name="building_price" style="width:80%;" value="1"
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/building_price')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">房产信息:</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text"  name="room_number" style="width:80%" placeholder="请填写房产信息"
+                   data-options="validType:'length[1,50]'">
+        </label>
+    </section>
+
+</form>
+

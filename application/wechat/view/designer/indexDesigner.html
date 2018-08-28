@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>首页</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+        .yellowgreen {
+            color: yellowgreen;
+        }
+
+        .brown {
+            color: brown;
+        }
+
+        .green {
+            color: green;
+        }
+
+        .firebrick {
+            color: firebrick;
+        }
+
+        .darkorange {
+            color: darkorange;
+        }
+
+        .ml10 {
+            margin-left: 0.1rem;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <header class="mui-bar mui-bar-nav ">
+        <h1 class="mui-title">首页</h1>
+    </header>
+    <div class="pageErp">
+
+        <div class="mui-content">
+            <nav class="mui-bar mui-bar-tab ">
+                <a class="mui-tab-item mui-active" href="#tabbar">
+                    <span class="mui-icon mui-icon-home"></span>
+                    <span class="mui-tab-label">首页</span>
+                </a>
+                <a class="mui-tab-item" href="#tabbar-with-chat">
+                    <span class="mui-icon mui-icon-email"><span class="mui-badge">9</span></span>
+                    <span class="mui-tab-label">消息</span>
+                </a>
+                <a class="mui-tab-item" href="#tabbar-with-contact">
+                    <span class="mui-icon mui-icon-contact"></span>
+                    <span class="mui-tab-label">我</span>
+                </a>
+
+
+            </nav>
+            <div id="tabbar" class="mui-control-content mui-active">
+
+
+                <div class="mt50 fz12  index_top pageIndex">
+                    <span>正在查看：</span><span style="color: firebrick"></span>
+                </div>
+                <div class="pageIndex">
+                    <div></div>
+                </div>
+                <ul class="mui-table-view">
+                    <li class="mui-table-view-cell mui-media" v-for="item in res" @click="kehuluru(item.url)">
+                        <a href="javascript:;">
+                    <span class="mui-icon fz24 iconfont  mui-media-object mui-pull-left "
+                          :class="item.icon"></span>
+
+                            <div class="mui-media-body" style="line-height: 42px">
+                                {{item.menu_name}}
+                            </div>
+                        </a>
+                    </li>
+
+                </ul>
+
+
+                <div class="index_center index_pb90 "style="margin-bottom: 30px">
+                    <div class="index_type index_a  mt10 ml10" v-for="item in two" :class="item.icon_class">
+                        <span>{{item.name}}</span></div>
+
+
+
+                </div>
+            </div>
+            <div id="tabbar-with-chat" class="mui-control-content mt50">
+                <div class="mui-content" style="margin-left: -0.1rem;margin-right: -0.1rem">
+                    <ul class="mui-table-view mui-grid-view mui-grid-9  background_white">
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3" id="kehuluru"
+                            @click="kehu()"><a
+                                href="javascript:;">
+                            <span class="mui-icon mui-icon-plus" style="color: burlywood;"></span>
+                            <div class="mui-media-body fz12">项目录入</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3" id="projectInf"
+                            @click="projectInf()"><a href="javascript:;">
+
+                            <span class="mui-icon  iconfont icon-huidan " style="color: burlywood;"></span>
+                            <div class="mui-media-body fz12 kaifaing">我的项目</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3" @click="projectPending">
+                            <a
+                                    href="javascript:;" id="projectPending">
+                                <span class="mui-icon  iconfont icon-qudaobianji " style="color: burlywood;"></span>
+                                <div class="mui-media-body fz12 kaifaing">转部审核</div>
+                            </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"
+                            @click="transferRequest"><a
+                                href="javascript:;">
+                            <span class="mui-icon  iconfont icon-gonggongchikehu " style="color: green;"></span>
+                            <div class="mui-media-body fz12 kaifaing">部门项目</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="javascript:;">
+                            <span class="mui-icon  iconfont icon-duanxin " style="color: green;"></span>
+                            <div class="mui-media-body fz12 kaifaing">批量短信</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="javascript:;">
+                            <span class="mui-icon  iconfont icon-kaoqin " style="color: firebrick;"></span>
+                            <div class="mui-media-body fz12 kaifaing">公司考勤</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="javascript:;">
+                            <span class="mui-icon  iconfont icon-kaoqin " style="color: yellowgreen;"></span>
+                            <div class="mui-media-body fz12 kaifaing">外出考勤</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="javascript:;">
+                            <span class="mui-icon  iconfont icon-639 " style="color: forestgreen;"></span>
+                            <div class="mui-media-body fz12 kaifaing">打卡明细</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="javascript:;">
+                            <span class="mui-icon  iconfont icon-zijin " style="color: #337ab7;"></span>
+                            <div class="mui-media-body fz12 kaifaing">资金流量表</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="javascript:;">
+                            <span class="mui-icon  iconfont icon-qiandan-copy " style="color: brown;"></span>
+                            <div class="mui-media-body fz12 kaifaing">废单库</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="javascript:;">
+                            <span class="mui-icon  iconfont icon-sheji " style="color: forestgreen;"></span>
+                            <div class="mui-media-body fz12 kaifaing">设计一览表</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="javascript:;">
+                            <span class="mui-icon  iconfont icon-sousuo1 " style="color: darkorange;"></span>
+                            <div class="mui-media-body fz12 kaifaing">搜索客户</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="javascript:;"
+                                                                                               id="photo">
+                            <span class="mui-icon  iconfont icon-paizhao " style="color: firebrick;"></span>
+                            <div class="mui-media-body fz12 kaifaing">现场拍照</div>
+                        </a></li>
+                        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3" id="foFree"
+                            @click="foFree">
+                            <a
+                                    href="javascript:;">
+                                <span class="mui-icon  iconfont icon-store " style="color: firebrick;"></span>
+                                <div class="mui-media-body fz12 kaifaing">员工信息录入</div>
+                            </a></li>
+
+
+                    </ul>
+                </div></div>
+            <div  class="mui-control-content mt50" id="tabbar-with-contact">
+                <div class="text-center">
+                    <button style="width: 80%;height:0.8rem;background: #4cd964;position: fixed;bottom: 1rem;right: 10%" @click="pushoff">修改密码</button>
+                </div>
+
+                <div class="text-center">
+                    <button style="width: 80%;height:0.8rem;background: #EAEAEA;position: fixed;bottom: 1.5rem;right: 10%" @click="pushoff">退出登录</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('{:url("/wechat/index/getMenuJsonByGroup")}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                console.log(response)
+
+                dataA.two = responseTwo;
+                dataA.res = response;
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {
+                        kehuluru: function (url) {
+                            mui.openWindow({
+                                url: url
+                            })
+                        },
+                        kehu: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/addProjectD')}"
+                            })
+                        },
+                        projectInf: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/projectListDesigner')}"
+                            })
+                        },
+                        projectPending: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/projectPendingD')}"
+                            })
+                        },
+                        foFree: function () {
+                            mui.openWindow({
+                                url: "{:url('workerInfo')}"
+                            });
+                        },
+                        transferRequest: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/projectListDesignerCom')}"
+                            })
+                        },
+                        pushoff:function () {
+
+                            mui.alert("确定退出吗？", "", "确定", "", "div");
+                            $(".mui-popup-button-bold").on('tap',function () {
+
+                                mui.ajax('{:url("api/system/logout")}', {
+
+                                    dataType: 'json',//服务器返回json格式数据
+                                    type: 'post',//HTTP请求类型
+                                    success: function (response) {
+                                        mui.toast("退出成功",{ duration:'short', type:'div' });
+                                        setTimeout(function () {
+                                            mui.openWindow({
+                                                url: "{:url('index/login')}"
+                                            },90000)
+                                        })
+                                    }
+                                })
+
+
+
+                            })
+                        }
+
+                    },
+                    method: function () {
+
+                    }
+                });
+
+
+            }
+        });
+
+
+        responseFirst = [
+            {
+                "name": "项目录入",
+                "content": "共一人，今日跟踪0人",
+                "url": "{:url('designer/addProjectD')}",
+                "icon_class": "icon-dianhua1 yellowgreen"
+            },
+            {
+                "name": "我的项目",
+                "content": "",
+                "url": "{:url('designer/projectListDesigner')}",
+                "icon_class": "icon-huidan brown"
+            },
+            {
+                "name": "转部审核",
+                "content": "",
+                "url": "{:url('designer/projectPendingD')}",
+                "icon_class": "icon-qudaobianji brown"
+            },
+            {
+                "name": "部门项目",
+                "content": "",
+                "url": "{:url('designer/projectListDesignerCom')}",
+                "icon_class": "icon-gonggongchikehu green"
+            },
+            {
+                "name": "待签订合同项目",
+                "content": "",
+                "url": "{:url('designer/contract')}",
+                "icon_class": "icon-huidan"
+            },
+            {
+                "name": "合同签订审核",
+                "content": "",
+                "url": "{:url('designer/contractask')}",
+                "icon_class": "icon-huidan"
+            },
+            {
+                "name": "已签订合同项目",
+                "content": "",
+                "url": "{:url('designer/contracted')}",
+                "icon_class": "icon-sousuo1 darkorange"
+            },
+//            {
+//                "name": "员工信息录入",
+//                "content": "",
+//                "url": "{:url('designer/addProjectD')}",
+//                "icon_class": "icon-store firebrick"
+//            }
+
+        ];
+        var responseTwo = [
+            {
+                "name": "业务分析",
+                "content": "",
+                "url": "{:url('')}",
+                "icon_class": " index_a"
+            },
+            {
+                "name": "设计分析",
+                "content": "",
+                "url": "{:url('')}",
+                "icon_class": " index_b"
+            },
+            {
+                "name": "工程分析",
+                "content": "",
+                "url": "{:url('')}",
+                "icon_class": " index_c"
+            },
+            {
+                "name": "材料分析",
+                "content": "",
+                "url": "{:url('')}",
+                "icon_class": " index_d"
+            }
+        ]
+
+
+    }
+</script>
+
+

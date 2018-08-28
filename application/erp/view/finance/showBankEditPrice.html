@@ -1,0 +1,28 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label  class="label_1">账号:</label>
+        <label class="label_2">
+            {$title}
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">当前余额:</label>
+        <label class="label_2">
+            {$balance_price} 元
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">更改余额:</label>
+        <label class="label_2">
+            <input class="easyui-textbox" type="text" name="balance_price" id="balance_price"
+                   data-options="required:true"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">更改原因:</label>
+        <label class="label_2">
+            <textarea placeholder="请填写原因" id="desc" name="desc" style="width:80%;height: 60px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+</form>

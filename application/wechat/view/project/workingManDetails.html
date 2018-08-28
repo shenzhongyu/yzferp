@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>施工人详情</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">施工人详情</h1>
+    <!--<a id="menu" class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>-->
+    <!--<a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right mui-btn-primary mui-btn-block" id="openPopover" style="font-size: 24px;"></a>-->
+</header>
+
+
+<div class="addBoss">
+    <div v-if="res==''" class="text-center">暂无信息</div>
+    <div class="addFirst" v-for="item in res" v-cloak>
+        <div class="addPro">施工人详情</div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">部门：</div>
+            <div class="detailRightOnly">
+                {{item.department_name}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">姓名：</div>
+            <div class="detailRightOnly">
+            {{item.name}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">职务：</div>
+            <div class="detailRightOnly">
+{{item.jobs_name}}
+            </div>
+        </div>
+
+        <div class="detailBoss ">
+
+            <div class="detailLeftOnly">联系电话：</div>
+            <div class="detailRightOnly">
+                {{item.mobile}}
+            </div>
+        </div>
+
+        <!--<div class="detailBoss " >-->
+
+            <!--<div class="detailLeftOnly">操作：</div>-->
+            <!--<div class="detailRightOnly" >-->
+               <!--<a @click="headMan(item.guid)">设为负责人</a>-->
+            <!--</div>-->
+        <!--</div>-->
+
+    </div>
+
+    </div>
+</div>
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        var url = "{:url('erp/build_none/looksupervisionuser',['guid'=>$guid,'pro_id'=>$pro_id])}";
+        mui.ajax(url, {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                dataA.res = response;
+                var vue = new Vue({
+                    el: '#details',
+                    data: dataA,
+                    methods: {
+
+                    }
+                })
+            }
+        })
+    }
+</script>

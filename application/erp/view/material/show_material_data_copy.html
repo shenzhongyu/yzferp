@@ -1,0 +1,133 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+    <link rel="stylesheet" href="__ERP__/css/submit.css">
+    {include file="base/js" /}
+    <!--<script type="text/javascript" src="__EASYUI151__/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="__EASYUI151__/jquery.easyui.min.js"></script>-->
+    <!--<script type="text/javascript" src="__EASYUI151__/easyui-lang-zh_CN.js"></script>-->
+    <!--<script type="text/javascript" src="__LAYER__/layer.js"></script>-->
+    <script type="text/javascript" src="__STATIC__/daterangepicker/require.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/datagrid-filter.js"></script>
+</head>
+<body style="width: 99%">
+<p>
+    <button style="margin-left: 10px;cursor: pointer" onclick="addData()">批量移入</button>
+    <button style="margin-left: 10px;cursor: pointer;" onclick="showAll()">显示全部</button>
+</p>
+<div style="width: 20%;float: left">
+    <table id="tree" class="easyui-datagrid" title='材料类别列' ></table>
+</div>
+<div style="width:79%;float: left">
+    <table id="dg" class="easyui-datagrid" title='主材列' ></table>
+    <div id="dialog_div" ></div>
+</div>
+
+<script>
+    $(function(){
+        $('#tree').treegrid({
+            url:'{$tree_url}',
+            idField:'id',
+            treeField:'name',
+            columns:[[
+                {field:'name',title:'材料类别',width:'100%'}
+            ]],
+            onDblClickRow:function(row){
+                var arr;
+                if(row.children){
+                    arr=[];
+                    arr.push('"'+row.id+'"');
+                    getArr(row.children,arr);
+                }else{
+                    arr='"'+row.id+'"';
+                }
+                $('#dg').datagrid({
+                    queryParams: {
+                        filterRules:'[{"field":"category_id","op":"in","value":['+arr+'],"type":"text"}]'
+                    }
+                });
+
+            }
+        });
+        $('#dg').datagrid({
+            url:'{$list_url}',
+            height:600,
+            rownumbers:true,
+            singleSelect:false,
+            pagination:true,
+            method:'get',
+            pageSize:20,
+            columns:[[{ field: "chk", "checkbox": true}
+                ,{ field: 'name', title: '材料名称', width: 100, align: 'center'}
+                ,{ field: 'specifications', title: '规格', width: 100,align: 'center'}
+                ,{ field: 'material_pin', title: '品牌', width: 100,align: 'center'}
+                ,{ field: 'material_version', title: '型号', width: 100,align: 'center'}
+                ,{field:'offer_price',title:'单价(元)',width:120,align:'center',formatter:function(value,row){
+                    var value=sumPrice(row);
+                    return value.toFixed(2);
+                }}
+                ,{field:'item_status',title:'项目状态',width:120,align:'center',
+                    formatter:function(value,row,index){
+                        if(value=="1"){
+                            return '<a style="color: #0c9d72">已移入</a>'
+                        }else{
+                            return '<a>未移入</a>';
+                        }
+                    }
+                }
+            ]]
+        });
+
+    });
+    function sumPrice(obj) {
+        //算法1
+        var u_value=Number(obj.unit_price)*(1+Number(obj.unit_profit)); //主材报价
+        var a_value=Number(obj.auxiliary_unit)*(1+Number(obj.auxiliary_profit)); //辅材报价
+        var p_value=Number(obj.artificial_price)*(1+Number(obj.artificial_profit)); //人工报价
+        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //损耗报价
+        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //机械费报价
+        //算法2
+//        var u_value=Number(obj.unit_price)/(1-Number(obj.unit_profit)); //主材报价
+//        var a_value=Number(obj.auxiliary_unit)/(1-Number(obj.auxiliary_profit)); //辅材报价
+//        var p_value=Number(obj.artificial_price)/(1-Number(obj.auxiliary_profit)); //人工报价
+//        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //损耗报价
+//        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //机械费报价
+        return u_value+a_value+p_value+l_value+m_value;
+    }
+    function getArr(obj,arr){
+        $.each(obj,function(i,t){
+            if(t.children){
+                arr.push('"'+t.id+'"');
+                getArr(t.children,arr);
+            }else{
+                arr.push('"'+t.id+'"');
+            }
+        })
+    }
+    function showAll() {
+        $('#dg').datagrid('load',{});
+
+    }
+    function addData(){
+        var rows = $('#dg').datagrid('getSelections');
+        var arr=[];
+        $.each(rows,function (i,t) {
+            arr.push(t.guid);
+        });
+        var url='{:url("savaData")}';
+        $.post(url,{budget_id:'{$guid}',material_id:arr,'type':'2'},function(obj){
+            if(obj.code=="1001"){
+                layer.msg('添加成功', {icon: 1});
+                $('#dg').datagrid('reload');
+                mikkleClass.refresh();
+            }else{
+                layer.msg('添加失败，请联系管理员', {icon: 3});
+            }
+        },"json")
+    }
+</script>
+</body>
+</html>

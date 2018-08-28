@@ -1,0 +1,15 @@
+<form id="fm" style="padding:10px 30px;" method="post" name="form">
+    <section>
+        <label class="label_1">审核:</label>
+        <label class="label_2">
+            <input class="easyui-combobox"  id="dep_manager"  name="examine_status" style="width:80%;" value="0"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/audit_status')}',method:'get',">
+        </label>
+    </section>
+    <section style="margin-top: 10px;">
+        <label class="label_1">审批说明:</label>
+        <label class="label_2">
+            <textarea placeholder="请填写审核说明" name="examine_desc" style="width:80%;height: 60px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+</form>

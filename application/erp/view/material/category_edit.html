@@ -1,0 +1,24 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section >
+        <label class="label_1" >归属分类:</label>
+        <label class="label_2" >
+            <input class="easyui-combotree" type="text" name="pid" style="width:100%;" value="0"
+                   data-options="required:true,url:'{:url('showCateJson')}',method:'get'">
+            </input>
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >类别名称:</label>
+        <label class="label_2" >
+            <input class="easyui-validatebox" type="text" name="category_name"
+                   data-options="required:true,validType:'length[1,80]'"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">说明:</label>
+        <label class="label_2">
+            <textarea placeholder="请填写说明" name="category_desc" style="width:80%;height: 60px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+</form>

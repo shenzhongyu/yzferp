@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<script src="/static/mui/js/jQuery%20v3.1.1.js"></script>
+		<script src="/static/mui/js/mui.js"></script>
+		<script src="/static/mui/js/common.js"></script>
+		<!--标准mui.css-->
+		<link href="/static/mui/css/mui.min.css" rel="stylesheet"/>
+		<!--App自定义的css-->
+		<!--<link rel="stylesheet" type="text/css" href="css/app.css"/>-->
+		<style type="text/css">
+			*{
+				list-style: none;
+				font-family: "微软雅黑";
+			}
+			html{
+				font-size: 10px;
+			}
+			body{
+			    background-color: white;.
+			}
+			.mui-content{
+				background-color: white;
+			}
+			.mui-bar-nav{
+				background-color: #3385F5;
+			}
+			.mui-action-menu{
+				background-color: #3385F5;
+				color: white;
+			}
+		    #topPopover {
+				position: fixed;
+				top: 1.6rem;
+				right: 0.6rem;
+			}
+			#topPopover .mui-popover-arrow {
+				left: auto;
+				right: 0.6rem;
+			}
+
+			.mui-popover {
+				height: 20rem;
+				width: 80%;
+				background-color: white;
+			}
+			a{
+				background: white;
+			}
+			.a-upload {
+   				 padding: 4px 10px;
+     			line-height: 20px;
+    			position: relative;
+    			cursor: pointer;
+    			color: #888;
+    			background: #fafafa;
+    			border: 1px solid #ddd;
+    			border-radius: 4px;
+    			overflow: hidden;
+    			display: inline-block;
+    			*display: inline;
+    			*zoom: 1
+			}
+
+			.a-upload  input {
+    			position: absolute;
+    			font-size: 100px;
+   			 	right: 0;
+    			top: 0;
+    			opacity: 0;
+    			filter: alpha(opacity=0);
+   				cursor: pointer
+			}
+
+			.a-upload:hover {
+    			color: #444;
+    			border-color: #ccc;
+    			text-decoration: none
+			}
+			.mui-table-view-cell{
+				position:inherit;
+			}
+			.mui-table-view-cell>a:not(.mui-btn){
+				margin: 0 0;
+			}
+			.mui-popover .mui-table-view{
+				background-color: white;
+			}
+		</style>
+	</head>
+	<body>
+
+		<!--上传-->
+			<form id= "uploadForm" >
+				<li id="filevalue" class="mui-table-view-cell">
+	   				<a href="javascript:;" class="a-upload">
+   			 			<input type="file" name="file" id="file"  multiple="multiple" onchange="upLoad()">
+   						<span id="spState">附件上传</span>
+   						<!--<span class="mui-icon mui-icon-paperclip mui-pull-right"></span>-->
+					</a>
+				</li>
+			</form> 
+		</div>
+	</body>
+
+	<script type="text/javascript">
+        var baseServerUrl="http://114.215.84.205:8082";
+	        var fileIds=new Array(5);
+	        var fileNames=new Array(5);
+	        var fileDeleteStates=[1,1,1,1,1];
+	        var maxUploadFileCount=5;
+		    var currentIssueType= "";
+			var issueId = null;
+
+
+
+
+        function upLoad(){
+//			    var delt ={}
+            var formData = new FormData($("#uploadForm")[0]);
+            var url=""
+            $.ajax({
+                url:url,
+                type: 'POST',
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend:function(){
+                    spState.innerHTML="正在上传附件...";
+                },
+                complete:function(){
+                    spState.innerHTML="上传附件完毕";
+                },
+                success: function (data) {
+                    if(data.code == 1001 && data.data!=null){
+                        var fileId = data.data.id;
+                        var fileName = data.data.path;
+						mui.alert(fileName);
+
+
+                    }
+                },
+                error: function (returndata){
+                    mui.alert("上传附件失败");
+                }
+            });
+        }
+
+			
+//
+	</script>
+</html>	

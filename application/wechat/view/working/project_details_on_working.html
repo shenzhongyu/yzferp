@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>项目明细</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">项目明细</h1>
+</header>
+
+
+<div class="addBoss" v-cloak>
+    <div class="addFirst" v-for="item in res ">
+        <!--<div class="addPro ">施工内容</div>-->
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">工程名称：</div>
+            <div class="detailRightOnly">
+                {{item.name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">单位：</div>
+            <div class="detailRightOnly">
+                {{item.unit}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+            <div class="detailLeftOnly">数量：</div>
+            <div class="detailRightOnly">
+                {{item.number}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">单价：</div>
+            <div class="detailRightOnly">
+            {{item.control_price}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly ">金额：</div>
+            <div class="detailRightOnly">
+                {{item.price_num}}
+            </div>
+        </div>
+        <div class="detailBoss ">
+
+            <div class="detailLeftOnly">说明：</div>
+            <div class="detailRightOnly">
+                {{item.desc}}
+            </div>
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+<div v-if="res==''" class="text-center">暂无信息</div>
+
+
+</div>
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax("{:url('erp/build_none/lookbuilddetailed',['pro_id'=>$pro_id,'id'=>$guid])}", {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                dataA.res = response;
+                var vue = new Vue({
+                    el: '#details',
+                    data: dataA,
+                    methods: {
+                        deletefabao:function (id) {
+
+                            mui.ajax('{:url("erp/build_none/delbuilduser")}', {
+                                data: {id: id},
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+                                success: function (response) {
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    if (response.code == 1001) {
+                                        setTimeout(function () {
+                                            history.back()
+                                        },2000)
+                                    }
+                                }
+                            })
+                        }
+
+
+                    }
+                })
+            }
+        })
+    }
+</script>

@@ -1,0 +1,40 @@
+
+<table id="build_user">
+</table>
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $('#build_user').datagrid({
+            url:'{$url}',
+            height:315,
+            rownumbers:true,
+            singleSelect:true,
+            pagination:false,
+            method:'post',
+            columns:[[
+                {field:'department_name',title:'部门',width:'20%',align:'center'},
+                {field:'name',title:'姓名',width:'20%',align:'center'},
+                {field:'jobs_name',title:'职务',width:'20%',align:'center'},
+                {field:'mobile',title:'联系电话',width:'20%',align:'center'},
+                {field:'op',title:'操作',width:'20%',align:'center',
+                    formatter:function (value,row,index) {
+                        return '<a href="javascript:;" onclick="delBuildUser(&apos;'+row.guid+'&apos;)">撤销分配</a>';
+
+                    }
+                }
+            ]]
+        });
+    })
+    function delBuildUser(a) {
+        var url="{:url('delBuildUser')}";
+        $.post(url,{id:a},function (data) {
+            if(data.code=="1001"){
+               layer.msg(data.msg,{icon:1});
+                $('#build_user').datagrid("reload");
+            }else{
+                layer.msg(data.msg,{icon:2});
+            }
+        },'json')
+    }
+</script>

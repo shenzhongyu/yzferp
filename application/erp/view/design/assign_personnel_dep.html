@@ -1,0 +1,70 @@
+
+<p style="padding-left: 10px;"><a >项目名称：{$project_name}</a></p>
+<table id="dg">
+    <!--data-options="rownumbers:true,singleSelect:true,pagination:true,url:'{$url}',method:'get'">-->
+    <!--<thead>-->
+    <!--<tr>-->
+    <!--<th data-options="field:'department_name',width:120,align:'center'">部门</th>-->
+    <!--<th data-options="field:'name',width:120,align:'center'">姓名</th>-->
+    <!--<th data-options="field:'jobs_name',width:120,align:'center'">职务</th>-->
+    <!--<th data-options="field:'operate',width:125,align:'center',formatter:function(value,row,index){   return '<a href=&apos;'&apos;'>指定</a>' }">操作</th>-->
+    <!--</tr>-->
+    <!--</thead>-->
+</table>
+<div id="button" style="margin-top: 15px;text-align: right">
+    <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton" onclick="appointUser()"> 确 定 分 配 </a>
+    <!--<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">取 消 分 配</a>-->
+</div>
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $('#dg').datagrid({
+            url:'{$url}',
+            height:315,
+            rownumbers:true,
+            singleSelect:true,
+            pagination:false,
+            method:'get',
+            columns:[[
+                {field:'department_name',title:'部门',width:120,align:'center'},
+                {field:'name',title:'姓名',width:120,align:'center'},
+                {field:'jobs_name',title:'职务',width:120,align:'center'},
+                {field:'trace_num',title:'当前跟踪量',width:120,align:'center', sortable: true},
+                {field:'operate',title:'选择',width:125,align:'center',formatter:
+                    function(value,row,index){
+                        console.log(row.check);
+                        if(row.check=="1"){
+                            return '<input type="checkbox" checked="checked" name="ch" value="'+row.uuid+'" > ';
+                        }else{
+                            return '<input type="checkbox" name="ch" value="'+row.uuid+'" > ';
+                        }
+                    }
+                }
+            ]]
+        });
+    })
+    function appointUser(a){
+        var arr=[];
+        $.each($("input[name='ch']"),function(i,n){
+            if ($(n).prop("checked")==true){
+                arr.push($(n).val());
+            }
+        });
+        $.ajax({
+            url: "{:url('addComplaintUuid')}",
+            type: "post",
+            data: {guid:'{$guid}',related_uuid:arr,action:'{$action}'},
+            dataType: "json",
+            success: function(obj) {
+                if(obj.code=="1001"){
+                    layer.msg(obj.msg, {icon: 1});
+                    $(mikkleClass.dialog).dialog('close');
+                    mikkleClass.refresh();
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            },
+        });
+    }
+</script>

@@ -1,0 +1,100 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label for="pid" class="label_1">父节点:</label>
+        <label for="pid" class="label_2">
+            <input class="easyui-combotree" type="text" name="pid" style="width:100%;" value="0"
+                   data-options="required:true,url:'{:url('showNodeJson')}',method:'get'">
+            </input>
+        </label>
+    </section>
+
+    <section>
+        <label for="node_name" class="label_1">节点:</label>
+        <label for="node_name" class="label_2">
+            <input class="easyui-validatebox" type="text" name="node_name"
+                   data-options="required:true,validType:'length[1,20]'" placeholder="请填写节点"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label for="node_desc" class="label_1">节点备注:</label>
+        <label for="node_desc" class="label_2">
+            <input class="easyui-validatebox" type="text" name="node_desc"
+                   data-options="required:false,validType:'length[1,255]'" placeholder="请填写节点备注"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label for="module_name" class="label_1">模块:</label>
+        <label for="module_name" class="label_2">
+            <input class="easyui-validatebox" type="text" name="module_name"
+                   data-options="required:true,validType:'length[1,20]'" placeholder="请填写模块"
+                   style="width: 80%">
+        </label>
+    </section>
+
+    <section>
+        <label for="control_name" class="label_1">控制器:</label>
+        <label for="control_name" class="label_2">
+            <input class="easyui-validatebox" type="text" name="control_name"
+                   data-options="required:true,validType:'length[1,20]'" placeholder="请填写控制器"
+                   style="width:  80%">
+        </label>
+    </section>
+
+    <section>
+        <label for="action_name" class="label_1">操作:</label>
+        <label for="action_name" class="label_2">
+            <input class="easyui-validatebox" type="text" name="action_name"
+                   data-options="required:true,validType:'length[1,40]'" placeholder="请填写操作"
+                   style="width:  80%">
+        </label>
+    </section>
+
+    <section>
+        <label for="icon" class="label_1">图标:</label>
+        <label for="icon" class="label_2">
+            <input class="easyui-validatebox" type="text" name="icon" data-options="validType:'length[3,50]'"
+                   style="width: 80%;">
+        </label>
+    </section>
+
+    <section>
+        <label for="auth_grade" class="label_1">浏览权限:</label>
+        <label for="auth_grade" class="label_2">
+            <input class="easyui-validatebox" type="number" name="auth_grade" data-options="validType:['number']"
+                   placeholder="请填写权限" style="width: 80%">
+        </label>
+    </section>
+
+    <section>
+        <label for="group" class="label_1">分组:</label>
+        <label for="group" class="label_2">
+            <input class="easyui-validatebox" type="text" name="group" data-options="validType:'maxLengthThree[3]'"
+                   placeholder="请填写分组管理" style="width: 80%;">
+        </label>
+    </section>
+
+    <section>
+        <label for="sort" class="label_1">排序:</label>
+        <label for="sort" class="label_2">
+            <input class="easyui-validatebox" type="number" name="sort"
+                   data-options="required:true,validType:['length[0,20]']" placeholder="请填写排序"
+                   style="width:  80%">
+        </label>
+    </section>
+
+    <section>
+        <label for="is_menu" class="label_1">菜单显示:</label>
+        <!-- <input class="easyui-validatebox"  name="is_menu"  id="menu"></input><br> -->
+        <label for="is_menu" class="label_2">
+            <input class="easyui-combobox" style="width: 80%"
+                   data-options="editable:false,value:0, valueField: 'value',textField: 'text',data: [{value: '0',text: '否'},{value: '1',text: '是'}],panelHeight:'auto'"
+                   name="is_menu"></input>
+        </label>
+    </section>
+</form>
+
+
+
+

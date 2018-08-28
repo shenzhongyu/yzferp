@@ -1,0 +1,57 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <p>
+        <span>收款类型：</span>
+        <span>{$collect_type}</span>
+        <span style="margin-left: 5%">合同编号：</span>
+        <span>{$book_number}</span>
+        <span style="margin-left: 5%">项目名称：</span>
+        <span>{$name}</span>
+    </p>
+    <section >
+        <label class="label_1">自然单据号:</label>
+        <label  class="label_2">
+            {$number}
+        </label>
+    </section>
+    <section >
+        <label class="label_1">款项名称:</label>
+        <label class="label_2">
+            {$collect_name}
+        </label>
+    </section>
+    <section >
+        <label  class="label_1">计划付款金额:</label>
+        <label  class="label_2">
+            {$price}元
+        </label>
+    </section>
+    <section >
+        <label  class="label_1">未付款金额:</label>
+        <label  class="label_2">
+            {$price_no}元
+        </label>
+    </section>
+    <section>
+        <label class="label_1">审核:</label>
+        <label class="label_2">
+            <input class="easyui-combobox"  id="dep_manager"  name="examine_status" style="width:80%;" value="0"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/audit_status')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">审核说明:</label>
+        <label class="label_2">
+            <textarea placeholder="" id="collect_desc" name="examine_desc" style="width:80%;height: 100px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+</form>
+
+<script>
+    function editU(obj) {
+        if($(obj).prop("checked")){
+            $('#cashier').css('display','block');
+        }else{
+            $('#cashier').css('display','none');
+        }
+    }
+</script>

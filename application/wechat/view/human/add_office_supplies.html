@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>办公用品录入</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+<style>
+    .fileType {
+        margin-top: 60px;
+        font-size: 15px;
+        padding-left: 0.2rem;
+    }
+
+    .fileLeft {
+        width: 40%;
+        display: inline-block;
+    }
+
+    .fileRight {
+        width: 40%;
+        display: inline-block;
+    }
+
+    #topPopover {
+        position: fixed;
+        top: 1.6rem;
+        right: 0.6rem;
+    }
+
+    #topPopover .mui-popover-arrow {
+        left: auto;
+        right: 0.6rem;
+    }
+
+    .mui-popover {
+        height: 20rem;
+        width: 80%;
+
+        background-color: white;
+    }
+
+    .a-upload {
+        padding: 4px 10px;
+        line-height: 20px;
+        position: relative;
+        cursor: pointer;
+        color: #888;
+        background: #fafafa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+        display: inline-block;
+        *display: inline;
+        *zoom: 1
+    }
+
+    .a-upload input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        cursor: pointer
+    }
+
+    .a-upload:hover {
+        color: #444;
+        border-color: #ccc;
+        text-decoration: none
+    }
+
+    .mui-table-view-cell {
+        position: inherit;
+    }
+
+    .mui-table-view-cell > a:not(.mui-btn) {
+        margin: 0 0;
+    }
+
+    .tishi {
+        width: 100%;
+        position: fixed;
+        bottom: 0.2rem;
+        font-size: 12px;
+        text-align: center;
+        color: darkseagreen;
+    }
+</style>
+
+<body>
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+
+    <h1 class="mui-title">图片上传</h1>
+</header>
+<div class="fileType"></div>
+</div>
+<div class="tishi">温馨提示：上传图片大小不能超过8M</div>
+
+<div>
+
+    <div style="padding-left: 0.2rem;padding-right: 0.2rem">
+        <form name="form" id="upload_form">
+            <header class="mui-bar mui-bar-nav ">
+                <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+                <h1 class="mui-title">办公用品信息</h1>
+            </header>
+
+            <div class="d_both" style="margin-top: 50px;line-height: 0.6rem">
+                <div class="" style="width: 25%;height: 0.6rem;line-height: 0.6rem;display: inline-block;font-size: 0.32rem">用品名称:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass border_red" maxlength="20" type='text' name="number" style="height: 0.6rem;width: 100%;margin-bottom: 0.1rem;font-size: 0.26rem">
+                </div>
+            </div>
+            <div class="d_both" style="line-height: 0.6rem">
+                <div class="" style="width: 25%;height: 0.6rem;line-height: 0.6rem;display: inline-block;font-size: 0.32rem">数量:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass " maxlength="10" type='text' name="name" style="height: 0.6rem;width: 100%;margin-bottom: 0.1rem;font-size: 0.26rem">
+                </div>
+            </div>
+            <div class="d_both" style="line-height: 0.6rem">
+                <div class=""  style="width: 25%;height: 0.6rem;line-height: 0.6rem;display: inline-block;font-size: 0.32rem">单位:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass border_red" maxlength="10" type='text' name="type" style="height: 0.6rem;width: 100%;margin-bottom: 0.1rem;font-size: 0.26rem">
+                </div>
+            </div>
+            <!--<div class="d_both" style="line-height: 0.6rem">-->
+                <!--<div class=""  style="width: 25%;height: 0.6rem;line-height: 0.6rem;display: inline-block;font-size: 0.32rem">颜色:</div>-->
+                <!--<div type="text" class="d_right">-->
+                    <!--<input class="inputclass " maxlength="10" type='text' name="color" style="height: 0.6rem;width: 100%;margin-bottom: 0.1rem;font-size: 0.26rem">-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="d_both " style="line-height: 0.6rem;margin-top: 0.1rem">
+                <div class="d_left ofh" style="width: 25%;height: 0.6rem;line-height: 0.6rem;display: inline-block;font-size: 0.32rem !important;;float: left">备注</div>
+                <div type="text" class="d_right" style="margin-left: 0.1rem">
+                    <textarea name="desc" style="height: 1.2rem;width: 100%;margin-bottom: 0.1rem;font-size: 0.26rem"></textarea >
+                </div>
+            </div>
+            <input id="input" name="photo" type="hidden">
+            <input name="photo_m" type="hidden" id="md5">
+        </form>
+    </div>
+    <!--<form id="uploadForm">-->
+        <!--<li class="mui-table-view-cell" style="text-align: center">-->
+            <!--<a href="javascript:;" class="a-upload">-->
+                <!--<input type="file" name="file" multiple="multiple" onchange="PhotoupLoad()" accept="image/*"-->
+                       <!--capture="camera">-->
+                <!--<span id="spState" style="font-size: 0.28rem">上传车辆图片</span>-->
+            <!--</a>-->
+        <!--</li>-->
+    <!--</form>-->
+
+</div>
+<div class="text-center" style="width: 100%;">
+
+</div>
+<img id="image" src="" style="width: 80%;display: none;margin-left: 10%;margin-bottom: 0.2rem">
+<div style="width: 100%;padding-left: 0.35rem;padding-right: 0.35rem;height: 0.9rem;margin-top: 0.5rem;text-align: center;line-height: 0.9rem;margin-bottom: 60px">
+    <div style="width: 100%;background: #068FA9;border-radius: 0.1rem;height: 100%;color: white;line-height: 0.9rem;font-size: 0.36rem"
+         id="push" >提交
+    </div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript">
+
+
+    function image(data) {
+        $("#input").val(data.path);
+        $("#md5").val(data.md5);
+        $("#image").attr("src", data.path);
+        $("#image").css("display", "block");
+    }
+//    //	附件上传
+//    function PhotoupLoad() {
+//        var url = "{:url('api/file/uploadPicture')}";
+//        var formData = new FormData($("#uploadForm")[0]);
+//        $.ajax({
+//            url: url,
+//            type: 'POST',
+//            data: formData,
+//
+//            async: false,
+//            cache: false,
+//            contentType: false,
+//            processData: false,
+//            beforeSend: function () {
+//                spState.innerHTML = "正在上传图片...";
+//            },
+//            complete: function () {
+//                spState.innerHTML = "上传车辆图片";
+//            },
+//            success: function (returndata) {
+//                if (returndata.code == 1001 && returndata.data != null) {
+//                    image(returndata.data);
+//
+//                } else {
+//                    mui.alert(returndata.msg);
+//                }
+//            },
+//            error: function (returndata) {
+//                spState.innerHTML = "上传图片失败";
+//                mui.alert("上传图片失败");
+//            }
+//        });
+//    }
+
+
+    $("#push").click(function () {
+   var form_data= $("#upload_form").serialize()
+        mui.ajax('{:url("erp/office_vehicle/addofficevehicle")}', {
+            data:form_data,
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (res) {
+                mui.toast(res.msg, {duration: 'short', type: 'div'});
+                if(res.code==1001){
+                    setTimeout(function () {
+                        history.back()
+                    },2000)
+                }
+            }
+        })
+    })
+
+
+
+</script>

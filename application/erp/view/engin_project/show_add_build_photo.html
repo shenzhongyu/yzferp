@@ -1,0 +1,118 @@
+<p>
+    <a href="javascript:addBuildPhoto();" class="easyui-linkbutton" >图 片 上 传</a>
+</p>
+<div style="width: 60%;float: left">
+    <table id="build_photo">
+    </table>
+</div>
+<div style="width: 38%;height: 400px;float: right">
+    <img   src="" id="build_img">
+</div>
+<div id="build_photo_dlog"></div>
+<script type="text/javascript">
+    $(function(){
+        $('#build_photo').datagrid({
+            url:'{$url}',
+            width:'100%',
+            height:'auto',
+            rownumbers:false,
+            singleSelect:false,
+            pagination:false, //底部
+            method:'post',
+            pageSize:20,
+            columns:[[
+                {field:'photo_name',title:'图片名称',width:'15%',align:'center'},
+                {field:'add_uuid_name',title:'上传人',width:'15%',align:'center'},
+                {field:'create_time',title:'上传日期',width:'20%',align:'center'},
+                {field:'photo_desc',title:'图片说明',width:'20%',align:'center'},
+                {field:'opera',title:'操作',width:'30%',align:'center',
+                    formatter:function(value,row){
+                        var str="<a href='javascript:lookBuildPhoto(&apos;"+row.photo_address+"&apos;);'>浏览</a>";
+                        str+="&nbsp;&nbsp;<a href='javascript:lookBuildPhotoM(&apos;"+row.photo_m+"&apos;);'>下载</a>";
+                        str+="&nbsp;&nbsp;<a href='javascript:delBuildPhoto(&apos;"+row.guid+"&apos;);'>删除</a>";
+                        return str;
+                    }
+                }
+            ]],
+            nowrap:false, //超出部分自动换行
+
+        });
+    });
+    function lookBuildPhoto(a) {
+        $("#build_img").attr("src",a)
+    }
+    function lookBuildPhotoM(a) {
+        window.open('{:url("Project/showHtml")}/m/'+a+"/type/photo");
+    }
+    function addBuildPhoto(){
+        var href='{:url("showAddSchedulePhotoHtml",["guid"=>$guid])}';
+        var url='{:url("showAddSchedulePhotoHtml",["guid"=>$guid])}'; //单独的施工内容的id,
+        $('#build_photo_dlog').dialog({
+            title: '图片上传',
+            iconCls: 'icon-save',
+            width: 400,
+            height:300,
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#build_photo_dlog").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            if(!$("#photo_address").textbox("getValue")){
+                                layer.msg('图片还没有上传',{icon:2});
+                                return false;
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg('图片上传成功', {icon: 1});
+                                    $("#build_photo_dlog").dialog('close');
+                                    $('#build_photo').datagrid('reload');
+                                }
+                            }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#build_photo_dlog").dialog('close');
+                }
+            }]
+        });
+    }
+    function delBuildPhoto(a) { //删除图片
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("delBuildPhoto")}', {id: a}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    $("#build_photo").datagrid('reload');
+                }
+            }, 'json');
+        });
+
+    }
+
+
+</script>

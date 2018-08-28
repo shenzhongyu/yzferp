@@ -1,0 +1,59 @@
+
+<table id="user">
+</table>
+<div id="button" style="margin-top: 15px;text-align: right">
+    <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton" onclick="appointUser()"> 确 定 分 配 </a>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $('#user').datagrid({
+            url:'{$url}',
+            height:315,
+            rownumbers:true,
+            singleSelect:true,
+            pagination:false,
+            method:'post',
+            columns:[[
+                {field:'department_name',title:'部门',width:'20%',align:'center'},
+                {field:'name',title:'姓名',width:'20%',align:'center'},
+                {field:'jobs_name',title:'职务',width:'20%',align:'center'},
+                {field:'trace_num',title:'当前跟踪量',width:'20%',align:'center', sortable: true},
+                {field:'operate',title:'选择',width:'20%',align:'center',formatter:
+                    function(value,row,index){
+                        console.log(row.check);
+                        if(row.check=="1"){
+                            return '<input type="checkbox" checked="checked" name="ch" value="'+row.uuid+'" > ';
+                        }else{
+                            return '<input type="checkbox" name="ch" value="'+row.uuid+'" > ';
+                        }
+                    }
+                }
+            ]]
+        });
+    })
+    function appointUser(a){
+        var arr=[];
+        $.each($("input[name='ch']"),function(i,n){
+            if ($(n).prop("checked")==true){
+                arr.push($(n).val());
+            }
+        });
+        $.ajax({
+            url: "{:url('addComplaintUuid')}",
+            type: "post",
+            data: {guid:'{$guid}',appoint_uuid:arr,},
+            dataType: "json",
+            success: function(obj) {
+                if(obj.code=="1001"){
+                    layer.msg(obj.msg, {icon: 1});
+                    $('#appoint').dialog('close');
+                    $("#user_dg").datagrid('reload');
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            },
+        });
+    }
+</script>

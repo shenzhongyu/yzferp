@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div id="p" class="easyui-panel" title="施工阶段明细"
+     style="width:99%;height:auto;padding:10px;">
+    <div style="width: 98%;height: 40px;line-height: 40px;padding-left: 10px">
+        <span>合同编号：</span>
+        <span>{$book_number}</span>
+        <span style="margin-left: 2%">项目名称：</span>
+        <span>{$name}</span>
+        <span style="margin-left: 2%">装修地址：</span>
+        <span>{$address}</span>
+        <span style="margin-left: 2%">施工阶段：</span>
+        <span id="">{$build_name}</span>
+        <span style="margin-left: 2%">施工时间：</span>
+        <span id="time_build">{$time}</span>
+    </div>
+    <table id="build_table"></table>
+    <div id="time"></div>
+</div>
+
+<div id="tb" style="height:auto;">
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="returnBuildList()"> 返 回 </a>
+    <a style="display: {$status}" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="addBuildCon()">添加工作内容</a>
+</div>
+
+
+
+
+
+
+{include file="base/js" /}
+
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    $(function () {
+        $("#build_table").treegrid({
+            url:'{$url}',
+            height:'auto',
+            toolbar: '#tb',
+            idField:'guid',
+            treeField:'day_name',
+            icon:'',
+            rownumbers:true,
+            singleSelect:true,
+            pagination:false,
+            method:'post',
+            columns:[[
+                {field:'day_name',title:'名称',width:'18%',align:'left',
+                    formatter:function(value,row,index){
+                        if(row._parentId){
+                           return  '<a>'+row.data_name+'</a>'
+                        }else{
+                            return '<a>'+value+'（'+row.day_time+'）</a>';
+                        }
+
+                    }
+                },
+                {field:'data_user_num',title:'施工人数',width:'10%',align:'center',},
+                {field:'data_desc',title:'工艺说明',width:'20%',align:'center',},
+                {field:'desc',title:'施工备注',width:'20%',align:'center',},
+                {field:'op',title:'操作',width:'20%',align:'center',formatter:
+                    function(value,row,index){
+                        if(row._parentId){
+                            var str='<a style="display: {$status}" href="javascript:delDataCon(&apos;'+row.guid+'&apos;);">删除</a>&nbsp;&nbsp;';
+                            str+='<a href="javascript:addDataPhoto(&apos;'+row.guid+'&apos;);">施工图片</a>';
+                            return str;
+                        }
+                    }
+                }
+            ]]
+        })
+    });
+    function returnBuildList() {
+        window.parent.closeTab('施工明细');
+    }
+    function addBuildCon() {
+        var url='{:url("addBuildCon")}/guid/{$id}/build/{$build_id}';
+        $("#time").dialog({
+            title: "添加工作内容",
+            iconCls: 'icon-save',
+            width: '400',
+            height: '400',
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#time').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url,$(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#time').dialog('close');
+                                    $("#build_table").treegrid('load',{});
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#time').dialog('close');
+                }
+            }],
+
+        })
+    }
+    function delDataCon(a) {
+        var url="{:url('delDataCon')}";
+        $.post(url,{id:a},function (data) {
+            if (data.code!="1001"){
+                layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+            }else{
+                layer.msg(data.msg , {icon: 1});
+                $("#build_table").treegrid('load',{});
+            }
+        },'json')
+    }
+    function addDataPhoto(a) {
+        var url="{:url('addBuildPhoto')}/guid/"+a;
+        $("#time").dialog({
+            title: "施工图片",
+            iconCls: 'icon-save',
+            width: '80%',
+            height: '600',
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+</script>
+</body>
+</html>

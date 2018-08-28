@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="tb" style="height:auto;">
+        
+        <a style="margin-left: 10px;">搜索条件:</a>
+        <a style="margin-left: 15px;">项目名称：<input type="text" id="name"></a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">
+            <span class="l-btn-icon icon-search"></span>
+            <span class="l-btn-text l-btn-icon-left">搜索</span>
+        </a>
+    </div>
+</div>
+<div id="dlog_apply">
+</div>
+<table id="dg_apply" title="{$title}"></table>
+
+
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    $(function(){
+        $('#dg_apply').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:'project_name',title:'项目名称',width:'15%',align:'center'},
+                {field:'project_address',title:'工程地址',width:'20%',align:'center'},
+                {field:'is_audit',title:'信息提示',width:'20%',align:'center',
+                    formatter:function (value,row,index) {
+                        if (value=="0"){
+                            return '<a>正在审核中，无法进行选材</a>';
+                        }
+                    }
+                },
+                {field:'op',title:'操作',width:"15%",align:'center',
+                    formatter:function(value,row,index){
+                        var str='<a href="javascript:;" onclick="look(&apos;'+row.id+'&apos;)">查看</a>&nbsp;&nbsp;&nbsp;';
+                        str+='<a href="javascript:;" onclick="lookPurchaseList(&apos;'+row.guid+'&apos;,&apos;'+row.book_number+'&apos;)">采购清单</a>&nbsp;&nbsp;&nbsp;';
+                        str+='<a href="javascript:;" onclick="auditApply(&apos;'+row.apply_id+'&apos;)">审核</a>&nbsp;&nbsp;&nbsp;';
+                        return str;
+                    }
+                },
+            ]],
+            singleSelect: true,
+            toolbar: '#tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+    function sear(){
+        var tex=$("#name").val();
+        if(tex){
+            var str='[{"field":"project_name","op":"contains","value":"'+tex+'","type":"text"}';
+            str+=']';
+            $('#dg_apply').datagrid({
+                queryParams: {
+                    filterRules:str,
+                }
+            });
+        }else{
+            $('#dg_apply').datagrid('load',{});
+        }
+    }
+    function look(t){
+        window.parent.addTab('项目明细','/erp/project/showproject/id/'+t,'close');
+    };
+//    function addMaterial(t){
+//        window.parent.addTab('预算选材','{:url("addMaterial")}/pro_id/'+t,'close');
+//    }
+    function auditApply(a) {
+        var url="{:url('auditApply')}/apply_id/"+a;
+        $("#dlog_apply").dialog({
+            title: '选材审核',
+            iconCls: 'icon-save',
+            width: 400,
+            height: 280,
+            cache: false,
+            href: '{:url("designExtract/showApprovalEdit")}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text:' 确 认  ',
+                    iconCls:'icon-save',
+                    handler: function(){
+                        $('#dlog_apply').find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if($("#dep_manager").combobox('getValue')=="0"){
+                                    $("#dlog_apply").dialog('close');
+                                    return false;
+                                }
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post(url, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else{
+                                        layer.msg(data.msg, {icon: 1});
+                                        $("#dlog_apply").dialog('close');
+                                        $("#dg_apply").datagrid('reload');
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },
+                {
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $("#dlog_apply").dialog('close');
+                    }
+                }],
+        });
+    }
+
+    function lookPurchaseList(a,b) {
+        window.parent.addTab('采购清单','{:url("lookPurchaseList")}/pro_id/'+a+"/number/"+b,'close');
+    }
+</script>
+</body>
+</html>

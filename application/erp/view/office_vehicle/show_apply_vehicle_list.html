@@ -1,0 +1,110 @@
+userByRole.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[
+{ field: 'vehicle_num', title: '车牌号', width: '12%', align: 'center', sortable: true}
+, { field: 'name', title: '申请人', width: '12%', align: 'center', sortable: true}
+, { field: 'department_name', title: '申请部门',width: '12%', align: 'center', sortable: true}
+, { field: 'reason', title: '申请事由',width: '12%', align: 'center', sortable: true }
+, { field: 'start_time', title: '用车时间', width:'12%',align: 'center', sortable: true}
+, { field: 'end_time', title: '结束时间', width: '12%',align: 'center', sortable: true }
+, { field: 'create_time', title: '申请时间', width: '12%',align: 'center', sortable: true }
+, { field: 'op', title: '操作', width: '12%',align: 'center', sortable: true ,{:widget('Easyui/formatter')}}
+]]{/block}
+
+{block name="filter"}[
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber']},
+
+]{/block}
+
+{block name="value"}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'op') {
+var str='<a href="javascript:audit(&apos;'+row.guid+'&apos;);">审批</a>';
+
+return str;
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+<script>
+    function audit(guid) {
+        $(mikkleClass.dialog).dialog({
+            title: '用车审核',
+            iconCls: 'icon-save',
+            width: 400,
+            height: 280,
+            cache: false,
+            href: '{:url("design_extract/showApprovalEdit")}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text:' 确 认  ',
+                    iconCls:'icon-save',
+                    handler: function(){
+                        $(mikkleClass.dialog).find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post('{:url("editApply")}/guid/'+guid, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else{
+                                        layer.msg(data.msg, {icon: 1});
+                                        $(mikkleClass.dialog).dialog('close');
+                                        mikkleClass.refresh();
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },
+                {
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $(mikkleClass.dialog).dialog('close');
+                    }
+                }],
+        });
+    };
+</script>
+{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+
+
+{block name="toolbar"}[
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

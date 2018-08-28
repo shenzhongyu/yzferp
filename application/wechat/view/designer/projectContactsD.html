@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>联系人信息</title>
+    {include file="base_mui/weui_wechat"/}
+
+</head>
+<body>
+<div id="app">
+
+
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+        <a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right" @click="addContact" style="font-size:30px;"></a>
+        <h1 class="mui-title">联系人信息</h1>
+    </header>
+
+    <div class="addBoss">
+
+        <div class="addPro">联系人信息</div>
+
+        <div class="addFirst" v-for="item in res.project_list" v-cloak>
+
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">姓名：</div>
+                <div class="detailRightOnly">
+                    {{item.contact_name}}
+                </div>
+            </div>
+
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">性别：</div>
+                <div class="detailRightOnly">
+                    {{item.sex}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">联系电话：</div>
+                <div class="detailRightOnly">
+                    {{item.contact_number}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">QQ：</div>
+                <div class="detailRightOnly">
+                    {{item.customer_qq}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">Email：</div>
+                <div class="detailRightOnly">
+                    {{item.customer_email}}
+                </div>
+            </div>
+            <div class="detailBoss">
+
+                <div class="detailLeftOnly">户主关系：</div>
+                <div class="detailRightOnly">
+                    {{item.householder_relation}}
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="addlink" id="addC">
+            <div style="text-align: center;">新增联系人</div>
+
+            <form method="post" name="form" id="contantForm">
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem;margin-top: 0.2rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">姓名：</div>
+                    <input type="text" placeholder="请填写联系人姓名"
+                           style="width: 65%;margin-bottom: 0px;background: lavender;font-size: 15px"
+                           name="contact_name">
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">性别：</div>
+                    <select style="margin-bottom: 0px;width: 65%;background: lavender" name="sex">
+                        <option v-for="item in res.sex">{{item.text}}</option>
+
+                    </select>
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">联系电话：</div>
+                    <input type="text" placeholder="" style="width: 65%;margin-bottom: 0px;background: lavender"
+                           name="contact_number">
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">QQ：</div>
+                    <input type="text" placeholder="" style="width: 65%;margin-bottom: 0px;background: lavender"
+                           name="customer_qq">
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">Email：</div>
+                    <input type="text" placeholder="" style="width: 65%;margin-bottom: 0px;background: lavender"
+                           name="customer_email">
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">与户主关系：</div>
+                    <select style="margin-bottom: 0px;width: 65%;background: lavender" name="householder_relation">
+                        <option v-for="item in res.householder_relation">{{item.text}}</option>
+
+                    </select>
+                </div>
+            </form>
+            <div style="margin-top: 0.3rem;text-align: center">
+                <button @click="addData">添加</button>
+                <button style="margin-left: 0.3rem" @click="close">关闭</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+
+        var dataA = {};
+        mui.ajax('{:url("",["guid"=>$project_guid])}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                console.log("{$project_guid}");
+//                console.log(response.res.householder_relation);
+                dataA.res = response.data;
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {
+                        addContact: function () {
+                            $("#addC").css("display", "block")
+                        },
+//                        linkBack: function () {
+//                            mui.openWindow({
+//                                url: "{:url('designer/projectDetailsDesigner',['guid'=>$Request.param.guid])}"
+//                            })
+//                        },
+                        close: function () {
+                            $("#addC").css("display", "none")
+                        },
+                        addData: function () {
+                            var ff_data = $("#contantForm").serialize();
+                            console.log(ff_data);
+                            mui.ajax('{:url("erp/project/addContactsData",["project_guid"=>$project_guid])}', {
+                                data: ff_data,
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+
+                                success: function (response) {
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    window.location.reload()
+                                }, error: function (error) {
+                                    //异常处理；
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    }
+</script>

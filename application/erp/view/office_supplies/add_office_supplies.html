@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>办公用品登记</title>
+    <link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+</head>
+<style type="text/css">
+    #fm section{width: 40%;margin-top: 10px;line-height: 35px;}
+    #fm section label{height: 35px;line-height: 35px;display: inline-block}
+    #fm section .label_1{width: 70px;text-align: center}
+    #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+    #button a{width: 100px !important;margin: 0 0 0 10px}
+</style>
+
+<body>
+<div class="container">
+    <form id="fm" style="width: 99%" method="post" name="form">
+        <div id="p" class="easyui-panel" title="{$title}" style="width:100%;padding:15px;margin-bottom: 20px; ">
+            <section>
+                <label class="label_1" style="">用品名称:</label>
+                <label class="label_2" style="">
+                    <input class="easyui-validatebox"  type="text" name="name"data-options=" required:true,validType:'length[1,10]'">
+                </label>
+            </section>
+            <section>
+                <label class="label_1" >数量:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox" value="1" type="number" name="number"
+                           data-options="required:true,validType:'length[1,15]'" >
+                </label>
+            </section>
+            <section>
+                <label class="label_1" >单位:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox" value="" type="text" name="unit"
+                           data-options="required:true,validType:'length[1,15]'" >
+                </label>
+            </section>
+            <section>
+                <label class="label_1" >单价:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox" value="" type="number" name="price"
+                           data-options="required:true,validType:'length[1,15]'" >
+                </label>
+            </section>
+            <section style="width: 100%">
+                <label class="label_1" style="height: 36px;line-height: 36px;">备注:</label>
+                <label class="label_2" style="height: 36px;line-height: 36px;" >
+                        <textarea name="desc"  cols="50" rows="5" style="resize: none;margin-bottom: -10px;">
+                        </textarea>
+                </label>
+            </section>
+        </div>
+    </form>
+    <div style="clear: both"></div>
+    <div id="button">
+        <a style="margin-left: 35%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">录 入</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重 置</a>
+    </div>
+</div>
+{include file="base/js" /}
+</body>
+<script>
+    //表单提交(下一步)
+    function submitForm(){
+        $('#fm').form('submit',{
+            url:'{$url}',
+            onSubmit:function(){
+                return $(this).form('enableValidation').form('validate');
+            },
+            success:function(data){
+                var obj=JSON.parse(data);
+                if(obj.code=="1001"){
+                    layer.msg(obj.msg,{icon:1});
+                    $('#fm').form('clear');
+                }else{
+                    layer.msg(obj.msg,{icon:2});
+                }
+            }
+        });
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        $('#fm').form('clear');
+    }
+</script>
+
+</html>

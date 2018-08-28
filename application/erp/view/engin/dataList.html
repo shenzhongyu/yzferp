@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="tb" style="height:auto;">
+        <a style="margin-left: 10px;">搜索条件:</a>
+        <a style="margin-left: 15px;">装饰项目名称：<input type="text" id="name"></a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">
+            <span class="l-btn-icon icon-search"></span>
+            <span class="l-btn-text l-btn-icon-left">搜索</span>
+        </a>
+    </div>
+</div>
+<div id="dlog">
+</div>
+<table id="dg" title="{$title}"></table>
+
+
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    $(function(){
+        $('#dg').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:'name',title:'装饰项目名称',width:100,align:'center'},
+                { field: 'unit', title: '单位', width: "5%", align: 'center',
+                }
+                ,{ field: 'number', title: '数量', width: "5%", align: 'center',
+                    formatter:function(value,row,index){
+                        if (value){
+                            return value;
+                        }else{
+                            return 0;
+                        }
+                    }
+                }
+                , { field: 'price', title: '单价(元)', width: "8%", align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }}
+                ,{ field: 'sum_price', title: '金额', width: "10%",align: 'center',
+                    formatter:function(value,row,index){
+                        if(row.price){
+                            var price=Number(row.price)* row.number;
+                            return  '<a style="color: red;">'+ price.toFixed(2)+'</a>';
+                        }
+                    }
+                }
+                ,{field:'desc',title:'工艺说明',width:"37%",align:'center',},
+                {field:'op',title:'操作',width:100,align:'center',
+                    formatter:function(value,row,index){
+                        var str='';
+                        str+='<a href="javascript:;" onclick="addMaterial(&apos;'+row.guid+'&apos;)">选择主材</a>';
+                        return str;
+                    }
+                },
+            ]],
+            singleSelect: true,
+            toolbar: '#tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+    function sear(){
+        var tex=$("#name").val();
+        if(tex){
+            var str='[{"field":"project_name","op":"equal","value":"'+tex+'","type":"text"}';
+            str+=']';
+            $('#dg').datagrid({
+                queryParams: {
+                    filterRules:str,
+                }
+            });
+        }else{
+            $('#dg').datagrid('load',{});
+        }
+    }
+    function look(t){
+        window.parent.addTab('项目明细','/erp/project/showproject/id/'+t,'close');
+    };
+    function addMaterial(t) {
+        window.parent.addTab('材料选取','{:url("showMaterialAdd")}/guid/'+t,'close');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<p style="padding-left:10px">
+    <span>收款类型：</span>
+    <span>{$obj['collect_type_name']}</span>
+    <span style="margin-left: 5%">合同编号：</span>
+    <span>{$obj['number']}</span>
+    <span style="margin-left: 5%">项目名称：</span>
+    <span>{$name}</span>
+    <span style="margin-left: 5%">单据金额：</span>
+    <span>{$obj['price']}元</span>
+</p>
+<div class="easyui-tabs" style="width:98%;height:85%">
+    <div title="单据信息" style="padding:10px">
+        <table border="1" cellspacing="0" cellpadding="0" width="98%" style="margin-left:1%;text-align: center">
+            <tr style="height: 30px;">
+                <th style="width: 20%">单据号：</th>
+                <td style="width: 30%">{$obj['dj_number']}</td>
+                <th style="width: 20%">款项名称：</th>
+                <td style="width: 30%">{$obj['collect_name']}</td>
+            </tr>
+            <tr style="height: 30px;">
+                <th style="width: 20%">计划发货日期：</th>
+                <td style="width: 30%">{$obj['collect_date']}</td>
+                <th style="width: 20%">实付金额(元)：</th>
+                <td style="width: 30%">{$obj['price']}</td>
+            </tr>
+            <tr style="height: 30px;">
+                <th style="width: 20%">申请人：</th>
+                <td style="width: 30%">{$obj['apply_name']}</td>
+                <th style="width: 20%">申请时间：</th>
+                <td style="width: 30%">{$create_time}</td>
+            </tr>
+            <tr style="height: 30px;">
+                <th style="width: 20%">是否开发票：</th>
+                <td style="width: 30%">{$invoice}</td>
+                <th style="width: 20%">发票金额(元)：</th>
+                <td style="width: 30%">{$obj['invoice_price']}</td>
+            </tr>
+            <tr style="height: 30px;">
+                <th style="width: 20%">收货人：</th>
+                <td style="width: 30%">{$obj['consignee_name']}</td>
+                <th style="width: 20%">联系电话：</th>
+                <td style="width: 30%">{$obj['contact_number']}</td>
+            </tr>
+            <tr style="height: 30px;">
+                <th style="width: 20%">审核人：</th>
+                <td style="width: 30%">{$obj['examine_uuid_name']}</td>
+                <th style="width: 20%">审核说明：</th>
+                <td style="width: 30%">{$obj['examine_desc']}</td>
+            </tr>
+            <tr style="height: 30px;">
+                <th style="width: 20%">验收人：</th>
+                <td style="width: 30%">{$obj['accepatance_uuid_name']}</td>
+                <th style="width: 20%">验收说明：</th>
+                <td style="width: 30%">{$obj['accepatance_desc']}</td>
+            </tr>
+            <tr style="height: 30px;">
+                <th style="width: 20%">收货地址：</th>
+                <td style="" colspan="3">{$obj['address']}</td>
+            </tr>
+            <tr style="height: 30px;">
+                <th style="width: 20%">款项说明：</th>
+                <td style="" colspan="3">{$obj['desc']}</td>
+            </tr>
+        </table>
+    </div>
+    <div title="单据明细" style="padding:10px">
+        <div id="mx"></div>
+    </div>
+</div>
+<script>
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    $(function(){
+        $("#mx").datagrid({
+            url:'{:url("showMoreByMaterial")}/guid/{$guid}',
+            columns:[[
+                {field:'material_name',title:'材料名称',width:"15%",align:'center'},
+                {field:'unit_name',title:'单位',width:"10%",align:'center',
+                    formatter:function(value,row,index){
+                        if (eval("value_unit_name")[value]) {
+                            return eval("value_unit_name" )[value];
+                        }else{
+                            return value;
+                        }
+                    }
+                },
+                {field:'specifications',title:'规格',width:"15%",align:'center'},
+                {field:'number',title:'采购数量',width:"15%",align:'center'},
+                {field:'floor_price',title:'单价',width:"15%",align:'center'},
+                {field:'price',title:'金额',width:"15%",align:'center'},
+            ]],
+            rownumbers: true,
+            pageSize:10,
+            pagination: true,
+        })
+    })
+</script>
+
+

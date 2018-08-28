@@ -1,0 +1,46 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">用车部门：</label>
+        <label class="label_2" style="">
+            {$department}
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">用 车 人：</label>
+        <label class="label_2" style="">
+            {$user}
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">用车日期：</label>
+        <label class="label_2" style="">
+            <input class= "easyui-datetimebox" name="start_time" data-options="showSeconds:false,editable:false,required:true,"  style="width:80%" id="start_time">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">结束日期：</label>
+        <label class="label_2" style="">
+            <input class= "easyui-datetimebox" name="end_time" data-options="showSeconds:false,editable:false,required:true,"  style="width:80%" id="end_time">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">用车事由：</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="reason" id="reason"
+                   data-options="required:true,validType:'length[1,15]'" style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">随车人数：</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="amount" id=""
+                   data-options="validType:'length[1,15]'" style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">用车备注:</label>
+        <label  class="label_2">
+            <textarea  name="desc" id="textara1" style="width:80%;height: 60px;outline:none;resize:none;" data-options="" ></textarea>
+        </label>
+    </section>
+</form>

@@ -1,0 +1,115 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">定额类型:</label>
+        <label class="label_2"  style="width: 56%" >
+            <input class="easyui-combobox"  name="base_id" id="base_id" style="width:60%"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'base_name',required:true,url:'{:url('showBaseStyleJson')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">所属类别:</label>
+        <label class="label_2"  style="width: 56%" >
+            <input class="easyui-combobox"  name="data_id" id="data_id" style="width:60%"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'categories_name',required:true,url:'{:url('showDataStyleJson')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">数据项名称:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="dataitem_name" id="dataitem_name"
+                   data-options="required:true,validType:'length[1,15]'" style="width:60%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">单位:</label>
+        <label class="label_2" style="width: 56%" >
+            <input class="easyui-combobox"  name="item_unit_name"  value="1" style="width:60%"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/unit_name')}',method:'get',">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >规格:</label>
+        <label class="label_2" >
+            <input class="easyui-validatebox"  name="item_specifications"
+                   data-options="validType:'length[1,15]'"
+                   style="width:60%">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >品牌:</label>
+        <label class="label_2" >
+            <input class="easyui-validatebox"  name="item_pin"
+                   data-options="validType:'length[1,15]'"
+                   style="width:60%">
+        </label>
+    </section>
+
+    <section>
+        <label class="label_1">单价(元):</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="unit_price_sum" id="unit_price_sum"
+                   data-options="required:true,validType:'length[1,10]'"
+                   style="width:30%"> <a style="font-size: 12px">(主材+辅材+人工单价必须等于单价)</a>
+        </label>
+    </section>
+    <section>
+        <label class="label_1">主材单价(元):</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="mater_price"
+                   data-options="validType:'length[1,10]'"
+                   style="width:60%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">辅材单价(元):</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="auxiliary_price"
+                   data-options="validType:'length[1,10]'"
+                   style="width:60%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">人工单价(元):</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="user_price"
+                   data-options="validType:'length[1,10]'"
+                   style="width:60%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">底价(元):</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="base_price"
+                   data-options="required:true,validType:'length[1,10]'"
+                   style="width:60%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">损耗比例(%):</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="loss_ratio" value="0"
+                   data-options="required:true,validType:'length[1,10]'"
+                   style="width:30%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">损耗类型:</label>
+        <label class="label_2" style="width: 30%">
+            <input class="easyui-combobox"  name="loss_style"  value="0" style="width:60%"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/loss_type')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">备注说明:</label>
+        <label class="label_2">
+            <textarea placeholder="请填写材料说明" name="item_desc" style="width:60%;height: 60px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+    <section style="margin-top: 43px;">
+        <label class="label_1">材料描述:</label>
+        <label class="label_2">
+            <textarea placeholder="请填写材料说明" name="material_desc" style="width:60%;height: 60px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+
+</form>

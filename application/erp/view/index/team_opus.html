@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>团队优秀作品</title>
+    <meta name="keywords" content="">
+    <meta name="renderer" content="">
+    <meta name="description" content="">
+    <!--窗口logo显示-->
+    {include file="base/css" /}
+    <!--<link rel="stylesheet" type="text/css" href="css/common.css" />-->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/erp/css/com.css" />
+    <style>
+        #mainlist li{width: 100%;height: 500px;float: left}
+        .img_dt{width: 100%;height: 50px;position: relative;bottom: 65px;line-height: 50px;background-color: rgba(0,0,0,0.7);color: #fff;text-align: center;font-size: 16px;}
+        .prev{float:left;width:40px;height: 483px;background: url('__STATIC__/erp/images/fy_btn.png') no-repeat; background-position: -10px center }
+        .next{float:left;width:40px;height: 483px;background: url('__STATIC__/erp/images/fy_btn.png') no-repeat; background-position: -150px center }
+        #roll_div{width:90%;min-width:500px;height: 80%;float: left;overflow: hidden}
+        #roll_div li{height:100%;max-width: 1050px;min-width: 500px;list-style: none;float: left}
+        #roll_div li img{width: 100%;height: 100%}
+    </style>
+
+    <!--[if IE 6]>
+    <script type="text/javascript" src="__STATIC__/erp/js/Png.js"></script>
+    <script type="text/javascript">
+        EvPNG.fix('div, ul, img, li, input, a, p, span, em');
+    </script>
+    <![endif]-->
+</head>
+<body>
+<div class="box">
+    <div class="room_com" style="min-width: 1000px;">
+        <div class="look_tearm_ll"  style="width: 300px">
+            <div class="img_txt">
+                <div class="img" style="width: 280px;height: 280px;margin: auto"><img src="{$user['photo']? $user['photo']:'__STATIC__/mui/image/7s.jpg'}" alt="头像" width="100%" height="100%"></div>
+                <div class="txt">
+                    <h3>设计师     {$user['name']}</h3>
+                    <div class="wz">
+                        <span>简介</span>
+                        <p style="">{$user['desc']?$user['desc']:'暂无'}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="look_tearm_rr"style="width:650px;float: left;margin-left: 20px;">
+            <div class="sy_aboutbox01">
+                <div class="picsy_aboutbox01">
+                    <div class="prev" style="display: none"></div>
+                    <div id="roll_div" style="height: 486px;width: 500px;">
+                        <ul id="roll_div_ul" style="height: 100%;padding: 0px;margin: 0">
+                            <!--<li>-->
+                                <!--<img src="__STATIC__/erp/images/ban1.jpg" >-->
+                                <!--<dt class="img_dt">1</dt>-->
+                            <!--</li>-->
+                            <!--<li >-->
+                                <!--<img src="__STATIC__/erp/images/ban1.jpg">-->
+                                <!--<dt class="img_dt">2</dt>-->
+                            <!--</li>-->
+                        </ul>
+                    </div>
+                    <div class="next" style="display: none"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="js/zt_lay.js"></script>-->
+<script type="text/javascript" src="__STATIC__/erp/js/jquery.SuperSlide.js"></script>
+<script type="text/javascript">
+    /* 内层图片滚动切换 */
+    $(function(){
+
+        getUserExcellentOpus();
+    })
+    function getUserExcellentOpus() {
+        var url="{:url('team_opus',['guid'=>$user['uuid']])}";
+        $.post(url,{},function (obj){
+            if(obj.code=="1001"){
+                var data=obj.data;
+                var str="";
+                if(data.length>0){
+                    $.each(data,function (i,t) {
+                        str+='<li><img src="'+t.photo_address+'" alt="'+t.photo_name+'" >';
+                        str+='<dt class="img_dt">'+t.photo_name+'</dt></li>';
+                    })
+                    $(".prev").show();
+                    $(".next").show();
+                }else{
+                    str+='暂无优秀作品!';
+
+                }
+                $('#roll_div_ul').append(str);
+                $(".picsy_aboutbox01").slide({
+                    mainCell:"#roll_div_ul",
+                    vis:1,
+                    prevCell:".prev",
+                    nextCell:".next",
+                    autoPage:true,
+                    effect:"leftLoop",
+                    autoPlay:true
+                });
+            }
+        },'json');
+    }
+</script>
+</body>
+</html>

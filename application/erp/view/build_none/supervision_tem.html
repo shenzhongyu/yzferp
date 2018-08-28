@@ -1,0 +1,46 @@
+<form>
+    <section>
+        <label class="label_1" style="">施工开始时间:</label>
+        <label class="label_2" style="">
+            <input  id="build_time" name="build_time"  class= "easyui-datebox" data-options="editable:false,showSeconds:false" required ="required"> </input>
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >施工总天数:</label>
+        <label class="label_2" >
+            <input class="easyui-textbox"  name="build_days" id="build_days"
+                   data-options="required:true,"
+                   style="width:60%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">说明:</label>
+        <label class="label_2">
+            <textarea id="desc"  name="desc" style="width:80%;height: 70px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+</form>
+<div style="height: 80px;"></div>
+<table style="margin-top: 40px;" id="user">
+</table>
+
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $('#user').datagrid({
+            url:'{$url}',
+            height:315,
+            rownumbers:true,
+            singleSelect:true,
+            pagination:false,
+            method:'post',
+            columns:[[
+                {field:"chk", "checkbox": true, movable: false},
+                {field:'department_name',title:'部门',width:'30%',align:'center'},
+                {field:'name',title:'姓名',width:'30%',align:'center'},
+                {field:'jobs_name',title:'职务',width:'30%',align:'center'},
+            ]]
+        });
+    })
+</script>

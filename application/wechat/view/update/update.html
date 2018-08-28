@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>版本更新</title>
+    {include file="wechat@base_mui/weui_wechat"/}
+</head>
+</head>
+<body>
+<div id="app">
+
+
+
+<div id="index" style="font-size: 0.30rem">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back" ></a>
+
+        <h1 class="mui-title">版本更新</h1>
+    </header>
+    <div >
+
+
+
+            <div style="margin-top: 50px;text-align: center;width:100% !important;" id="div">&nbsp;</div>
+            <div style="text-align: center;margin-top: 1rem;display: none" id="new">
+                当前已经是最新版本
+            </div>
+            <div id="old" style="display: none">
+                <div style="text-align: center">
+                    检测到新版本（{{res.data.version}}）
+                </div>
+                <div >
+                    <span style="margin-left: 0.3rem;line-height: 0.4rem">更新说明</span>
+                    <ul style="padding-left: 1rem;text-indent: -1.6em;line-height: 0.5rem;margin-top: 0.2rem;padding-right: 0.4rem">
+                       <li style="" v-for="(item,index) in res.data.desc">{{index+1}}：{{item}}</li>
+
+                    </ul>
+                </div>
+                <div style="width: 100%;padding-left: 0.35rem;padding-right: 0.35rem;height: 0.9rem;margin-top: 0.5rem;text-align: center;line-height: 0.9rem;margin-bottom: 0.2rem">
+                    <div style="width: 100%;background: #068FA9;border-radius: 0.1rem;height: 100%;line-height: 0.9rem;color: white;font-size: 0.36rem" id="login"  @click="update">更新</div>
+                </div>
+            </div>
+        </div>
+
+
+</div>
+<div style="width: 100%;height: 100%;background-color:rgba(00,00,00,0.5);position: fixed;z-index: 20;top: 0;display: flex;justify-content:center;padding-top: 2.6rem;display: none" id="update" >
+    <img src="/static/mui/image/update.gif" style="position: absolute;width: 1.5rem;height: 1.5rem">
+    <div style="color:white;margin-top: 1.6rem">正在更新中，请勿退出。。。</div>
+</div>
+    <div style="display: flex;height: 5rem;width: 100%;justify-content: center;align-items: center" id="test">
+        <img src="/static/mui/image/update.gif" style="position: absolute;width: 1.5rem;height: 1.5rem">
+        <div style="margin-top: 2.6rem">正在进行版本检测，请稍后</div>
+    </div>
+
+</div>
+</body>
+<script type="text/javascript">
+    window.onload=function () {
+        var dataA={}
+
+
+
+        mui.ajax("{:url('install/update/checkupdate')}",{
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                dataA.res=response;
+                if(response.code == 1001){
+                    var vue = new Vue({
+                        el: '#app',
+                        data: dataA,
+                        methods: {
+                            update: function () {
+
+                                $("#update").css("display","flex");
+                                setTimeout(function () {
+                                    $("#update").css("display","none");
+                                    $("#old").css("display","none");
+                                    $("#new").css("display","block")
+                                },5000)
+                            }
+                        },
+                        mounted:function () {
+//                setTimeout(function () {
+//                    $("#test").css("display","none");
+//                    $("#old").css("display","block")
+//                },2000)
+                            setTimeout(function () {
+                                $("#test").css("display","none");
+                                $("#old").css("display","block")
+                            },2000)
+                        }
+
+                    })
+                }else if(response.code==1002){
+
+
+                    $("#old").css("display","none");
+                    $("#test").css("display","none");
+                    $("#new").css("display","block");
+
+                }else{
+                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                }
+
+
+            }
+        })
+
+
+
+
+
+
+
+
+
+    }
+
+</script>
+</html>

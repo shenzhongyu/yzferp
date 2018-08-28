@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>材料验收审核</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+<body>
+<div id="app"  v-cloak>
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back" ></a>
+        <h1 class="mui-title">{$as}</h1>
+    </header>
+    <div class="addBoss" v-for="item  in res">
+        <div class="addPro">{$as}</div>
+        <div class="addFirst">
+
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">项目名称：</div>
+                <div class="detailRightOnly">
+                    {$project_name}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">收款类型：</div>
+                <div class="detailRightOnly">
+                    {{item.collect_type_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">单据金额：</div>
+                <div class="detailRightOnly">
+                    {{item.price}}元
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">合同编号：</div>
+                <div class="detailRightOnly">
+                    {{item.number}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">单据号：</div>
+                <div class="detailRightOnly">
+                    {{item.dj_number}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">款项名称：</div>
+                <div class="detailRightOnly">
+                    {{item.collect_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">应付金额：</div>
+                <div class="detailRightOnly">
+                    {{item.price}}
+                </div>
+            </div>
+            <div class="detailBoss">
+                <div  class="detailLeftOnly" >查看：</div>
+              <button @click="bill(item.guid)">单据信息</button>
+                <button @click="billList(item.guid)">单据明细</button>
+            </div>
+        </div>
+        <form method="post" id="add_pending" name="form">
+            <div class="addFirst">
+                <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;">
+                    <div style="display: inline-block;width: 23%;float: left;line-height: 40px">验收说明：</div>
+                    <textarea style="display: inline-block;width: 77%;" name="accepatance_desc" id="text_area">
+                    </textarea>
+
+                </div>
+            </div>
+            <div class="mui-button-row  " style="margin-top: 0.2rem;margin-bottom: 0.2rem">
+                <button type="button" class="mui-btn mui-btn-primary w80 h50 fz15" id="leave_add" @click="pending(item.guid,$event)" >确定</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<div style="width: 100%;text-align: center;font-size: 12px;color: darkseagreen;position: fixed;bottom: 0.2rem">温馨提示：材料验收审核需谨慎，建议PC端审核</div>
+</body>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        var id = ""
+        mui.ajax('{:url("",["guid"=>$guid])}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                dataA.res= response.rows;
+
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {
+                        bill:function (id) {
+                            mui.openWindow({ url :"{:url('project/billInformation',['project_id'=>$guid])}/guid/"+id}
+                            )
+                        },
+                        billList:function (id) {
+                            mui.openWindow({ url :"{:url('project/billInformationList',['project_id'=>$guid])}/guid/"+id}
+                            )
+                        },
+                        pending:function (id,t) {
+                            var formData ={}
+                            formData.accepatance_desc =($(t.currentTarget).parent().parent().find($("textarea"))).val();
+                            if(formData.accepatance_desc == ""){
+                                mui.toast("验收说明不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            $("#leave_add").attr("disabled","true");
+                            var url = "{:url('erp/engin/editaccepatancematerial')}/guid/"+id
+                            mui.ajax(url, {
+                                data: formData,
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+                                success: function (response) {
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    if(response.code == 1001){
+
+                                        setTimeout(function () {
+                                            history.back();
+                                        },2000)
+
+                                    }else{
+                                        $("#leave_add").removeAttr("disabled");
+                                    }
+
+                                }
+                            })
+                        }
+                    }
+                });
+
+            }
+        });
+
+
+    }
+</script>
+</html>

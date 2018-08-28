@@ -1,0 +1,11 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section style="margin-top: 10px;">
+        <label class="label_1" style="">处理进度:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="processing_status" value="-1"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/processing_status')}',method:'get',"
+                   style="width:100%">
+        </label>
+    </section>
+
+</form>

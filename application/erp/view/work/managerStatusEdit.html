@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {include file="base/ccs" /}
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    <link href="__STATIC__/umeditor/themes/default/_css/umeditor.css" type="text/css" rel="stylesheet">
+    <style>
+        .edui-container{width: 780px !important;border: 1px solid #95B8E7;}
+        #container{height: 280px;width: 760px !important;}
+        #fm{font-size: 16px;}
+        #fm section{margin-bottom: 18px;}
+        #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+        #button a{width: 100px !important;margin: 0 0 0 10px}
+        .myPanelHead .panel-title{font-size: 15px;padding-left: 43%;height: 25px;line-height: 25px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="p" class="easyui-panel" title=""   style="width:100%;padding:25px 10px;margin-bottom: 20px;"  data-options="headerCls:'myPanelHead'">
+        <form id="fm" style="padding:0 0px;width:100%;" method="post" name="fm">
+            <div style="width: 50%;">
+                <section>
+                    <label class="label_1"  style="font-size:14px; ">主题:</label>
+                    <label class="label_2"  style="">
+                        <input class="easyui-validatebox" type="text" name="manager_title" id="manager_title"
+                               readonly="readonly" value=""
+                               style="width:80%;border: 1px solid #95B8E7;height: 20px;border: none">
+                    </label>
+                </section>
+                <section style="height: 330px;">
+                    <label  class="label_1"  style="font-size:14px; ">内容:</label>
+                    <label  class="label_2">
+                        <script id="container" name="content" type="text/plain"></script>
+                    </label>
+                </section>
+                <section style="width: 100%;margin-top: 30px;">
+                    <label class="label_1" style="height: 36px;line-height: 36px;">审阅批注:</label>
+                    <label class="label_2" style="height: 36px;line-height: 36px;" >
+                        <textarea  name="manager_desc"  id="manager_desc"  cols="75" rows="4" style="font-size: 20px;border: 1px solid #95B8E7;resize: none;margin-bottom: -10px;"></textarea>
+                    </label>
+                </section>
+                <input type="hidden" value="1" name="manager_status"  id="manager_status">
+            <div style="margin-bottom: 80px;"></div>
+            </div>
+        </form>
+    </div>
+    <div id="button">
+        <a style="margin-left: 37%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">确 认 审 阅</a>
+    </div>
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<script src="__STATIC__/umeditor/third-party/jquery.min.js"></script>
+<script src="__STATIC__/umeditor/third-party/template.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="__STATIC__/umeditor/umeditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__STATIC__/umeditor/umeditor.min.js"></script>
+<script type="text/javascript" src="__STATIC__/umeditor/lang/zh-cn/zh-cn.js"></script>
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script>
+    var editor = UM.getEditor('container',{
+        autoFloatEnabled:false
+    });
+    $(function(){
+        setTimeout(function(){
+         getContent();
+        },100);
+    });
+    var id;
+    function getContent(){
+        var url='/erp/work/editManagerStatus';
+        var data={guid:'{$guid}'};
+        $.ajax({
+            url:url,
+            type: "post",
+            data:data,
+            dataType: "json",
+            success: function(obj) {
+                if(obj.code=="1001"){
+                    var data=obj.msg;
+                    id=data.id;
+                    $("#manager_title").val(data.title);
+                    editor.execCommand('insertHtml', data.content);
+                    UM.getEditor('container').setDisabled('fullscreen');
+                }else{
+                    window.parent.closeTab('专线审阅批注');
+                }
+            },
+        })
+    }
+
+    //表单提交(下一步)
+    function submitForm(){
+        var content=$("#manager_desc").val();
+        if(!content){
+            layer.msg("请填写审阅批注", {icon: 2});
+            return false;
+        }
+        $.ajax({
+            url: "{:url('editStatusManager')}",
+            type: "post",
+            data:{id:id,manager_desc:content,manager_status:$("#manager_status").val()},
+            dataType: "json",
+            success: function(obj) {
+                if(obj.code=="1001"){
+                    layer.msg("审阅成功", {icon: 1});
+                    setTimeout(function(){
+                        clearForm();
+                    },400)
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            },
+        })
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        window.parent.closeTab('专线审阅批注');
+    }
+</script>
+</body>
+</html>

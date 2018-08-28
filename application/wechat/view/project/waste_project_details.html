@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>废单转出申请</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+<body>
+<div id="app">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <h1 class="mui-title">废单转出申请</h1>
+    </header>
+    <div class="addBoss" v-cloak>
+
+
+        <div class="addFirst" >
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly"> 项目名称：</div>
+                <div class="detailRightOnly">
+                    {{res.project_name}}
+                </div>
+            </div>
+            <div class="detailBoss ">
+                <div class="detailLeftOnly">项目地址：</div>
+                <div class="detailRightOnly">
+                    {{res.project_address}}
+                </div>
+            </div>
+
+        </div>
+        <div class="addFirst">
+            <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;">
+                <div style="display: inline-block;width: 23%;float: left;line-height: 40px">申请说明：</div>
+                <form method="post" id="add_pending">
+                    <textarea style="display: inline-block;width: 77%;font-size: 0.26rem" name="apply_desc" id="text_area">
+                    </textarea>
+
+                </form>
+            </div>
+
+        </div>
+
+        <div class="mui-button-row mt50 ">
+            <button type="button" class="mui-btn mui-btn-primary w80 h50 fz15" id="leave_add" @click="toTails">确定</button>
+        </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        var id = ""
+        mui.ajax('{:url("",["guid"=>$guid])}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+
+                    dataA.res = response;
+                    var vue = new Vue({
+                        el: '#app',
+                        data: dataA,
+                        methods: {
+//                            pendingBack:function () {
+//                                mui.openWindow({
+//                                    url: "{:url('index/leavelist')}"
+//
+//                                })
+//
+//                            },
+                            toTails:function () {
+                                console.log($("#add_pending").serialize());
+                                if ($("#text_area").val() == "") {
+                                    mui.toast("申请说明不能为空", {duration: 'short', type: 'div'});
+                                    return false;
+                                } else {
+                                   {
+                                        $("#leave_add").attr("disabled","true");
+                                        var content = $("#add_pending").serialize();
+                                        var url = "{:url('erp/waste_single/apply',['guid'=>$guid])}";
+                                        mui.ajax(url, {
+                                            data: content,
+                                            dataType: 'json',//服务器返回json格式数据
+                                            type: 'post',//HTTP请求类型
+                                            success: function (response) {
+                                                mui.toast(response.msg,{ duration:'short', type:'div' });
+                                                if(response.code ==1001){
+                                                    setTimeout(function () {
+                                                        history.back()
+                                                    },2000)
+                                                }else{
+                                                    $("#leave_add").removeAttr("disabled");
+                                                }
+
+                                            }
+                                        })
+
+                                    }
+                                }
+
+
+
+
+                            }
+                          
+                        }
+                    })
+
+
+            }
+        })
+
+    }
+</script>
+</html>

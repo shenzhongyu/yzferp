@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="pro_tb" style="height:auto;">
+        <a style="margin-left: 10px;">搜索条件:</a>
+        <a style="margin-left: 15px;">项目名称：<input type="text" id="name"></a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">
+            <span class="l-btn-icon icon-search"></span>
+            <span class="l-btn-text l-btn-icon-left">搜索</span>
+        </a>
+    </div>
+</div>
+<div id="pro_dlog">
+</div>
+<table id="pro_dg" title="{$title}"></table>
+
+
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    $(function(){
+        $('#pro_dg').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:'project_name',title:'项目名称',width:'14%',align:'center'},
+                {field:'project_address',title:'工程地址',width:'18%',align:'center'},
+                {field:'build_time',title:'施工开始日期',width:'10%',align:'center'},
+                {field:'build_end_time',title:'施工结束日期',width:'10%',align:'center'},
+                {field:'build_days',title:'施工总天数',width:'10%',align:'center'},
+                {field:'op',title:'操作',width:"30%",align:'center',
+                    formatter:function(value,row,index){
+                        var str='<a href="javascript:;" onclick="lookBuild(&apos;'+row.guid+'&apos;)">查看工程</a>&nbsp;&nbsp;&nbsp;';
+
+                        str+='<a href="javascript:;" onclick="constructionTime(&apos;'+row.guid+'&apos;)">设置施工工期</a>&nbsp;&nbsp;&nbsp;';
+//                        if(row.project_completion=="0" && row.project_comp=="0"){
+//                            str+='<a href="javascript:;" onclick="projectCompletion(&apos;'+row.guid+'&apos;)">完工申请</a>&nbsp;&nbsp;&nbsp;';                        }
+
+                        return str;
+                    }
+                },
+            ]],
+            singleSelect: true,
+            toolbar: '#pro_tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+    function sear(){
+        var tex=$("#name").val();
+        if(tex){
+            var str='[{"field":"project_name","op":"contains","value":"'+tex+'","type":"text"}';
+            str+=']';
+            $('#pro_dg').datagrid({
+                queryParams: {
+                    filterRules:str,
+                }
+            });
+        }else{
+            $('#pro_dg').datagrid('load',{});
+        }
+    }
+    function lookBuild(t){
+        window.parent.addTab('项目工程','{:url("lookBuild")}/guid/'+t,'close');
+    };
+    function buildPlan(id) {
+        window.parent.addTab('施工计划', '{:url("buildPlan")}/guid/' + id, 'close');
+    }
+    function buildPlanFormulate(id) {
+        window.parent.addTab('施工计划', '{:url("buildPlanFormulate")}/guid/' + id, 'close');
+    }
+    function projectCompletion(id){
+        var href='{:url("enginProject/buildContApply")}/guid/'+id;
+        var url="{:url('projectCompletion')}/guid/"+id;
+        $("#pro_dlog").dialog({
+            title: "完工申请",
+            iconCls: 'icon-save',
+            width: '450',
+            height: '250',
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#pro_dlog').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url,$(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#pro_dlog').dialog('close');
+                                    $('#pro_dg').datagrid('load',{});
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#pro_dlog').dialog('close');
+                }
+            }],
+        });
+    }
+    function constructionTime(id) {  //设置施工天数
+        var href='{:url("constructionTime")}/project_id/'+id;
+        $("#pro_dlog").dialog({
+            title: "施工总工期",
+            iconCls: 'icon-save',
+            width: '600',
+            height: '450',
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#pro_dlog').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(href,$(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#pro_dlog').dialog('close');
+                                    $('#pro_dg').datagrid('load',{});
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#pro_dlog').dialog('close');
+                }
+            }],
+        });
+    }
+</script>
+</body>
+</html>

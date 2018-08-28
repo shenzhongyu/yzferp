@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>预算报价表</title>
+    <link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">
+    <script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>
+
+    <style>
+        *{
+
+        }
+        li{
+
+        }
+        .theadr_div {
+
+        }
+        .font_weight{
+
+        }
+        table{
+
+        }
+        td{
+
+        }
+        tr{
+
+        }
+    </style>
+</head>
+<body style=" font-size: 14px; font-family: '微软雅黑';">
+    <div>
+        <p style="text-align: right;margin-bottom: 10px;">
+            <input  id="cc" class="easyui-combobox" name="dept">
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="word()" style="margin-left: 10px;">打&nbsp;印</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="ret()" style="margin-left: 10px;margin-right: 3%">返&nbsp;回</a>
+        </p>
+        <table id="Table" style="text-align: center;table-layout:fixed;width:100%;" border="1" cellspacing="0" cellpadding="0">
+            <thead style="margin-bottom: 10px">
+                <li style="font-size: 18px;list-style: none;height: 33px;text-align: center;width: 100%;">亿亚达装饰集团</li>
+                <li style="font-weight: bold;list-style: none;height: 33px;text-align: center;width: 100%;">家庭装饰预算书</li>
+                <li style="list-style: none;height: 33px;">
+                    <div  style="float: left;text-align: left;width: 25%;">工程编号：<span>QT5970033069EEC485457</span></div>
+                    <div  style="float: left;text-align: left;width: 25%;">业主名称：<span>测试</span></div>
+                    <div  style="float: left;text-align: left;width: 25%;">工程地点：<span></span></div>
+                    <div  style="float: left;text-align: left;width: 25%;"> 传真：<span>0898-36665562</span></div>
+                </li>
+            </thead>
+            <tbody>
+                <tr bgcolor="#d3d3d3" style="height: 25px;">
+                    <th width="8%" rowspan="2">编号</th>
+                    <th width="20%" rowspan="2">工程项目</th>
+                    <th width="4%" rowspan="2">单位</th>
+                    <th width="22%" colspan="3">工程造价</th>
+                    <th width="22%" colspan="5">其中</th>
+                    <th width="20%" rowspan="2">备注</th>
+                </tr>
+                <tr bgcolor="#d3d3d3" style="height: 25px;">
+                    <th>数量</th>
+                    <th>单价</th>
+                    <th>金额</th>
+                    <th>主材</th>
+                    <th>辅材</th>
+                    <th>人工</th>
+                    <th>损耗</th>
+                    <th>机械</th>
+                </tr>
+            </tbody>
+                        <tr style="height: 25px;">
+                <th colspan="12">1：厨房</th>
+            </tr>
+                        <tr style="height: 25px;">
+                <td style="word-wrap:break-word;">QT597EFBAF2A09F102509</td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;">666</td>
+                <td style="word-wrap:break-word;">㎡</td>
+                <td style="word-wrap:break-word;">10</td>
+                <td style="word-wrap:break-word;">66.00</td>
+                <td style="word-wrap:break-word;">660.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">66.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 5px"></td>
+            </tr>
+                        <tr style="height: 25px;">
+                <td style="word-wrap:break-word;">QT597FD37D4FECA100521</td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;">123</td>
+                <td style="word-wrap:break-word;">㎡</td>
+                <td style="word-wrap:break-word;">12</td>
+                <td style="word-wrap:break-word;">130.00</td>
+                <td style="word-wrap:break-word;">1560.00</td>
+                <td style="word-wrap:break-word;">120.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">10.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 5px"></td>
+            </tr>
+                        <tr style="height: 25px;">
+                <td style="word-wrap:break-word;">QT598049E75978C555357</td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;">456</td>
+                <td style="word-wrap:break-word;">㎡</td>
+                <td style="word-wrap:break-word;">0</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;">0.00</td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 5px"></td>
+            </tr>
+                        <tr style="height: 25px;">
+                <th colspan="12" style="text-align: left;padding-left: 10px;">小计：2220.00 元</th>
+            </tr>
+            <tr style="height: 25px;">
+                <th colspan="12" style="text-align: left;padding-left: 10px;">备注：</th>
+            </tr>
+            
+            <tfoot>
+                        <tr style="height: 25px;">
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;">直接费</td>
+                <td style="word-wrap:break-word;">元</td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td colspan="2" style="word-wrap:break-word;text-align: left;padding-left: 10px;" >2220.00</td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;">工程施工实际总费用</td>
+            </tr>
+                        <tr style="height: 25px;">
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;">管理费</td>
+                <td style="word-wrap:break-word;">元</td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td colspan="2" style="word-wrap:break-word;text-align: left;padding-left: 10px;" >66.60</td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;"></td>
+            </tr>
+                        <tr style="height: 25px;">
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;">运输费</td>
+                <td style="word-wrap:break-word;">元</td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td colspan="2" style="word-wrap:break-word;text-align: left;padding-left: 10px;" >444.00</td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;"></td>
+            </tr>
+                        <tr style="height: 25px;">
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;">总造价</td>
+                <td style="word-wrap:break-word;">元</td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td colspan="2" style="word-wrap:break-word;text-align: left;padding-left: 10px;" >2730.60</td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;"></td>
+                <td style="word-wrap:break-word;text-align: left;padding-left: 10px;">工程预算总造价</td>
+            </tr>
+                        </tfoot>
+        </table>
+    </div>
+<script>
+    $('#cc').combobox({
+        url:'/erp/design/budgetbook',
+        valueField:'guid',
+        textField:'name',
+        onSelect:function(rec){
+            window.parent.addTab('报价表','/erp/design/showbudgetbook/guid/' +'QT5970033069EEC485457'+'/type/'+rec.guid,'close');
+        }
+    });
+    function word() {
+        window.parent.addTab('新窗口','/erp/design/showbudgetbook/guid/' +'QT5970033069EEC485457'+'/word/true','close');
+    }
+    function ret() {
+        window.parent.closeTab('报价表')
+    }
+</script>
+</body>
+</html>

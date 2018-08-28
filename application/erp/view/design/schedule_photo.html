@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+    <title>图片</title>
+</head>
+<body>
+<div id="p" class="easyui-panel" title="进度名称：{$title}"  style="width:100%;height:auto;padding:10px 15px 15px 15px;">
+    <p style="margin-bottom: 15px;">
+        <a href="javascript:returnTo();" style="margin-right: 10px;" class="easyui-linkbutton" >返 回 进 度</a>
+        <!--<span style="margin-left: 20px;">设计进度：</span>-->
+        <!--<span>{$title}</span>-->
+        <a href="javascript:addBudgetPhoto();" style="margin-right: 10px;" class="easyui-linkbutton" >图 片 上 传</a>
+    </p>
+    <div style="width: 60%;height: 600px;float: left">
+        <table id="photo">
+        </table>
+    </div>
+    <div style="width: 38%;height: 400px;float: right">
+        <img  src="" id="img1">
+    </div>
+</div>
+<div id="d"></div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    $(function(){
+        $('#photo').datagrid({
+            url:'{:url("showDesignPhotoList",["guid"=>$guid])}',
+            width:'100%',
+            height:'100%',
+            rownumbers:false,
+            singleSelect:false,
+            pagination:false, //底部
+            method:'get',
+            pageSize:20,
+            columns:[[
+                {field:'photo_name',title:'图片名称',width:'20%',align:'center'},
+                {field:'uuid_name',title:'上传图片的人',width:'20%',align:'center'},
+                {field:'create_time',title:'上传日期',width:'20%',align:'center'},
+                {field:'opera',title:'操作',width:'40%',align:'center',
+                    formatter:function(value,row){
+                console.log(row);
+                        var str="<a href='javascript:lookPhoto(&apos;"+row.photo_address+"&apos;);'>浏览</a>";
+                        str+="&nbsp;&nbsp;<a href='javascript:lookPhotoM(&apos;"+row.photo_m+"&apos;);'>下载</a>";
+                        str+="&nbsp;&nbsp;<a href='javascript:delPhoto(&apos;"+row.guid+"&apos;);'>删除</a>";
+                        return str;
+                    }
+                }
+            ]],
+            nowrap:false, //超出部分自动换行
+
+        });
+    });
+    function lookPhoto(a) {
+        $("#img1").attr("src",a)
+    }
+    function lookPhotoM(a) {
+        window.open('{:url("Project/showHtml")}/m/'+a+"/type/photo");
+    }
+    function returnTo() {
+        window.parent.closeTab("进度图片");
+    }
+    function addBudgetPhoto(){
+        var href='{:url("showAddSchedulePhotoHtml",["guid"=>$guid])}';
+        var url='{:url("saveDesignPhoto",["guid"=>$guid])}'; //单独的设计进度id,
+        $('#d').dialog({
+            title: '图片上传',
+            iconCls: 'icon-save',
+            width: 400,
+            height:300,
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#d").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            if(!$("#photo_address").textbox("getValue")){
+                                layer.msg('图片还没有上传',{icon:2});
+                                return false;
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg('图片上传成功', {icon: 1});
+                                    $("#d").dialog('close');
+                                    $('#photo').datagrid('reload');
+                                }
+                            }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#dlog").dialog('close');
+                }
+            }]
+        });
+    }
+    function delPhoto(a) { //删除图片
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("delPhoto")}', {id: a}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    $("#photo").datagrid('reload');
+                }
+            }, 'json');
+        });
+
+    }
+    function lookPhotoM(a) {
+        window.open('{:url("project/showhtml")}/m/'+a+"/type/photo");
+    }
+
+    function dlog(href,url,title,msg) {
+        $('#d').dialog({
+            title: title,
+            iconCls: 'icon-save',
+            width: 400,
+            height:300,
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#dlog").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            if($("#dd").datetimebox("getValue")){
+                                if(Date.parse(new Date()) > Date.parse(new Date($("#dd").datetimebox("getValue")))){
+                                    layer.msg('开始日期小于当前日期',{icon:2});
+                                    return false;
+                                }
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(msg, {icon: 1});
+                                    $("#dlog").dialog('close');
+                                    $('#photo').datagrid('reload');
+                                }
+                            }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#dlog").dialog('close');
+                }
+            }]
+        });
+    }
+</script>
+</body>
+</html>
+
+
+

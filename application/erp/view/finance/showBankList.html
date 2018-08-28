@@ -1,0 +1,124 @@
+showPaymentList.html{extend name="base/edit" /}
+{block name="columns"}
+<th data-options="field:'name',align:'center',width:'20%' ,editor:{type:'textbox',
+							options:{
+								required:true,}},">账号</th>
+<th data-options="field:'payment_id',width:'10%',align:'center',
+                    formatter:function(value,row){
+							if (eval('value_payment_name')[value]){
+                                return eval('value_payment_name')[value];
+                            }else{
+                                return value;
+                            }
+                        },
+						editor:{
+							type:'combobox',
+							options:{
+								valueField:'value',
+								textField:'text',
+								method:'get',
+								data:array_payment_name,
+								required:true,
+								editable:false
+							}
+						}">收付款方式</th>
+<th data-options="field:'uuid',width:'10%',align:'center',
+                    formatter:function(value,row){
+							if (eval('value_user_name')[value]){
+                                return eval('value_user_name')[value];
+                            }else{
+                                return value;
+                            }
+                        },
+						editor:{
+							type:'combobox',
+							options:{
+								valueField:'value',
+								textField:'text',
+								method:'get',
+								data:array_user_name,
+								required:true,
+								editable:false
+							}
+						}">账号管理者</th>
+<th data-options="field:'desc',align:'center',width:'35%' ,editor:'textbox',">备注说明</th>
+<th data-options="field:'balance_price',width:'10%',align:'center',">账号余额</th>
+<th data-options="field:'op',width:'15%',align:'center',formatter:function(value,row,index){
+    return create(row.guid);
+}">操作</th>
+{/block}
+{block name="value"}
+{:widget('Easyui/showValueByUrl',["payment_name","paymentStyle",$map])}
+{:widget('Easyui/showArrayByUrl',["payment_name","paymentStyle",$map])}
+{:widget('Easyui/showValueByUrl',["user_name","paymentUser",$map])}
+{:widget('Easyui/showArrayByUrl',["user_name","paymentUser",$map])}
+{/block}
+
+{block name="default_value"}
+    balance_price:0.00
+{/block}
+
+{block name="my_js"}
+    function create(a){
+        return '<a href="javascript:editPrice(&apos;'+a+'&apos;);">更改余额</a>&nbsp;&nbsp;&nbsp;<a href="javascript:lookBankLog(&apos;'+a+'&apos;);">交易记录</a>';
+    }
+    function lookBankLog(a){
+        window.parent.addTab('交易记录','{:url("lookBankLog")}/guid/'+a,'close');
+    }
+    function editPrice(a){
+        $("#dlog").dialog({
+            title: '变更余额',
+            iconCls: 'icon-save',
+            width: 500,
+            height: 400,
+            cache: false,
+            href: '{:url("Finance/editPrice")}/guid/'+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                text:' 确 认 变 更  ',
+                iconCls:'icon-save',
+                handler: function(){
+                    $("#dlog").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            if(!$("#desc").val()){
+                                layer.msg('请填写更改余额原因', {icon: 3});
+                                return false;
+                            }
+                            if(!$("#balance_price").val()){
+                                layer.msg('请填写更改后余额', {icon: 3});
+                                return false;
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post('{:url("Finance/editPrice")}/guid/'+a, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                    layer.msg(data.msg, {icon: 3});
+                                    } else {
+                                    layer.msg('账号余额变更成功',{icon: 1});
+                                    $("#dlog").dialog('close');
+                                    $("#dg").datagrid('reload');
+
+                                }
+                            }, 'json');
+                            return false;
+                            }
+                        });
+                    }
+                },
+            {
+                text:' 关 闭  ',
+                iconCls:'icon-clear',
+                handler: function(){
+                    $(mikkleClass.dialog).dialog('close');
+                }
+            }],
+        });
+    }
+{/block}

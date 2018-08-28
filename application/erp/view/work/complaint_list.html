@@ -1,0 +1,94 @@
+complaint_list.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+{block name="my_css"}
+{/block}
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'time', title: '登记日期', width: '100', align: 'center', sortable: true}
+, { field: 'complaint_id', title: '维修单编号', width: '150', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'customer_name', title: '客户姓名', width: '100', align: 'center', sortable: true}
+, { field: 'project_id', title: '项目地址', width: '100', align: 'center', sortable: true}
+, { field: 'customer_phone', title: '联系电话', width: '180', align: 'center', sortable: true}
+, { field: 'project_uuid', title: '原项目经理', width: '100', align: 'center', sortable: true}
+, { field: 'complaint_content', title: '需修事宜', width: '100', align: 'center', sortable: true}
+, { field: 'end_time', title: '验收日期', width: '100', align: 'center', sortable: true}
+, { field: 'uuid_name', title: '登记人', width: '100', align: 'center', sortable: true}
+, { field: 'complaint_uuid', title: '维修处理人', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+,{ field: 'processing_status', title: '处理状态', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'complaint_desc', title: '完毕回访', width: '100', align: 'center', sortable: true}
+<!--,{ field: 'operate', title: '操作', width: 120,align: 'center', sortable: true,{:widget('Easyui/formatter')} }-->
+]]{/block}
+
+{block name="filter"}[
+
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["processing_status","processing_status"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field =='complaint_id'){
+    if(value){
+        return '<a>'+value+'</a>';
+    }else{
+        return '<a>'+row.time+'-'+row.id+'</a>';
+    }
+}else if (field =='complaint_uuid'){
+if(value){
+return '<a>'+value+'</a>';
+}else{
+return '<a style="color:blue;font-size: 12px;cursor: pointer"  onclick="audit(&apos;'+row.guid+'&apos;)">指定</a>';
+}
+}else if (field == 'operate'){
+var str="";
+str+='';
+return str;
+
+}else if (eval("value_" + field)[value]){
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}'
+{/block}
+
+{block name="my_js"}
+<script>
+    function audit(a){
+        $(mikkleClass.dialog).dialog({
+            title: "指定人员",
+            iconCls: 'icon-save',
+            width: 540,
+            height: 345,
+            cache: false,
+            href: "{:url('showUser')}/guid/"+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+</script>
+{/block}
+
+{block name="toolbar"}[
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

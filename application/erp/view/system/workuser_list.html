@@ -1,0 +1,213 @@
+workuser_list.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+{block name="my_css"}
+
+{/block}
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'plan_name', title: '名称', width: '100', align: 'center', sortable: true}
+, { field: 'plan_content', title: '内容', width: '100', align: 'center', sortable: true}
+, { field: 'name', title: '执行者', width: '100', align: 'center', sortable: true}
+, { field: 'end_time', title: '计划完成时间', width: '180', align: 'center', sortable: true}
+, { field: 'plan_grade', title: '计划重要程度',width: '180', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'work_schedule', title: '计划进度',width: '180', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'dep_manager', title: '计划审批',width: '180', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'plan_desc', title: '计划备注', width: '100', align: 'center', sortable: true}
+,{ field: 'operate', title: '操作', width: 350,align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+]]{/block}
+
+{block name="filter"}[
+{:widget('Easyui/showFilter', ["plan_grade","combobox"])}
+
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["plan_grade","plan_grade"] )}
+{:widget('Easyui/showAll', ["audit_status","audit_status"] )}
+{:widget('Easyui/showAll', ["work_schedule","work_schedule"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'plan_grade') {
+if( value=="4"){
+    return '<a style="color: red">'+eval("value_" + field)[value]+'</a>';
+}else if(value=="3"){
+    return '<a style="color: blue">'+eval("value_" + field)[value]+'</a>';
+}
+    return eval("value_" + field)[value];
+}else if(field == 'dep_manager'){
+if(value=="1"){
+return  '<a style="color:green">'+ eval("value_audit_status")[value]+'</a>';
+}else if(value=="-1"){
+return '<a style="color:red">'+ eval("value_audit_status")[value]+'</a>';
+}else{
+return  '<a style="color:blue;font-size: 12px;" >'+ eval("value_audit_status")[value]+'</a>';
+}
+}else if (field == 'operate'){
+var str="";
+if(row.dep_manager=="0"){
+  str+='<a  href="javascript:;" style="margin-right: 10px" onclick="editPower(&apos;'+row.guid+'&apos;)">修改计划</a>';
+}
+if(row.work_schedule!="1"){
+str+='<a  href="javascript:;" style="margin-right: 10px" onclick="editWork(&apos;'+row.guid+'&apos;)">更改工作进度</a>'
+}
+str+='<a  href="javascript:;" style="margin-right: 10px" onclick="addWorkLog(&apos;'+row.guid+'&apos;)">每日一记</a>';
+str+='<a  href="javascript:;" style="margin-right: 10px" onclick="showWorkLog(&apos;'+row.guid+'&apos;)">查看日记</a>';
+
+return str;
+
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+{block name="my_js"}
+<script>
+    function editPower(a){
+        var url="{:url('system/planEdit')}/guid/"+a;
+        $(mikkleClass.dialog).dialog({
+            title: '修改计划',
+            iconCls: 'icon-save',
+            width: 420,
+            height: 420,
+            cache: false,
+            href: '{:url("system/showPlanEdit")}' ,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text: ' 确 定 ',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        $(mikkleClass.dialog).find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post(url, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else {
+                                        layer.msg(data.msg, {icon: 1});
+                                        $(mikkleClass.dialog).dialog('close');
+                                        mikkleClass.refresh();
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },
+                {
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $(mikkleClass.dialog).dialog('close');
+                    }
+                }],
+        });
+        mikkleClass.dialogFormLoad(a);
+    }
+    function addWorkLog(a){
+        $(mikkleClass.dialog).dialog({
+            title: '每日一记',
+            iconCls: 'icon-save',
+            width: 400,
+            height: 320,
+            cache: false,
+            href: '{:url("System/showWorkLog")}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons: mikkleClass.button_add('{:url("System/addWorkLog")}/guid/'+a,"确 定"),
+        });
+    }
+    function editWork(a){
+        $(mikkleClass.dialog).dialog({
+            title: '工作进度',
+            iconCls: 'icon-save',
+            width: 400,
+            height: 120,
+            cache: false,
+            href: '{:url("Work/showWorkStatus")}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons: mikkleClass.button_add('{:url("Work/editWorkStatus")}/guid/'+a,"确 定"),
+        });
+    }
+    function showWorkLog(a){
+        $(mikkleClass.dialog).dialog({
+            title: '每日一记',
+            iconCls: 'icon-save',
+            width: 600,
+            height: 500,
+            cache: false,
+            href: '{:url("System/showLogWork")}/guid/'+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text:' 确 认  ',
+                    iconCls:'icon-save',
+                    handler: function(){
+                        $(mikkleClass.dialog).dialog('close');
+                    }
+                },
+               {
+                   text:' 关 闭  ',
+                   iconCls:'icon-clear',
+                   handler: function(){
+                       $(mikkleClass.dialog).dialog('close');
+                   }
+            }],
+        });
+    }
+
+    function editForm(){
+        var a=mikkleClass.getSelectRows("修 改");
+        if(a){
+            editPower(a);
+        }
+    }
+</script>
+{/block}
+
+{block name="toolbar"}[
+<!--{ text:'添加', iconCls: 'icon-add', handler:function(){ mikkleClass.addForm(420,380);} },'-',-->
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ editForm() } },'-',
+{ text:'删除', iconCls: 'icon-cancel', handler: function(){ mikkleClass.delForm();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

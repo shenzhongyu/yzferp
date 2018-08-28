@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>维修项目详情</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+.change{
+    font-size: 0.23rem;
+    padding: 0.2rem 0.2rem;
+    width: 90%;
+    background: white;
+    padding-bottom: 10%;
+    border: 1px silver solid;
+    border-radius: 10px;
+    display: none;
+    position: fixed;
+    left: 5%;
+    top: 20%;
+}
+    </style>
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">维修项目详情</h1>
+    <!--<a id="menu" class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>-->
+    <!--<a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right mui-btn-primary mui-btn-block" id="openPopover" style="font-size: 24px;"></a>-->
+</header>
+
+
+<div class="addBoss">
+    <div v-if="item==''" class="text-center">暂无信息</div>
+    <div class="addFirst"  v-cloak>
+        <!--<div class="addPro">维修项目详情</div>-->
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">登记日期：</div>
+            <div class="detailRightOnly">
+                {{item.time}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">维修编号：</div>
+            <div class="detailRightOnly">
+            {{item.guid}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">客户姓名：</div>
+            <div class="detailRightOnly">
+            {{item.customer_name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">联系电话：</div>
+            <div class="detailRightOnly">
+                {{item.customer_phone}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">项目地址：</div>
+            <div class="detailRightOnly">
+                {{item.project_id}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">项目经理：</div>
+            <div class="detailRightOnly">
+                {{item.project_uuid}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">需修事宜：</div>
+            <div class="detailRightOnly">
+                {{item.complaint_content}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">登记人：</div>
+            <div class="detailRightOnly">
+                {{item.register.name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">处理人：</div>
+            <div class="detailRightOnly">
+                {{item.handle.name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">处理状态：</div>
+            <div class="detailRightOnly">
+                <span v-if="item.processing_status==-1">未处理</span>
+                <span v-if="item.processing_status==1">正在处理</span>
+                <span v-if="item.processing_status==2">已完成</span>
+
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">完毕回访：</div>
+            <div class="detailRightOnly">
+                {{item.complaint_desc}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">验收日期：</div>
+            <div class="detailRightOnly">
+                {{item.end_time}}
+            </div>
+        </div>
+        <div class="detailBoss ">
+
+            <div class="detailLeftOnly">操作：</div>
+            <div class="detailRightOnly">
+                <span v-if="item.processing_status==-1 ||item.processing_status==1">
+                    <a href="javascript:;" style="color:#4aa7f3;" @click="change">更改处理状态</a>
+                    <a href="javascript:;"  style="color:#4aa7f3;margin-left: 0.2rem" @click="addLogclick" v-if="!item.complaint_desc">添加回访</a>
+                </span>
+            </div>
+        </div>
+
+
+        <div class="addLog">
+            <div style="text-align: center;">添加回访</div>
+            <form method="post" name="form" id="LogForm">
+
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left;float: left">回访内容：</div>
+                    <textarea type="text" style="width: 60%;display:inline-block;background: lavender;height: 2rem"
+                              name="complaint_desc"></textarea>
+                </div>
+            </form>
+            <div style="margin-top: 0.3rem;text-align: center">
+                <button @click="addLog">添加</button>
+                <button style="margin-left: 0.3rem" @click="closeLog">关闭</button>
+
+            </div>
+        </div>
+
+
+        <div class="change ">
+            <div style="text-align: center;">更改处理状态</div>
+            <form method="post" id="changeForm">
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem;">
+                    <div style="display:inline-block; width: 30%;text-align: left;float: left">处理状态：</div>
+                   <select style="width: 70%;border: 1px solid #f3f3f3 !important;" name="processing_status">
+                       <option value="-1">未处理</option>
+                       <option value="1">正在处理</option>
+                       <option value="2">已完成</option>
+                   </select>
+                </div>
+            </form>
+            <div style="margin-top: 0.3rem;text-align: center">
+                <button @click="addChange">添加</button>
+                <button style="margin-left: 0.3rem" @click="closeChange">关闭</button>
+
+            </div>
+        </div>
+
+
+        <!--<div class="detailBoss " >-->
+
+            <!--<div class="detailLeftOnly">操作：</div>-->
+            <!--<div class="detailRightOnly" >-->
+               <!--<a @click="headMan(item.guid)">设为负责人</a>-->
+            <!--</div>-->
+        <!--</div>-->
+
+    </div>
+
+    </div>
+</div>
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        var url = "{:url('',['guid'=>$guid])}";
+        mui.ajax(url, {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                dataA.item = response;
+                var vue = new Vue({
+                    el: '#details',
+                    data: dataA,
+                    methods: {
+                        addLogclick: function () {
+                            $(".addLog").css("display", "block")
+                        },
+//
+                        closeLog: function () {
+                            $(".addLog").css("display", "none")
+                        },
+                        change:function () {
+                          $(".change").css("display","block")
+                        },
+                        closeChange:function () {
+                            $(".change").css("display","none")
+                        },
+                        addLog: function () {
+                            var change_data = $("#LogForm").serialize();
+                            console.log(change_data);
+                            mui.ajax('{:url("erp/work/addcomplaintdesc",["guid"=>$guid])}', {
+                                data: change_data,
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+
+                                success: function (response) {
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    if(response.code == 1001){
+                                        setTimeout(function () {
+                                            history.back()
+                                        },2000)
+
+                                    }
+                                }
+                            })
+
+
+                        },
+                        addChange: function () {
+                            var ff_data = $("#changeForm").serialize();
+                            console.log(ff_data);
+                            mui.ajax('{:url("erp/work/editprocessingstatus",["guid"=>$guid])}', {
+                                data: ff_data,
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+
+                                success: function (response) {
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    if(response.code == 1001){
+                                        setTimeout(function () {
+                                            history.back()
+                                        },2000)
+
+
+                                    }
+                                }
+                            })
+
+
+                        }
+                    }
+                })
+            }
+        })
+    }
+</script>

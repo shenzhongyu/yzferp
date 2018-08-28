@@ -1,0 +1,40 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">姓名:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="contact_name"
+                   data-options="required:true,validType:'length[1,10]'" placeholder="请填写联系人姓名"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">性别:</label>
+        <label class="label_2">
+            <input class="easyui-combobox" id="sex"  name="sex" style="width:80%" value=""
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/sex_value')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">电话:</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text"  data-options="required:true,validType:'length[4,11]'" name="contact_number" style="width:80%"></label>
+    </section>
+    <section>
+        <label  class="label_1">QQ:</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text"  data-options="validType:'length[5,11]'" name="customer_qq" style="width:80%"></label>
+    </section>
+    <section>
+        <label  class="label_1">邮箱:</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="email"  data-options="validType:'email'" name="customer_email" style="width:80%"></label>
+    </section>
+    <section>
+        <label  class="label_1">与户主关系:</label>
+        <label class="label_2">
+            <input class="easyui-combobox"   name="householder_relation" style="width:80%;"
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/householder_relation')}',method:'get',">
+        </label>
+    </section>
+</form>
+

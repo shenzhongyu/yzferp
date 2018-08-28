@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>预算信息</title>
+    {include file="base_mui/weui_wechat"/}
+
+</head>
+<body>
+<div id="app"  style="font-size: 14px" v-cloak>
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+
+        <h1 class="mui-title">浏览预算</h1>
+    </header>
+
+    <!--<div style="width: 1050px;height: 500px;margin-top: 60px;border: 1px solid black">-->
+        <!--<div style="border-bottom: 1px solid black">-->
+            <!--<div style="width: 24%;border-right: 1px solid black; display: inline-block">-->
+                <!--<span>业主姓名：</span>-->
+            <!--</div>-->
+            <!--<div style="width: 24%;border-right: 1px solid black;display: inline-block;margin: 0px;padding: 0px">-->
+                <!--<span>业主电话：</span>-->
+            <!--</div>-->
+            <!--<div style="width: 24%;border-right: 1px solid black;display: inline-block">-->
+                <!--<span>面积：</span>-->
+            <!--</div>-->
+            <!--<div style="width: 26%;border-right: 1px solid black;display: inline-block">-->
+                <!--<span>工程地址：</span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div style="border-bottom: 1px solid black">-->
+            <!--<div style="width: 24%;border-right: 1px solid black; display: inline-block">-->
+                <!--<span style="">设计师名字：</span>-->
+            <!--</div>-->
+            <!--<div style="width: 24%;border-right: 1px solid black;display: inline-block;margin: 0px;padding: 0px">-->
+                <!--<span style="">设计师电话：</span>-->
+            <!--</div>-->
+            <!--<div style="width: 24%;border-right: 1px solid black;display: inline-block">-->
+                <!--<span style="">设计风格：</span>-->
+            <!--</div>-->
+            <!--<div style="width: 26%;border-right: 1px solid black;display: inline-block">-->
+                <!--<span>公司地址：</span>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--<div style="border-bottom: 1px solid black ;height: 50px" >-->
+            <!--<div style="width: 5%;border-right: 1px solid black; display: inline-block">-->
+                <!--<span style="">编号：</span>-->
+            <!--</div>-->
+            <!--<div style="width: 10%;border-right: 1px solid black;display: inline-block;margin: 0px;padding: 0px">-->
+                <!--<span style="">工程项目：</span>-->
+            <!--</div>-->
+            <!--<div style="width: 5%;border-right: 1px solid black;display: inline-block">-->
+                <!--<span style="">单位：</span>-->
+            <!--</div>-->
+            <!--<div style="width: 26%;border-right: 1px solid black;display: inline-block">-->
+                <!--<span>公司地址：</span>-->
+            <!--</div>-->
+        <!--</div>-->
+
+
+        <!--<div>-->
+            <!--<div style="width: 5%;border-bottom: 1px solid black">11561566</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <table border="1" style="width: 1050px;height: 50px;margin-top: 55px;text-align: center">
+        <tr>
+            <td style="width: 25%">业主姓名：   {{book.cont_name}}</td>
+            <td style="width: 25%"> 业主电话：   {{book.cont_name}}</td>
+            <td style="width: 25%">面积：   {{book.area}}</td>
+            <td style="width: 25%">工程地址： {{book.cont_pone}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%">设计师姓名：  {{user.name}}</td>
+            <td style="width: 25%">设计师电话 {{user.phone}}</td>
+            <td style="width: 25%">设计风格：  {{book.budget_style}}</td>
+            <td style="width: 25%">公司地址：  {{book.address}}</td>
+        </tr>
+    </table>
+
+    <table border="1" style="width: 1050px;height: 50px;text-align: center;margin-top: 10px">
+        <tr>
+            <td rowspan="2" style="width: 5%">编号</td>
+            <td rowspan="2" style="width: 10%">工程项目</td>
+            <td rowspan="2" style=" width: 5%" >单位</td>
+            <td colspan="3" style="width: 30%">工程造价</td>
+            <td colspan="5" style="width:50%;"> 其中</td>
+        </tr>
+        <tr>
+            <td>数量</td>
+            <td>单价</td>
+            <td>金额</td>
+            <td>主材</td>
+            <td>辅材</td>
+            <td>人工</td>
+            <td>损耗</td>
+            <td>机械</td>
+        </tr>
+
+
+
+
+
+    </table>
+<div v-for="res in body">
+    <table border="1" style="width: 1050px;height: 50px;text-align: center;margin-top: 10px" >
+        <tr >
+            <td colspan="11"  >{{res.name}}</td>
+        </tr>
+
+        <tr v-for="item in res.child">
+            <td style="width: 5%">{{item.xuhao}} </td>
+            <td style="width: 10%">{{item.name}}</td>
+            <td style="width: 5%">{{item.unit}}</td>
+            <td style="width: 10%">{{item.number}}</td>
+            <td style="width: 10%">{{item.price}}</td>
+            <td style="width: 10%">{{item.price_sum}}</td>
+            <td style="width: 10%">{{item.zc_price}}</td>
+            <td style="width: 10%">{{item.fc_price}}</td>
+            <td style="width: 10%">{{item.rg_price}}</td>
+            <td style="width: 10%">{{item.sh_price}}</td>
+            <td style="width: 10%">{{item.jx_price}}</td>
+
+        </tr>
+        <tr >
+
+
+            <td colspan="11"  style="text-align: left">小计：{{res.xj_price}}</td>
+        </tr>
+        <td colspan="11"  style="text-align: left">备注：{{res.desc}}</td>
+    </table>
+</div>
+
+
+
+    <div>
+        <table style="width: 1050px;height: 50px;text-align: center;margin-top: 10px" border="1">
+            <tr v-for="item in foot">
+                <td style="width: 5%"> </td>
+                <td style="width: 10%">{{item.name}}</td>
+                <td style="width: 5%">{{item.unit}}</td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%">{{item.rate_value}}</td>
+                <td style="width: 10%">{{item.value}}</td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%"></td>
+            </tr>
+
+        </table>
+    </div>
+    <div style="width: 1050px ;text-align: left">备注</div>
+    <div style="width: 1050px;padding-left: 10px;padding-right: 10px;margin-bottom: 20px">
+{{book.desc}}
+
+    </div>
+
+
+    <!--<div class="text-center" style="width: 1050px;text-align: center">1.预算测试</div>-->
+    <!--<header class="mui-bar mui-bar-nav ">-->
+        <!--<a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>-->
+
+        <!--<h1 class="mui-title">预算信息</h1>-->
+    <!--</header>-->
+    <!--<div class="addBoss" v-cloak>-->
+        <!--<div class="addPro">预算信息</div>-->
+        <!--<div class="addFirst" >-->
+
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">业主姓名：</div>-->
+                <!--<div class="detailRightOnly">-->
+                   <!--{{book.cont_name}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">业主电话：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{book.cont_pone}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">面积：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{book.area}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">工程地址：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{book.cont_pone}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">设计姓名：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{user.name}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">联系电话：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{user.phone}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">设计风格：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{book.budget_style}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss ">-->
+                <!--<div class="detailLeftOnly">公司地址：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{book.address}}-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+    <!--</div>-->
+
+
+    <!--<div class="addBoss" v-cloak style="margin-top: 0.2rem" v-for="res in body">-->
+        <!--<div class="addPro">{{res.name}}</div>-->
+        <!--<div class="addFirst"  v-for="item in res.child">-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">编号：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.xuhao}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">工程项目：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.name}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">单位：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.unit}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">数量：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.number}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">单价：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.price}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">金额：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.price_sum}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">主材：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.zc_price}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">辅材：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.fc_price}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">人工：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.rg_price}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">损耗：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.sh_price}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss detail_line">-->
+                <!--<div class="detailLeftOnly">机械：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.jx_price}}-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="detailBoss ">-->
+                <!--<div class="detailLeftOnly">备注：</div>-->
+                <!--<div class="detailRightOnly">-->
+                    <!--{{item.desc}}-->
+                <!--</div>-->
+            <!--</div>-->
+
+        <!--</div>-->
+        <!--<div class="addPro">小计：{{res.xj_price}}</div>-->
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var id = '';
+        var dataA = {};
+        mui.ajax('{:url("",["guid"=>$guid])}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                console.log(response);
+
+                var vue = new Vue({
+                    el: '#app',
+                    data: response,
+                    methods: {
+
+                    }
+                })
+            }
+        })
+    }
+</script>

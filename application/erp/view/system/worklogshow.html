@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+
+    <script type="text/javascript" src="__STATIC__/easyui_151/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/easyui_151/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/easyui_151/easyui-lang-zh_CN.js"></script>
+</head>
+<body >
+<p style="height: 30px;line-height: 30px;width:550px;"><a style="margin-left: 30px;">计划名称：{$plan_name}</a><a style="margin-left: 30px;">计划执行人：{$user_name}</a></p>
+<table id="dg"  style="width:585px;height:395px"
+       data-options="rownumbers:true,singleSelect:true,pagination:true,url:'{$url}',method:'get'">
+    <thead>
+    <tr>
+        <th data-options="field:'log_content',width:183,align:'center'">日志内容</th>
+        <th data-options="field:'username',width:185,align:'center'">日志填写人</th>
+        <th data-options="field:'log_time',width:183,align:'center'">填写时间</th>
+    </tr>
+    </thead>
+</table>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>项目信息录入</title>
+    {include file="base_mui/weui_wechat"/}
+
+
+</head>
+<body>
+    <div id="app">
+        <div id="nomalinform">
+            <div class="d_top"></div>
+                <div  id="informa"> </div>
+                <header class="mui-bar mui-bar-nav ">
+                    <a class=" mui-icon mui-icon-left-nav mui-pull-left" id="leftbacka"></a>
+                    <h1 class="mui-title">项目基本信息</h1>
+                </header>
+            <div class="d_both">
+                    <div class="d_left ofh">项目要求：</div>
+                    <div type="text" class="d_right">
+                        <textarea></textarea>
+                    </div>
+            </div>
+            <div class="d_bottom"><button id="nextbtn">下一步</button></div>
+        </div>
+        <div id="personinform" style="display: none">
+            <header class="mui-bar mui-bar-nav">
+                <a class=" mui-icon mui-icon-left-nav mui-pull-left" id="leftback"></a>
+                <h1 class="mui-title">个人信息</h1>
+            </header>
+            <div class="d_top"></div>
+            <div  id="informb"> </div>
+            <div class="d_bottom "><button class="mui-btn mui-btn-primary" id="d_tioajiao">提交</button ><button  class="ml20 mui-btn mui-btn-danger" @click="replay" id="relay">重置</button></div>
+        </div>
+    </div>
+</body>
+<script>
+   window.onload = function () {
+
+       function defaultAjax(url,data,datatype,succ_fn,err_fn){
+           var uri = $.trim(url) + '/' + Math.random();
+           jQuery.ajax({
+                   type:"POST",
+                   url:uri,
+                   async:false,
+                   data:data,
+                   dataType:datatype,
+                   success:function(response){
+                       succ_fn(response);
+                   },
+                   error:err_fn
+               }
+           );
+       }
+       var a = ["经济型","中档型","豪华型","简装","精装","豪装","钻装"];;
+       var b=["红色","黄色","蓝色","灰色","白色","黑色"];
+       var c=["现代简约风格","恬淡田园风格","新中式风格","欧式古典风格","地中海风格","日式风格"];
+       var d=["半包","全包","装壁纸","墙壁粉刷","维修","水电"];
+       var e=["电话来访","上门咨询","网站查询","朋友介绍","广告招揽","邮件咨询","客户拜访"];
+       var f=["男","女"];
+       var g=["本人","亲戚","朋友","家人"];
+
+       var  arreyb=['项目名称不能为空','预算总工期不能为空','装修面积不能为空','工程预算不能为空','姓名不能为空','联系电话不能为空'];
+
+       var creatediv =function (id,texts,type) {
+           var div = '<div class="d_both">'+'<div class="d_left">'+texts+'</div>' +
+               '        <div type="text" class="d_right">' +
+               '            <input class="inputclass" maxlength="10" type='+type+'>' +
+               '        </div> '+
+               '    </div>';
+           this.valuenum = function () {
+               var valnum = $("input").value;
+               var num = valnum;
+           };
+           this.valuenum();
+           $("#"+id).append(div);
+       };
+
+//传输数据为数组
+       var createselecta =function (id,titlenum,array,selectId) {
+           var select ='<div class="d_both " >'+
+               '<div class="d_left">'+titlenum+'</div>'+
+               '<div type="text" class="d_right">'+
+               ' <select name="" id="'+selectId+'">'+
+              + '</select>'+
+               '</div>'+
+               '</div>';
+
+           $("#"+id).append(select);
+           for(var i = 0;i<array.length;i++){
+//               $("#"+id).find("select").append("<option value="+i+">"+[array[i]]+"</option>");
+               $("#"+selectId).append("<option value="+i+">"+[array[i]]+"</option>");
+           }
+       };
+
+//传输数据为obj
+//       var createselectobj =function (id,titlenum,obj) {
+////           获取对象属性值
+//           var select ='<div class="d_both " >'+
+//               '<div class="d_left">'+titlenum+'</div>'+
+//               '<div type="text" class="d_right">'+
+//               ' <select name="">'+
+//               + '</select>'+
+//               '</div>'+
+//               '</div>';
+//           $("#"+id).append(select);
+//           for(var i = 0;i<obj.length;i++){
+//               $("#"+id).find("select").eq(i).append("<option value="+i+">"+obj[i].message+"</option>");
+//
+//           }
+//       };
+       creatediv("informa","项目名称：","text");
+       creatediv("informa","预算总工期：","text");
+       creatediv("informa","装修面积：","text");
+       creatediv("informa","工程预算：","text");
+       createselecta("informa","装修档次：",a,"e");
+       createselecta("informa","色彩取向：",b,"b");
+       createselecta("informa","装修风格：",c,"c");
+       createselecta("informa","装修类型：",d,"d");
+       createselecta("informa","客户来源：",e,"ee");
+       creatediv("informb","姓名：","text");
+       creatediv("informb","联系电话：","text");
+       createselecta("informb","性别：",f,"f");
+       createselecta("informb","与户主关系：",g,"bb");
+
+       creatediv("informb","QQ：","text");
+       creatediv("informb","邮箱：","text");
+       for(var a = 0; a<=5;a++){
+//           alert(a)
+           $("input:eq("+a+")").addClass("border_red")
+       }
+       $("#nextbtn").click(function(){
+           $("#nomalinform").hide();
+           $("#personinform").show();
+
+       });
+       $("#leftback").click(function () {
+           $("#personinform").hide();
+           $("#nomalinform").show();
+           return false;
+       });
+//      alert($("select:eq(6)").text());
+
+       $("#d_tioajiao").click(function () {
+
+
+//                项目名称正则匹配
+               if($("input[type='text']").get(0).value.match(/[^\u4e00-\u9fa5]/)){
+                   mui.toast('项目名称只能为汉字',{ duration:'short', type:'div' });
+                   return false;
+               }
+//            姓名正则匹配
+           if($("input[type='text']").get(4).value.match(/[^\u4e00-\u9fa5]/)){
+               mui.toast('姓名格式为汉字',{ duration:'short', type:'div' });
+               return false;
+           }
+           if($("input[type='text']").get(5).value.match(/^[0-9]*$/)){}else{
+               mui.toast('电话号码格式为数字',{ duration:'short', type:'div' });
+               return false;
+           }
+//获取input标签的输入值；
+           $("input[type='text']").each(function () {
+//               console.log($(this).val());
+           });
+//获取所有被选中的select的文本值
+           $("select option:selected").each(function (i,value) {
+               console.log($(this).text());
+//           console.log($("select option:selected")[1])
+           });
+//各项数据不为空
+           for(var i = 0;i<= 5;i++){
+               if(( $("input[type='text']").get(i).value)== ""){
+                       mui.toast(arreyb[i], {duration: 'short', type: 'div'});
+                       return false;
+               }
+           }
+           $("select:eq(6) option:selected").each(function (i,value) {
+               if($(this).text()=="请选择"){
+                   mui.toast('与户主关系不能为空',{ duration:'short', type:'div' });
+                   return false;
+               }
+           });
+       });
+       $("#relay").click(function () {
+           $("#app").find("input").val("");
+           $("#app").find("textarea").val("");
+           $("#personinform").hide();
+           $("#nomalinform").show();
+           var SelectArr = $("select")
+           for (var i = 0; i < SelectArr.length; i++) {
+               $('select').prop('selectedIndex', 0);
+           }
+           var checkValue=$("select").val();
+       })
+   }
+
+   $("#leftbacka").on('tap',function () {
+       mui.openWindow({
+           url: "{:url('index')}"
+       })
+   })
+
+</script>
+
+
+
+
+

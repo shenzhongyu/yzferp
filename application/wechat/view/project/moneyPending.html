@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>定金审核列表</title>
+    {include file="wechat@base_mui/weui_wechat_swiper"/}
+</head>
+</head>
+<body>
+<div id="index"  v-cloak>
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <!--<a class="mui-icon mui-icon mui-icon mui-icon-search mui-pull-right" style="font-size:30px;"-->
+        <!--@click="search"></a>-->
+        <h1 class="mui-title">定金审核列表</h1>
+    </header>
+    <div style="margin-top: 50px;text-align: center;width:100% !important;" id="div"></div>
+    <div class="swiper-container" id="swiper_container" style="margin-top: 50px">
+        <div class="swiper-wrapper" id="swiper_list">
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#listBoth").hover(function () {
+            $("#listBoth").css(background, "yellow")
+        });
+        initVueLoad();
+        myMuiLoad(1, 15);
+    });
+    function initVueLoad() {
+        var vue = new Vue({
+            el: '#index',
+            methods: {
+//                listBack: function () {
+//                    mui.openWindow({
+//                        url: "{:url('index/index')}"
+//                    })
+//                },
+//                search: function () {
+//                    mui.prompt('请输入搜索的内容', '', '');
+//                    $(".mui-popup-button").eq(1).on('tap', function () {
+//                        serach();
+//                    })
+//                }
+            },
+        })
+    }
+
+    function myMuiLoad(page, rows) {
+
+        var ajax_data = {};
+        if (search_data) {
+            ajax_data = Object.assign(search_data, {"page": page, "rows": rows});
+        }
+        mui.ajax(url, {
+                data: ajax_data,
+                dataType: 'json',//服务器返回json格式数据
+                type: 'post',//HTTP请求类型
+                success: function (response) {
+                    buildSwiper(rows, response.total);
+                    loadVue(response, page);
+                },
+
+            }
+        );
+    }
+
+    function loadVue(data, page) {
+        console.log(data);
+        var load = new Vue({
+            el: '#swiper_' + page,
+            data: data,
+            methods: {
+                toTails: function (id) {
+                    mui.openWindow({
+                        url: "{:url('project/moneyPendingDetails')}/guid/" + id
+
+                    })
+                },
+            },
+            mounted: function () {
+                if (isEmptyObject(my_swiper)) {
+                    my_swiper = new Swiper('#swiper_container', {
+                        setWrapperSize: true,
+                        observer: true,
+                        observeParents: true,
+                        onSlideChangeStart: function (swiper) {
+                            //要翻转的页数
+                            var page_i = swiper.activeIndex + 1;
+                            if (!page_finished[page_i]) {
+                                if (page_all > 0 && page_i <= page_all) {
+                                    myMuiLoad(swiper.activeIndex + 1, 15);
+                                }
+                            }
+                        }
+                    });
+
+                }
+                //设置page页已更新
+                page_finished[page] = true;
+            }
+        })
+    }
+    function serach() {
+        reload();
+        var data_value = $(".mui-popup-input input").val()
+
+        search_data.filterRules = [{
+            "field": "project_name",
+            "op": "contains",
+            "value": data_value
+        }];
+        myMuiLoad(1, 15);
+    }
+    function buildSwiper(rows, all) {
+        $("#div").css("display","none");
+        if(all==0){
+
+            $("#div").html("暂无数据")
+            $("#div").css("display","block");
+        }
+        if (page_all == 0) {
+            page_all = Math.ceil(all / rows);
+            page_all = page_all == 0 ? 1 : page_all;
+            for (var i = 1; i <= page_all; i++) {
+                $("#swiper_list").append(div_str.replace("{{id}}", "swiper_" + i));
+            }
+
+        } else {
+            my_swiper.updateSlidesSize();
+        }
+        return true;
+    }
+
+    function reload() {
+        $("#swiper_list").empty();
+        $("#swiper_list").css("transform", "translate3d(0px, 0px, 0px)");
+        page_all = 0;
+        page_finished = {};
+        search_data = {};
+    }
+
+    function isEmptyObject(obj) {
+        for (var key in obj) {
+            return false;
+        }
+        return true;
+    }
+
+    var url = "{:url('erp/project_deposit/showprojectdepositlist')}";
+
+
+    var page_all = 0;
+    var page_finished = {};
+    var div_str = '<div class="mui-content swiper-slide" id="{{id}}" ><div class="listBoth" @click ="toTails(a.guid)" v-for ="a in rows"> <span class="listLeft ml25" >{{a.serial_number}}<span class="ml25"></span><span >{{a.project_name}}</span></span><div class="listRight"> <i class="iocnfz mui-icon-forward"></i></div></div></div>';
+    var search_data = {};
+    var my_swiper = {};
+</script>
+
+</body>
+</html>

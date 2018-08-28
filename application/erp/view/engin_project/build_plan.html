@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 99%;height: 40px;line-height: 40px;padding-left: 10px">
+    <span>合同编号：</span>
+    <span>{$book_number}</span>
+    <span style="margin-left: 2%">项目名称：</span>
+    <span>{$name}</span>
+    <span style="margin-left: 2%">装修地址：</span>
+    <span>{$address}</span>
+    <span style="margin-left: 2%">施工时间：</span>
+    <span id="time_build"></span>
+</div>
+<div style="width: 92%;float: left">
+    <div id="tb" style="height:auto;">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="returnProjectList()"> 返 回 </a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="lookProjectBuild()"> 查 看 施 工 项 目 </a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="addPlanDate()"> 设 定 施 工 总 时 间 </a>
+
+        <a  href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="addBuildPlan()"> 创 建 施 工 阶 段 </a>
+        <!--<a style="margin-left: 10px;">搜索条件:</a>-->
+        <!--<a style="margin-left: 15px;">工程类别：<input type="text" id="name"></a>-->
+        <!--<a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">-->
+            <!--<span class="l-btn-icon icon-search"></span>-->
+            <!--<span class="l-btn-text l-btn-icon-left">搜索</span>-->
+        <!--</a>-->
+        <a style="margin-left: 15px;">注意：请在创建施工阶段的时候先查看施工项目，创建合理的施工阶段!</a>
+    </div>
+</div>
+<div id="plan_dlog">
+</div>
+
+<table id="jobs_dg" title="{$title}"></table>
+
+
+
+{include file="base/js" /}
+
+
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    var num='{$num}';
+    $(function(){
+        $('#jobs_dg').datagrid({
+            url:'{$data_url}',
+            showFooter:true,
+            columns:[[
+                {field:'build_name',title:'施工阶段',width:"15%",align:'center',
+                    formatter:function(value,row,index){
+                        if (row.id){
+                            return value+'阶段';
+                        }else{
+                            return value;
+                        }
+                    }
+                },
+                {field:'build_time',title:'开始时间',width:"15%",align:'center'},
+                {field:'build_days',title:'施工时间(天)',width:"8%",align:'center'},
+                {field:'build_end_time',title:'结束时间',width:"10%",align:'center'},
+                {field:'desc',title:'施工说明',width:"17%",align:'center',},
+                {field:'app',title:'状态',width:"5%",align:'center',
+                    formatter:function(value,row,index){
+                        if (row.id){
+                            if(row.type=="1"){
+                                return '<a style="color: #09bb07">验收中</a>';
+                            }else if(row.type=="2"){
+                                return '<a style="color: #01AAED">已完成</a>';
+                            }else{
+                                return '<a style="color: red">未完成</a>';
+                            }
+                        }
+                    }
+                },
+                {field:'name',title:'创建者',width:"10%",align:'center',},
+                {field:'op',title:'操作',width:"17%",align:'center',
+                    formatter:function(value,row,index){
+                         if (row.id){
+                             var str='';
+                             str+='<a href="javascript:showBuildTime(&apos;'+row.guid+'&apos;);">明细</a>&nbsp;&nbsp;';
+                             str+='<a href="javascript:chargeUser(&apos;'+row.guid+'&apos;);">施工人员</a>&nbsp;&nbsp;';
+                             if(row.type=="0"){
+                                 str+='<a href="javascript:buildContApply(&apos;'+row.guid+'&apos;);">完工申请</a>&nbsp;&nbsp;';
+                             }
+                             str+='<a href="javascript:showBuildContApply(&apos;'+row.guid+'&apos;);">申请记录</a>&nbsp;&nbsp;';
+                             if(row.type=="0"){
+                                 str+='<a href="javascript:delBuildPlan(&apos;'+row.guid+'&apos;);">删除</a>&nbsp;&nbsp;';
+                             }
+                             return str;
+                         }
+
+                    }
+                }
+            ]],
+            singleSelect: false,
+            toolbar: '#tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+    function sear(){
+        var tex=$("#name").val();
+        if(tex){
+            var str='[{"field":"categories_name","op":"contains","value":"'+tex+'","type":"text"}';
+            str+=']';
+            $('#jobs_dg').datagrid({
+                queryParams: {
+                    filterRules:str,
+                }
+            });
+        }else{
+            $('#jobs_dg').datagrid('reload',{});
+        }
+    }
+    function resh() {
+        $('#jobs_dg').datagrid('reload',{});
+    }
+    function returnProjectList() {
+        window.parent.closeTab('施工计划');
+        window.parent.addTab('项目施工计划','{:url("enginProject/showProjectOfUser")}','close');
+    }
+    function showBuildTime(a) {
+        window.parent.addTab('施工明细','{:url("enginProject/showBuildTime")}/id/'+a,'close');
+    }
+    function showBuildContApply(a) { //查看申请记录
+        var url="{:url('showBuildContApply')}/guid/"+a;
+        $('#plan_dlog').dialog({
+            title: "申请记录",
+            iconCls: 'icon-save',
+            width: '80%',
+            height: '500',
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function buildContApply(a){  //完工申请验收
+        var url='{:url("buildContApply")}/guid/'+a;
+        $('#plan_dlog').dialog({
+            title: "申请验收",
+            iconCls: 'icon-save',
+            width: '450',
+            height: '250',
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#plan_dlog').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url,$(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#plan_dlog').dialog('close');
+                                    resh();
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#plan_dlog').dialog('close');
+                }
+            }],
+
+        })
+    }
+    function addPlanDate() {
+        var url="{:url('buildPlanDate',['guid'=>$pro_id])}";
+        $('#plan_dlog').dialog({
+            title: "施工计划时间",
+            iconCls: 'icon-save',
+            width: '450',
+            height: '450',
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#plan_dlog').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url,$(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#plan_dlog').dialog('close');
+                                    resh();
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#plan_dlog').dialog('close');
+                }
+            }],
+
+        })
+
+    }
+    function lookProjectBuild() {
+        window.parent.addTab('施工项目','{:url("assignJobs",["guid"=>$pro_id])}','close');
+    }
+    function addBuildPlan() {
+        if (num==0){
+            layer.msg('请先设置施工总时间',{icon:2});
+            return false;
+        }
+        var url="{:url('addBuildPlan',['guid'=>$pro_id])}";
+        $('#plan_dlog').dialog({
+            title: "添加施工阶段",
+            iconCls: 'icon-save',
+            width: '450',
+            height: '400',
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#plan_dlog').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url,$(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#plan_dlog').dialog('close');
+                                    resh();
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#plan_dlog').dialog('close');
+                }
+            }],
+
+        })
+    }
+    function chargeUser(a) {
+        var url='{:url("chargeUser")}/id/'+a;
+        $('#plan_dlog').dialog({
+            title: "负责人",
+            iconCls: 'icon-save',
+            width: '70%',
+            height: '400',
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function delBuildPlan(a) {
+        var url="{:url('delBuildPlan')}";
+        $.post(url,{id:a},function (data) {
+            if(data.code!="1001"){
+                layer.msg(data.msg,{icon:2});
+            }else{
+                layer.msg(data.msg,{icon:1});
+                resh();
+            }
+        },'json');
+    }
+</script>
+</body>
+</html>

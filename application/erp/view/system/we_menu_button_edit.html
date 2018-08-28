@@ -1,0 +1,55 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+
+    <section>
+        <label  class="label_1">按钮:</label>
+        <label  class="label_2">
+            <input class="easyui-validatebox" type="text" name="name"
+                   data-options="required:true,validType:'length[1,20]'" placeholder=""
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">父按钮:</label>
+        <label  class="label_2">
+            <input class="easyui-combotree" type="text" name="pid" style="width:100%;" value=""
+                   data-options="required:true,url:'{:url('showButtonJson')}',method:'get'">
+            </input>
+        </label>
+    </section>
+    <section>
+        <label class="label_1">跳转网址:</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="url"
+                   data-options="validType:''" placeholder="请填写网址"
+                   style="width:  80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">关键字:</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="key"
+                   data-options="validType:''" placeholder="请填写关键字"
+                   style="width:  80%">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">快速选择:</label>
+        <label class="label_2">
+            <input class="easyui-combobox" id="type"  name="type" style="width:80%;" value=""
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/button_type')}',method:'get',">
+        </label>
+    </section>
+
+    <section>
+        <label  class="label_1">排序:</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="sort"
+                   data-options="required:true,validType:['length[0,20]']" placeholder="请填写排序"
+                   style="width:  80%">
+        </label>
+    </section>
+</form>
+
+
+
+

@@ -1,0 +1,175 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" type="image/x-icon" href="__STATIC__/erp/images/favicon.ico" media="screen" />
+    <title>7搜装企ERP</title>
+    <link href="__STATIC__/erp/css/base.css" rel="stylesheet">
+    <link href="__STATIC__/erp/css/login.css" rel="stylesheet">
+    	
+
+	<link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+		<link href="new_file.html" rel="stylesheet">
+	<!--<script src="/static/erp/js/login.js" type="text/javascript" charset="utf-8"></script>-->
+	<style>
+		#applyTrail{width: 100%;display: none;padding-top: 50px;}
+		#applyTrail #applyTrail_div{width: 40%;margin: 15px auto;font-size: 18px;letter-spacing: 2px;}
+		#applyTrail #applyTrail_div form div{width: 100%;min-width:340px;height: 40px;margin: 10px 0px;}
+		#applyTrail #applyTrail_div form div .label_1{width: 20%;min-width:120px;display: inline-block;text-align: right;line-height: 30px;}
+		#applyTrail #applyTrail_div form div .label_2{width: 60%;min-width:200px;display: inline-block}
+		#applyTrail #applyTrail_div form div .label_2 input{font-size:16px;padding-left:10px ;width: 80%;height: 30px;}
+		.apply_a{color: #ffffff;margin:0px 5px;letter-spacing: 1px;text-decoration: none;display: inline-block;width: 25%;height: 35px;line-height: 35px;text-align: center}
+	</style>
+</head>
+<body>
+	{include file="base/login_head" /}
+	<div style="list-style-type:none;text-align: center; width: 100%;font-size: 20px;margin-top: 50px;color: #000000; line-height:40px;" class="login-bd" id="login_center">
+		<!--<p>云紫峰装企业ERP是深圳云紫峰网络科技股份有限公司经过20年家装经验积累研制开发，产品集OA办公、市场部、客服部、行政部、设计部、工程部、材料部、财务部、材料商家、主材商场等管理系统为一体。同时还解决了外出人员考勤打卡难题、监督并提高业务员外出工作效率。软件录入客户后跟踪监督功能。设计部量房图片、图纸上传。设计师增减项录入上传、预算书网络打印、杜绝了客户未签单就要求带走预算书的尴尬局面、没有经过上级审核不能打印，截图功能。 工程管理系统有工地营销，自动选择分配项目经理，自动归类项承包项目、发包项目及造价明细，项目经理请款，申购公司主、辅材，为公司创造经济效益。财务系统管理，自动合同多期收款显示，财务收支明细，避免财务漏洞，避免新入门财务不懂核算难题，系统自带两个财务账户，实现对内一本帐，对外一本帐功能。 项目经理账户，核算，请款，申购材料。免去人工核对。材料商账户，避免装企与材料商对账难的问题，在线“采购下单”功能。 行政管理，入职请假，打卡，监督，任务指标下达，实现了真正的自动化办公。云紫峰装企ERP这里只有你想不到的，没有我们做不到的。点击“申请试用”将会给您一份意外的收货。</p>-->
+		<p style="width: 80%;margin: auto;text-align: left; text-indent:2em">深圳云紫峰网络科技股份有限公司成立于2016年07月08日，注册资金(人民币)3600万元，是深圳-罗湖区一家旅游/酒店/餐饮服务/生活服务,计算机软件行业公司。公司以“专注，用心，服务”为核心价值，希望通过我们的专业水平和不懈努力，提供优质的服务。 多年来，深圳云紫峰网络科技股份有限公司一直秉承以用户需求为核心，在专注旅游/酒店/餐饮服务/生活服务,计算机软件行业同时，提供优质、用心的服务赢得了众多业界的信赖和好评，在深圳-罗湖区逐渐树立起公司良好品牌。公司不仅仅提供专业的服务，同时还建立了完善的售后服务体系，为中途遇到的问题和困难提供指导帮助。我们相信，通过我们的不断努力和追求，一定能够实现互利共赢。涵盖全领域的生活信息服务平台，业务包含房产、汽车、金融、二手及本地服务等各个领域。在用户服务层面，不仅仅是一个信息交互的平台，更是一站式的生活服务平台。同时也逐步为商家建立了全方位的市场营销解决方案。
+			专注网站各种类型网站自主建设维护运营等；拥有一支专业的IT精英团队，多年互联网开发经验，专业专注，值得您信赖！
+			我们拥有资深的设计师和工程师，多年丰富的设计和开发经验，专业的设计水准，强大的平台，完善的服务体系，我们一直致力于将时尚的界面与功能强大的后台程序完美地结合在一起，达到艺术与技术的完美融合。
+		</p>
+		<p style="width: 80%;margin: auto;text-align: left; text-indent:2em">	7搜装企业ERP是深圳云紫峰网络科技股份有限公司经过20年家装经验积累研制开发，产品集市场营销、 OA办公、市场部、客服部、行政部、设计部、工程部、材料部、财务部、材料商家、主材商场等管理系统为一体。同时还解决了外出人员考勤打卡难题、监督并提高业务员外出工作效率。软件录入客户后跟踪监督功能。设计部量房图片、图纸上传。设计师增减项录入上传、预算书网络打印、杜绝了客户未签单就要求带走预算书的尴尬局面、没有经过上级审核不能打印，截图功能。市场营销模块也是首页门户，包括了业务阶段、业务登记、我的业务、废单申请列表，而业务阶段一目了然有我部门的业务、我的业务、我的设计预算、我的待签合同、我的待收款合同、我部门的设计预算、我部门的待签合同，这样用户进来就可以看到自己所需要的信息。还有业务登记里面需要填写项目基本信息和主要联系人。下面说下我的业务可以操作的功能有添加、添加定金单、修改、显示更多信息、隐藏更多信息、显示审核信息、隐藏审核信息，还有废单申请列表显示项目名称、申请人、申请说明。OA办公：有通知公告、通讯录、请假申报、工作计划、高层信箱、维修投诉。系统管理：有角色管理和日志记录管理，可以让你对人员全面掌握和日志的操作查询。行政人事：公司部门管理、用户管理、办公审核、考勤管理、客服前台，尽显人事管理无缝隙日常办公。材料管理：供应商管理、主材管理、材料采购，不仅仅可以添加您的供应商还能管理供应商，主材和材料更有多重审核，让您层层把关，防止山寨劣质货。预算报价：系统有工地营销，自动选择分配项目经理，自动归类项承包项目、发包项目及造价明细，项目经理请款，申购公司主、辅材，为公司创造经济效益。财务系统管理，自动合同多期收款显示，财务收支明细，避免财务漏洞，避免新入门财务不懂核算难题，系统自带两个财务账户，实现对内一本帐，对外一本帐功能。 项目经理账户，核算，请款，申购材料。免去人工核对。材料商账户，避免装企与材料商对账难的问题，在线“采购下单”功能。 行政管理，入职请假，打卡，监督，任务指标下达，实现了真正的自动化办公。7搜装企业ERP这里只有你想不到的，没有我们做不到的。
+		</p>
+		<p style="width: 80%;margin: auto;text-align: left; text-indent:2em">云紫峰网络科技公司全体人员愿望：</p>
+		<p style="width: 80%;margin: auto;text-align: left; text-indent:2em">	企业愿景：成为软件产业最佳典范
+			　　企业使命：创造客户数字价值
+			　　经营理念：创新、尊重、专业
+			　　企业精神：效力、责任、热忱</p>
+						<!--<div class="lg-poster">-->
+					<!--<div id="lg-poster-com" style="height: 400px;position: relative;top: 50px;">-->
+						<!--<li style="height: 80px;line-height:80px;list-style: none;text-align: center;font-size: 24px;color: #2096af;">云紫峰装企ERP介绍</li>-->
+						<!--&lt;!&ndash;<li style="text-indent:2em;list-style: none;font-size: 24px;color: #2096af;height: 40px;line-height: 40px;">涵盖全领域的生活信息服务平台，业务包含房产、汽车、金&ndash;&gt;-->
+							<!--&lt;!&ndash;融、二手及本地服务等各个领域。在用户服务层面，不仅仅是一&ndash;&gt;-->
+							<!--&lt;!&ndash;个信息交互的平台，更是一站式的生活服务平台。同时也逐步为&ndash;&gt;-->
+							<!--&lt;!&ndash;商家建立了全方位的市场营销解决方案。</li>&ndash;&gt;-->
+						<!--<li style="text-indent:2em;list-style: none;font-size: 18px;color: #2096af;height: 27px;line-height: 27px;">云紫峰装企业ERP是深圳云紫峰网络科技股份有限公司经过20年家装经验积累研制开发，产品集OA办公、市场部、客服部、行政部、设计部、工程部、材料部、财务部、材料商家、主材商场等管理系统为一体。同时还解决了外出人员考勤打卡难题、监督并提高业务员外出工作效率。软件录入客户后跟踪监督功能。设计部量房图片、图纸上传。设计师增减项录入上传、预算书网络打印、杜绝了客户未签单就要求带走预算书的尴尬局面、没有经过上级审核不能打印，截图功能。 工程管理系统有工地营销，自动选择分配项目经理，自动归类项承包项目、发包项目及造价明细，项目经理请款，申购公司主、辅材，为公司创造经济效益。财务系统管理，自动合同多期收款显示，财务收支明细，避免财务漏洞，避免新入门财务不懂核算难题，系统自带两个财务账户，实现对内一本帐，对外一本帐功能。 项目经理账户，核算，请款，申购材料。免去人工核对。材料商账户，避免装企与材料商对账难的问题，在线“采购下单”功能。 行政管理，入职请假，打卡，监督，任务指标下达，实现了真正的自动化办公。云紫峰装企ERP这里只有你想不到的，没有我们做不到的。点击“申请试用”将会给您一份意外的收货。</li>-->
+					<!--</div>-->
+				<!--</div>-->
+				<div class="lg-poster" style='background: url("/static/erp/images/loginbg.png") no-repeat 0px 50px;'>
+
+				</div>
+				<a style="text-decoration:none" href="http://www.yzferp.com" >返回首页</a>
+			</div>
+		</div>
+	</div>
+	<div id="applyTrail">
+		<div id="applyTrail_div" >
+			<form>
+				<div style="">
+					<label class="label_1" style="">公司名称：</label>
+					<label class="label_2" style=""><input style="" type="text" name="company_name"></label>
+				</div>
+				<div>
+					<label class="label_1">公司地址：</label>
+					<label class="label_2"><input type="text" name="company_address"></label>
+				</div>
+				<div>
+					<label class="label_1">联 系 人：</label>
+					<label class="label_2"><input type="text" name="contacts"></label>
+				</div>
+				<div>
+					<label class="label_1">手机号码：</label>
+					<label class="label_2"><input type="text" name="mobile"></label>
+				</div>
+				<div>
+					<label class="label_1">职务：</label>
+					<label class="label_2"><input type="text" name="jobs_name"></label>
+				</div>
+				<div>
+					<label class="label_1">微信/QQ：</label>
+					<label class="label_2"><input type="text" name="wx_qq"></label>
+				</div>
+				<div style="height: auto">
+					<div class="label_1" style="float: left;">留言：</div>
+					<div class="label_2" style=";margin-left: 6px;">
+						<textarea  name="desc" style="min-width:200px;width: 82%;height: 150px;resize:none" ></textarea>
+					</div>
+				</div>
+			</form>
+			<div  style="margin-top: 50px;width: 85%;text-align: center">
+				<a style="background:#ff5d37" class="apply_a" href="javascript:;"   onclick="returnLogin()" >返回登陆</a>
+				<a style="background:#1296af" class="apply_a" href="javascript:;"   onclick="apply()" >申请试用</a>
+			</div>
+		</div>
+
+	</div>
+	<!-- <div class="login-ft" style="padding-top: 100px;">
+		<div class="ft-inner">
+			<div class="about-us">
+				<a href="javascript:;">关于我们</a>
+				<a href="javascript:;">法律声明</a>
+				<a href="javascript:;">服务条款</a>
+				<a href="javascript:;">客服电话：0755-36852777</a>
+			</div>
+			<div class="address">地址：广东省深圳市罗湖区庐山大厦B座&nbsp;邮编：518000&nbsp;&nbsp;Copyright&nbsp;©&nbsp;2016&nbsp;-&nbsp;2099&nbsp;深圳云紫峰网络科技股份有限公司&nbsp;版权所有</div>
+			<!--<div class="other-info">建议使用IE8及以上版本浏览器&nbsp;苏ICP备&nbsp;E-mail：admin@uimaker.com</div>-->
+
+	<!-- 		<div class="other-info">建议使用IE8及以上版本浏览器&nbsp;&nbsp;<a href="http://www.miitbeian.gov.cn">粤ICP备16072931号</a></div>
+		</div>
+	</div> --> 
+	{include file="base/login_footer" /}
+	<script src="__WEUI__/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="__STATIC__/erp/js/jquery.easyui.min.js"></script>
+	<script>
+		var code_loop;
+		var sid;
+		$(function(){
+            myBrowser();
+		});
+        function myBrowser(){  //检测浏览器
+            var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+            var isOpera = userAgent.indexOf("Opera") > -1; //判断是否Opera浏览器
+            var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera; //判断是否IE浏览器
+            var isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
+            var isSafari = userAgent.indexOf("Safari") > -1; //判断是否Safari浏览器
+            if (isIE) {
+                var IE5 = IE55 = IE6 = IE7 = IE8 = false;
+                var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+                reIE.test(userAgent);
+                var fIEVersion = parseFloat(RegExp["$1"]);
+                IE55 = fIEVersion == 5.5;
+                IE6 = fIEVersion == 6.0;
+                IE7 = fIEVersion == 7.0;
+                IE8 = fIEVersion == 8.0;
+                if (IE55) {
+                    alert('建议使用高版本浏览器打开本系统！');
+                    return "IE55";
+                }
+                if (IE6) {
+                    alert('建议使用高版本浏览器打开本系统！');
+                    return "IE6";
+                }
+                if (IE7) {
+                    alert('建议使用高版本浏览器打开本系统！');
+                    return "IE7";
+                }
+                if (IE8) {
+                    alert('建议使用高版本浏览器打开本系统！');
+                    return "IE8";
+                }
+            }//isIE end
+            if (isFF) {
+                return "FF";
+            }
+            if (isOpera) {
+                return "Opera";
+            }
+        }//myBrowser() end
+        //以下是调用上面的函数
+        function service() {
+            location.href="{:url('PublicView/service')}";
+        }
+        function statement() {
+            location.href="{:url('PublicView/statement')}";
+        }
+        function aboutUs() {
+            location.href="{:url('PublicView/aboutUs')}";
+        }
+
+	</script>
+</body>
+
+</html>
+

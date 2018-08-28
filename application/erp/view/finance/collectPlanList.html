@@ -1,0 +1,29 @@
+showPaymentList.html{extend name="base/edit" /}
+{block name="columns"}
+<th data-options="field:'collect_plan_name',align:'center',width:'20%' ,editor:{type:'textbox',
+							options:{
+								required:true,}},">名称</th>
+<th data-options="field:'desc',align:'center',width:'35%' ,editor:'textbox',">备注说明</th>
+
+<th data-options="field:'op',width:'15%',align:'center',formatter:function(value,row,index){
+    if(row.guid){
+        return createA(row.guid);
+    }
+}">操作</th>
+{/block}
+{block name="value"}
+{/block}
+
+{block name="default_value"}
+{/block}
+
+{block name="my_js"}
+    function createA(a){
+        var str='<a href="javascript:editCon(&apos;'+a+'&apos;);">编辑内容</a>&nbsp;&nbsp;';
+        str+='<a href="javascript:delData(&apos;'+a+'&apos;);">删除</a>';
+        return str;
+    }
+    function editCon(a){
+        window.parent.addTab('计划子类编辑','{:url("editCon")}/guid/'+a,'close');
+    }
+{/block}

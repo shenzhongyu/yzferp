@@ -1,0 +1,103 @@
+<div id="xiangQ"></div>
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <p>
+        <span>合同编号：</span>
+        <span>{$number}</span>
+        <span style="margin-left: 30%">项目名称：</span>
+        <span>{$name}</span>
+    </p>
+    <!--<input type="hidden" name="book_number" value="{$number}">-->
+    <section>
+        <label  class="label_1">单据号:</label>
+        <label  class="label_2">
+            自 动 编 号
+        </label>
+    </section>
+    <section >
+        <label  class="label_1">款项类型:</label>
+        <label  class="label_2">
+            <input class="easyui-combobox"  id="collect_type"  name="collect_type" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'collect_name',required:true,url:'{:url('ProjectDeposit/showCollectJson')}',method:'get',
+                    onSelect:function(rec){
+                        if(rec.guid!=0){
+                            $('#collect_name').textbox('setValue',rec.collect_name);
+                        }
+                    }
+">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" style="">款项名称:</label>
+        <label class="label_2" style="">
+            <input class="easyui-textbox" type="text" id="collect_name" name="collect_name"
+                   data-options="required:true,"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">计划发货日期:</label>
+        <label class="label_2" style="">
+            <input id="collect_date" class= "easyui-datebox" name="collect_date" data-options="editable:false,required:true,"  style="width:80%">
+        </label>
+    </section>
+    <section >
+        <label  class="label_1">是否开发票:</label>
+        <label  class="label_2">
+            <input type="checkbox" onchange="inv(this)"> 开发票
+        </label>
+    </section>
+    <section id="invoice" style="display: none">
+        <label class="label_1">发票金额:</label>
+        <label class="label_2" >
+            <input class="easyui-textbox" type="text" id="invoice_price" name="invoice_price"
+                   data-options="required:true," value="0"
+                   style="width:80%">元
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">收货人:</label>
+        <label class="label_2" style="">
+            <input id="consignee" class= "easyui-combobox"  value="" name="consignee" data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'uuid',textField: 'name',required:true,url:'{:url('Engin/consignee')}',method:'get',
+                    onSelect:function(rec){
+                        if(rec.guid!=0){
+                            $('#contact_number').textbox('setValue',rec.mobile);
+                        }else{
+                            $('#contact_number').textbox('setValue','');
+                        }
+                    }"  style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">联系电话:</label>
+        <label class="label_2" style="">
+            <input id="contact_number" class= "easyui-textbox" name="contact_number" data-options="required:true,"  style="width:80%">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" style="">送货地址:</label>
+        <label class="label_2" style="">
+            <input class="easyui-textbox" type="text" id="address" name="address" value="{$address}"
+                   data-options="required:true,"
+                   style="width:80%">
+        </label>
+    </section>
+
+    <section>
+        <label  class="label_1">款项说明:</label>
+        <label class="label_2">
+            <textarea placeholder="" id="desc" name="desc" style="width:80%;height: 100px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+    <input type="hidden" id="invoice_value" name="invoice_value" value="0">
+</form>
+<script>
+    function inv(obj){
+        if($(obj).prop("checked")){
+            $('#invoice_value').val('1');
+            $('#invoice').css('display','block');
+        }else{
+            $('#invoice_value').val('0');
+            $('#invoice').css('display','none');
+        }
+    }
+</script>

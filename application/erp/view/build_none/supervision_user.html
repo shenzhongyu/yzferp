@@ -1,0 +1,26 @@
+<form>
+
+</form>
+<table style="margin-top: 40px;" id="user">
+</table>
+
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $('#user').datagrid({
+            url:'{$url}',
+            height:315,
+            rownumbers:true,
+            singleSelect:false,
+            pagination:false,
+            method:'post',
+            columns:[[
+                {field:"chk", "checkbox": true, movable: false},
+                {field:'department_name',title:'部门',width:'30%',align:'center'},
+                {field:'name',title:'姓名',width:'30%',align:'center'},
+                {field:'jobs_name',title:'职务',width:'30%',align:'center'},
+            ]]
+        });
+    })
+</script>

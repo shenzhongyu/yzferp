@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>七搜装企云管家</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+        .yellowgreen {
+            color: yellowgreen;
+        }
+
+        .brown {
+            color: brown;
+        }
+
+        .mui-table-view .mui-media-object {
+            line-height: 0.6rem;
+            max-width: 0.42rem;
+            height: 0.6rem;
+            font-size: 0.42rem !important;
+        }
+
+        .fz42 {
+            font-size: 0.42rem !important;
+        }
+
+        .green {
+            color: green;
+        }
+
+        .firebrick {
+            color: firebrick;
+        }
+
+        .darkorange {
+            color: darkorange;
+        }
+
+        .ml10 {
+            margin-left: 0.1rem;
+        }
+
+        .mui-popup-button-bold {
+            color: red;
+        }
+
+        .fz14 {
+            font-size: 14px;
+        }
+
+        .color_a {
+            background-color: #61b989;
+        }
+
+        .color_b {
+            background-color: #d5ad29;
+        }
+
+        .color_c {
+            background-color: #438b1b;
+        }
+
+        .color_d {
+            background-color: #b89657;
+        }
+
+        .color_e {
+            background-color: #4489aa;
+        }
+
+        .color_f {
+            background-color: #55bab4;
+        }
+
+        .color_g {
+            background-color: #7e7e7e;
+        }
+
+        .color_h {
+            background-color: #1b8dd6;
+        }
+
+        .color_i {
+            background-color: #1b8dd6;
+        }
+
+        .burlywood {
+            color: burlywood;
+        }
+
+        .firebrick {
+            color: firebrick;
+        }
+
+        .color_1 {
+            color: #61b989;
+        }
+
+        .color_2 {
+            color: #d5ad29;
+        }
+
+        .color_3 {
+            color: #438b1b;
+        }
+
+        .color_4 {
+            color: #b89657;
+        }
+
+        .color_5 {
+            color: #4489aa;
+        }
+
+        .color_6 {
+            color: #55bab4;
+        }
+
+        .color_7 {
+            color: #7e7e7e;
+        }
+
+        .color_8 {
+            color: #1b8dd6;
+        }
+
+        .color_9 {
+            color: #1b8dd6;
+        }
+
+        .color_10 {
+            color: #f9ba28;
+        }
+
+        .color_11 {
+            color: #339bdb;
+        }
+
+        .color_12 {
+            color: #8ee12b;
+        }
+
+        .color_13 {
+            color: #fc4158;
+        }
+
+        .color_14 {
+            color: #74d32b;
+        }
+
+        .color_15 {
+            color: #15d3cf;
+        }
+
+        .color_16 {
+            color: #26c7f2;
+        }
+
+        .color_17 {
+            color: #2692f3;
+        }
+
+        .color_18 {
+            color: yellowgreen;
+        }
+
+        .color_19 {
+            color: #b1dc47;
+        }
+
+        .color_20 {
+            color: #fbc701;
+        }
+
+        .color_21 {
+            color: #0db9e4;
+        }
+
+        .redIcon {
+            font-size: 0.16rem;
+            line-height: 1;
+            display: inline-block;
+            border-radius: 0.2rem;
+            background-color: rgba(0, 0, 0, .15);
+            color: #fff;
+            background-color: #dd524d;
+            padding: 0.1rem 0.1rem;
+            position: absolute;
+            right: 0.2rem;
+            top: 0rem;
+        "
+
+        }
+
+        .redIconB {
+            font-size: 0.32rem;
+            line-height: 1;
+            display: inline-block;
+            /*border-radius: 0.4rem;*/
+
+            color: red;
+            background-color: white;
+            /*padding: 0.1rem 0.1rem;*/
+
+        }
+
+        .mui-active {
+            color: #078ea8 !important;
+        }
+
+        .f29503 {
+            color: #f29503;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        /** { touch-action: none; }*/
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <header class="mui-bar mui-bar-nav " style="{$info.iswechat}">
+        <h1 class="mui-title">七搜装企云管家</h1>
+    </header>
+    <div class="pageErp">
+
+        <div class="mui-content">
+            <nav class="mui-bar mui-bar-tab " style="font-size: 11px">
+
+                <a class="mui-tab-item mui-active" href="#tabbar" id="one">
+                    <!--<span class="mui-icon mui-icon-home"></span>-->
+                    <img src="__MUI__/image/shouye.png" style="width: 20px;height: 20px" id="firstimage">
+                    <div class="mui-tab-label">首页</div>
+                </a>
+
+                <a class="mui-tab-item" href="#tabbar-with-chat" id="two">
+                    <!--<span class="mui-icon mui-icon-star"><span class="mui-badge" id="message"></span></span></span>-->
+                    <img src="__MUI__/image/shenhe-.png" style="width: 20px;height: 20px" id="secoundView"><span
+                        class="mui-badge" id="message"
+                        style="position: absolute;background: red;color: white;font-size: 0.001rem;height: 0.3rem;width:0.3rem;border-radius: 0.15rem;padding: 0 0;line-height: 0.3rem"></span>
+                    <div class="mui-tab-label">审核</div>
+                </a>
+                <a class="mui-tab-item" href="#jobing" id="three">
+                    <!--<span class="mui-icon mui-icon-email"></span></span>-->
+                    <img src="__MUI__/image/daiban.png" style="width: 20px;height: 20px" id="thirdView">
+                    <!--<span class="mui-tab-label">待办事项</span>-->
+                    <div class="mui-tab-label">待办</div>
+                </a>
+                <a class="mui-tab-item" href="#tabbar-with-contact" id="four">
+                    <!--<span class="mui-icon mui-icon-contact"></span>-->
+                    <img src="__MUI__/image/wode.png" style="width: 20px;height: 20px" id="fouceView">
+                    <!--<span class="mui-tab-label">我</span>-->
+                    <div class="mui-tab-label">我的</div>
+                </a>
+
+
+            </nav>
+            <div id="tabbar" class="mui-control-content mui-active" v-cloak>
+
+
+                <div class="fz12  index_top pageIndex" style="{$info.styles}">
+                    <span>正在查看：</span><span style="color: firebrick;">{$info.information.name}</span>
+                </div>
+                <div class="pageIndex">
+                    <div></div>
+                </div>
+
+                <!--<div style="width: 100%;border-bottom: 1px solid gray">-->
+                <!--&lt;!&ndash;<div style="width: 100%;height: 1rem;font-size: 0.32rem;line-height: 1rem;padding-left: 0.25rem;color: #068FA9;">业务阶段</div>&ndash;&gt;-->
+                <!--<div style="font-size: 0.28rem;overflow: hidden;">-->
+                <!--<div style="width: 33%;display: inline-block;float: left;padding-left: 0.45rem;height: 0.75rem;" v-for="(item,index) in res"  @click="kehuluru(item.url)" >-->
+                <!--<img src="/static/mui/image/05.png" style="width: 0.40rem;height: 0.44rem">-->
+
+                <!--<span style="margin-left: 0.20rem;font-size: 0.22rem">{{item.menu_name}}</span>-->
+                <!--</div>-->
+
+
+                <!--</div>-->
+                <!--</div>-->
+                <ul class="mui-table-view" style="margin-bottom: 52px">
+
+                    <img src="__MUI__/image/clock.gif"
+                         style="width: 0.8rem;height: 0.8rem;display: none;position: fixed;bottom: 60px;right: 0.2rem;z-index: 2000"
+                         id="clock" @click="clock">
+
+
+                    <li class="mui_popver mui-media" v-for="(item,index) in res" @click="kehuluru(item.url)">
+                        <a href="javascript:;">
+                    <span class="mui-icon fz24  mui-media-object mui-pull-left"
+                          :class="item.icon"></span>
+
+
+                            <div class="mui-media-body" style="height: 0.6rem;line-height: 0.6rem" v-cloak>
+                                {{item.menu_name}}
+                            </div>
+                        </a>
+                    </li>
+
+                </ul>
+
+
+            </div>
+            <div id="tabbar-with-chat" class="mui-control-content " v-cloak style="{$info.styles}">
+
+
+                <ul class="mui-table-view" style="margin-bottom: 0.2rem">
+                    <li class="mui_popver mui-media" v-for="item in next" @click="kehuluru(item.url)">
+                        <a href="javascript:;">
+                            <!--<span class="mui-icon fz24  mui-media-object mui-pull-left"-->
+                            <!--:class="item.icon" ></span>-->
+                            <img :src="'http://wechat.yzferp.com'+item.src"
+                                 style="width: 0.5rem;height: 0.5rem;float: left">
+
+
+                            <div class="mui-media-body" style="height: 0.5rem;line-height: 0.5rem;margin-left: 0.7rem"
+                                 v-cloak>
+                                {{item.menu_name}}<span style="margin-left: 2rem" class="mui-badge-danger  redIconB"
+                                                        v-if="(item.number)!=0">{{item.number}}</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <!--<div class="mui-content" style="overflow: hidden;min-height: 8rem">-->
+                <!--<div style="width: 25%;height: 1.5rem;;display: inline-block;;float: left;text-align: center;padding-top: 0.2rem;position: relative;" v-for="item in next" @click="kehuluru(item.url)">-->
+                <!--<div style="width: 100%;display: inline-block"><img  :src = "item.icon" style="width: 0.5rem;height: 0.5rem"></div>-->
+                <!--<div style="width: 100%;;height: 0.5rem;line-height: 0.5rem;text-align: center;margin-top: 0.1rem"><span style="font-size: 0.32rem">{{item.menu_name}}</span></div>-->
+                <!--&lt;!&ndash;<div style="width: 100%;;text-align: center;padding: 0px"><span style="font-size: 0.24rem;color: #068FA9"></span></div>&ndash;&gt;-->
+                <!--<span class=" mui-badge-danger  redIcon" v-if="item.number!=0" >{{item.number}}</span>-->
+                <!--</div>-->
+                <!--</div>-->
+                <div style="width: 100%;height: 0.7rem;text-align: center;">
+                    <!--<button style="width: 100%;background: #068FA9;border-radius: 0.1rem;height: 100%;color: white;font-size: 0.36rem" onclick="refresh()">刷新</button>-->
+                    <i class="mui-icon  mui-icon mui-icon-reload   mui-media-object"
+                       style="color: #00b7f5;font-size: 48px;padding-bottom: 60px" onclick="refresh()"></i>
+                </div>
+            </div>
+            <div class="mui-control-content " id="jobing" style="{$info.styles}">
+                <ul class="mui-table-view fz14">
+                    <li class="mui_popver mui-media" v-for="item in data_three" @click="myjob(item.url)">
+                        <a href="javascript:;">
+                            <img :src="'http://wechat.yzferp.com'+item.icon"
+                                 style="height: 0.43rem;width: 0.45rem;float: left;margin-left: 0.05rem">
+                            <div class="mui-media-body"
+                                 style="height: 0.42rem;line-height: 0.42rem;margin-left: 0.83rem">
+                                {{item.menu_name}}
+                                <div style="display:inline-block;font-size: 0.32rem;float: right;color: #CAC3C1"> >
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="mui_popver mui-media" @click="myplan">
+                        <a href="javascript:;">
+                            <img src="__MUI__/image/workplan.png"
+                                 style="height: 0.43rem;width: 0.45rem;float: left;margin-left: 0.05rem">
+                            <div class="mui-media-body"
+                                 style="height: 0.42rem;line-height: 0.42rem;margin-left: 0.83rem">
+                                工作计划
+                                <div style="display:inline-block;font-size: 0.32rem;float: right;color: #CAC3C1"> >
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="mui_popver mui-media" @click="informListCom">
+                        <a href="javascript:;">
+                            <img src="__MUI__/image/company.png"
+                                 style="height: 0.43rem;width: 0.45rem;float: left;margin-left: 0.05rem">
+                            <div class="mui-media-body"
+                                 style="height: 0.42rem;line-height: 0.42rem;margin-left: 0.83rem">
+                                公司通知
+                                <div style="display:inline-block;font-size: 0.32rem;float: right;color: #CAC3C1"> >
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="mui_popver mui-media" @click="informListDep">
+                        <a href="javascript:;">
+                            <img src="__MUI__/image/departant.png"
+                                 style="height: 0.43rem;width: 0.45rem;float: left;margin-left: 0.05rem">
+                            <div class="mui-media-body"
+                                 style="height: 0.42rem;line-height: 0.42rem;margin-left: 0.83rem">
+                                部门通知
+                                <div style="display:inline-block;font-size: 0.32rem;float: right;color: #CAC3C1"> >
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="mui-control-content " id="tabbar-with-contact" style="{$info.styles}">
+                <div style="width: 100%;height: 3.7rem;background: url('__MUI__/image/tuceng6.png');background-size: 100% 100%;padding-top: 0.3rem; ;
+   ">
+                    <div style="width: 100%;text-align: right;padding-right: 0.24rem;height: 0.3rem;line-height: 0.3rem">
+                        <span style="font-size: 0.28rem;color: white;" @click="sign">签到</span>
+                        <span style="font-size: 0.28rem;color: white;" @click="signOut">签退</span>
+                    </div>
+                    <div style="width: 100%;text-align: center;margin-top: 0.4rem;"><img
+                            src="{$info.information.photo?$info.information.photo:'__MUI__/image/7s.jpg'}" style="display: inline-block;width: 2rem;height: 2rem;border-radius: 1rem;  -moz-filter: blur(15px);
+            -o-filter: blur(0px);
+            -ms-filter: blur(0px);"></div>
+                    <div style="width: 100%;text-align: center;color: white;margin-top: 0.2rem;font-size: 0.24rem;height: 0.3rem;line-height: 0.3rem">
+                        <span>{$info.information.name}</span><img
+                            src="{$info.information.user_sex==1?'__MUI__/image/nan.png':'__MUI__/image/girl.png'}"
+                            style="width: 0.3rem;height: 0.3rem;margin-left: 0.2rem">
+                    </div>
+                </div>
+                <ul class="mui-table-view fz14">
+                    <li class="mui_popver mui-media">
+                        <a href="javascript:;">
+                            <img src="__MUI__/image/departant.png" style="height: 0.42rem;width: 0.42rem;float: left">
+                            <div class="mui-media-body"
+                                 style="height: 0.42rem;line-height: 0.42rem;margin-left: 0.72rem">
+                                所属部门：<span>{$info.department_name}</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="mui_popver mui-media">
+
+                        <a href="javascript:;">
+
+                            <img src="__MUI__/image/my.png" style="height: 0.42rem;width: 0.42rem;float: left">
+                            <div class="mui-media-body"
+                                 style="height: 0.42rem;line-height: 0.42rem;margin-left: 0.72rem">
+                                所属职位：<span>{$info.job_name}</span>
+                            </div>
+                        </a>
+
+                    </li>
+                    <li class="mui_popver mui-media" @click="	calendar">
+                        <a href="javascript:;">
+                            <img src="__MUI__/image/phone.png"
+                                 style="height: 0.42rem;width: 0.27rem;float: left;margin-left: 0.05rem">
+                            <div class="mui-media-body"
+                                 style="height: 0.42rem;line-height: 0.42rem;margin-left: 0.72rem">
+                                公司成员<span></span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="mui_popver mui-media">
+                        <a href="javascript:;">
+                            <img src="__MUI__/image/qiandaouser.png" style="height: 0.42rem;width: 0.42rem;float: left">
+                            <div class="mui-media-body"
+                                 style="height: 0.42rem;line-height: 0.42rem;margin-left: 0.72rem" @click="sginInfo">
+                                我的签到<span></span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="mui_popver mui-media">
+                        <a href="javascript:;">
+                            <img src="__MUI__/image/xiugaimima.png" style="height: 0.42rem;width: 0.42rem;float: left">
+                            <div class="mui-media-body"
+                                 style="height: 0.42rem;line-height: 0.42rem;margin-left: 0.72rem" @click="alter">
+                                修改密码<span></span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <div style="width: 100%;padding-left: 0.35rem;padding-right: 0.35rem;height: 0.9rem;margin-top: 0.5rem;text-align: center;line-height: 0.9rem;margin-bottom: 60px">
+                    <div style="width: 100%;background: #068FA9;border-radius: 0.1rem;height: 100%;color: white;line-height: 0.9rem;font-size: 0.36rem"
+                         id="login" @click="pushoff">退出登录
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+
+        refresh();
+    }
+    function refresh() {
+        var dataA = {};
+        mui.ajax('{:url("/erp/remind/projectremind")}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                if (response.code == 1001) {
+                    if (response.data !== 0) {
+                        $("#clock").css("display", "block")
+
+                    }
+
+                }
+            }
+        })
+
+
+        var src = "";
+
+        mui.ajax('{:url("/wechat/index/getMenuJsonByGroup")}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                mui.ajax('{:url("/wechat/index/getMenuJsonBy")}', {
+
+                    dataType: 'json',//服务器返回json格式数据
+                    type: 'post',//HTTP请求类型
+                    success: function (data) {
+                        mui.ajax('{:url("/wechat/index/getMenuJsonByGroupThree")}', {
+                            dataType: 'json',//服务器返回json格式数据
+                            type: 'post',//HTTP请求类型
+                            success: function (data_three) {
+                                var num = 0;
+                                for (var i = 0; i < data.length; i++) {
+                                    num = num + data[i].number;
+                                }
+                                if (num == 0) {
+                                    $("#message").css("display", "none")
+                                }
+                                if (num > 99) {
+                                    num = 99
+                                }
+                                $("#message").html(num);
+                                dataA.res = response;
+                                dataA.next = data;
+                                for (i = 0; i < data.length; i++) {
+                                    data[i].src = data[i].icon.replace(/ /g, '');
+                                }
+                                dataA.data_three = data_three;
+                                var vue = new Vue({
+                                    el: '#app',
+                                    data: dataA,
+                                    methods: {
+
+                                        clock: function () {
+                                            mui.openWindow({
+                                                url: "{:url('remind/reminddetails')}"
+                                            })
+                                        },
+                                        kehuluru: function (url) {
+                                            mui.openWindow({
+                                                url: url
+                                            })
+                                        },
+                                        kehu: function () {
+                                            mui.openWindow({
+                                                url: "{:url('designer/addProjectD')}"
+                                            })
+                                        },
+                                        projectInf: function () {
+                                            mui.openWindow({
+                                                url: "{:url('designer/projectListDesigner')}"
+                                            })
+                                        },
+                                        projectPending: function () {
+                                            mui.openWindow({
+                                                url: "{:url('designer/projectPendingD')}"
+                                            })
+                                        },
+                                        sginInfo: function () {
+                                            mui.openWindow({
+                                                url: "{:url('sign/sginInfo')}"
+                                            })
+                                        },
+                                        sign: function () {
+                                            mui.openWindow({
+                                                url: "{:url('Sign/sign')}"
+                                            });
+                                        },
+                                        calendar: function () {
+                                            mui.openWindow({
+                                                url: "{:url('index/calendar')}"
+                                            })
+                                        },
+                                        signOut: function () {
+                                            mui.openWindow({
+                                                url: "{:url('Sign/signout')}"
+                                            });
+                                        },
+                                        myplan: function () {
+                                            mui.openWindow({
+                                                url: "{:url('project/myPlanList')}"
+                                            });
+                                        },
+                                        transferRequest: function () {
+                                            mui.openWindow({
+                                                url: "{:url('designer/projectListDesignerCom')}"
+                                            })
+                                        },
+                                        myjob: function (url) {
+                                            mui.openWindow({
+//                                        url: "{:url('project/workingMyList')}"
+
+                                                url: url
+                                            })
+                                        },
+                                        informListCom: function () {
+                                            mui.openWindow({
+                                                url: "{:url('sign/informListCom')}"
+                                            })
+                                        },
+                                        informListDep: function () {
+                                            mui.openWindow({
+                                                url: "{:url('sign/informListDep')}"
+                                            })
+                                        },
+                                        shenhe: function () {
+
+                                            $(".mui-title").html("审核")
+                                        },
+                                        pushoff: function () {
+                                            mui.confirm("确定退出吗？", "提示");
+                                            $(".mui-popup-button-bold").on('tap', function () {
+
+                                                mui.ajax('{:url("api/system/logout")}', {
+
+                                                    dataType: 'json',//服务器返回json格式数据
+                                                    type: 'post',//HTTP请求类型
+                                                    success: function (response) {
+                                                        mui.toast("退出成功", {duration: 'short', type: 'div'});
+                                                        setTimeout(function () {
+                                                            mui.openWindow({
+                                                                url: "{:url('index/login')}"
+                                                            }, 20000)
+                                                        })
+                                                    }
+                                                })
+                                            })
+                                        },
+                                        alter: function () {
+                                            var content = {};
+                                            var password;
+                                            mui.prompt('请输入新密码', '', '');
+                                            $(".mui-popup-button").eq(1).on('tap', function () {
+                                                var password = $(".mui-popup-input input").val();
+                                                if (
+                                                    password.length <= 3) {
+                                                    mui.toast("密码长度不得小于四位", {duration: 'short', type: 'div'});
+                                                    return false;
+                                                } else {
+                                                    mui.prompt('请再次输入新密码', '', '');
+                                                    $(".mui-popup-button-bold").on('tap', function () {
+                                                        var passwordTwo = $(".mui-popup-input input").val();
+                                                        if (
+                                                            passwordTwo.length <= 3) {
+                                                            mui.toast("密码长度不得小于四位", {duration: 'short', type: 'div'});
+                                                            return false;
+                                                        } else {
+                                                            if (password == passwordTwo) {
+                                                                content.password = passwordTwo;
+                                                                mui.ajax("{:url('erp/system/setPersonnelPassword')}", {
+                                                                    data: content,
+                                                                    dataType: 'json',//服务器返回json格式数据
+                                                                    type: 'post',//HTTP请求类型
+                                                                    success: function (response) {
+                                                                        if (response.code == 1001) {
+                                                                            mui.toast("密码修改成功", {
+                                                                                duration: 'short',
+                                                                                type: 'div'
+                                                                            });
+                                                                        } else {
+                                                                            mui.toast(response.msg, {
+                                                                                duration: 'short',
+                                                                                type: 'div'
+                                                                            });
+                                                                        }
+                                                                    }
+                                                                })
+                                                            } else {
+                                                                mui.toast("输入不一致，请重新修改", {
+                                                                    duration: 'short',
+                                                                    type: 'div'
+                                                                });
+                                                            }
+                                                        }
+                                                    })
+                                                }
+                                            })
+                                        }
+                                    },
+
+
+                                    mounted: function () {
+                                        $("#one").on("tap", function () {
+                                            $("#firstimage").attr("src", "__MUI__/image/shouye.png")
+                                            $("#thirdView").attr("src", "__MUI__/image/daiban.png")
+                                            $("#fouceView").attr("src", "__MUI__/image/wode.png")
+                                            $("#secoundView").attr("src", "__MUI__/image/shenhe-.png")
+                                        })
+                                        $("#two").on("tap", function () {
+
+                                            $("#firstimage").attr("src", "__MUI__/image/shouye2.png")
+                                            $("#thirdView").attr("src", "__MUI__/image/daiban.png")
+                                            $("#fouceView").attr("src", "__MUI__/image/wode.png")
+                                            $("#secoundView").attr("src", "__MUI__/image/shenhe2.png")
+                                        })
+                                        $("#three").on("tap", function () {
+                                            $("#firstimage").attr("src", "__MUI__/image/shouye2.png")
+                                            $("#fouceView").attr("src", "__MUI__/image/wode.png")
+                                            $("#secoundView").attr("src", "__MUI__/image/shenhe-.png")
+                                            $("#thirdView").attr("src", "__MUI__/image/daiban2.png")
+                                        })
+                                        $("#four").on("tap", function () {
+                                            $("#firstimage").attr("src", "__MUI__/image/shouye2.png")
+                                            $("#secoundView").attr("src", "__MUI__/image/shenhe-.png")
+                                            $("#thirdView").attr("src", "__MUI__/image/daiban.png")
+                                            $("#fouceView").attr("src", "__MUI__/image/wde.png")
+
+                                        })
+                                    }
+                                });
+                            }
+                        })
+                    }
+                });
+            }
+        })
+
+    }
+</script>
+
+

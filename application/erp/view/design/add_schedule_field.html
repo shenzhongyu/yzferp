@@ -1,0 +1,44 @@
+<form id="fmq" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">进度名称:</label>
+        <label class="label_2" >
+            {$title}
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">文件名称:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="field_name" id="field_name"
+                   data-options="required:true,validType:'length[1,15]'" style="width:60%">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >文件上传:</label>
+        <label class="label_2" >
+            <input class="easyui-textbox"  name="field_address" id="field_address" readonly
+                   data-options=""
+                   style="width:60%">
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="uploadPhoto()">上&nbsp;传</a>
+        </label>
+    </section>
+    <section>
+        <label class="label_1">上传说明:</label>
+        <label class="label_2">
+            <textarea  name="field_desc" style="width:80%;height: 70px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+    <input type="hidden" id="field_m" name="field_m" value="">
+</form>
+<div id="log2">
+
+</div>
+<script>
+    function uploadPhoto() {
+        $("#log2").dialog({
+            title:'上传图片',
+            width:400,
+            height:300,
+            href:'{:url("Design/showUploadFile",["idName"=>"field_address"])}',
+        });
+    }
+</script>

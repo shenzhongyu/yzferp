@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div id="dlog"></div>
+<div id="dlog1"></div>
+<div id="p" class="easyui-panel" title="设计进度" style="width:100%;height:auto;padding:10px 15px 15px 15px;">
+    <p style="margin-bottom: 15px;">
+        <span style="margin-left: 20px;">项目编号：</span>
+        <span>{$guid}</span>
+        <span style="margin-left: 20px;">项目名称：</span>
+        <span>{$project_name}</span>
+    </p>
+    <table id="schedule">
+    </table>
+</div>
+
+
+
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+{include file="base/js" /}
+<script type="text/javascript">
+    {:widget('Easyui/showAll', ["design_type","design_type"] )}
+    $(function(){
+        $('#schedule').datagrid({
+            url:'{$data_url}',
+            height:600,
+            rownumbers:false,
+            singleSelect:false,
+            pagination:false, //底部
+            method:'get',
+            pageSize:20,
+            columns:[[{field:'design_type',title:'进度类型',width:120,align:'center',formatter:function(value,row,index){
+                if (eval("value_design_type")[value]) {
+                    return eval("value_design_type")[value];
+                } else if ("value_design_type"+[value]){
+                    return "value_design_type"+[value];
+                } else {
+                    return value;
+                }
+            }},
+                {field:'design_phase',title:'设计阶段',width:120,align:'center'},
+                {field:'start_data',title:'开始日期',width:100,align:'center'},
+                {field:'acceptance_date',title:'验收日期',width:100,align:'center'},
+                {field:'design_user',title:'负责人',width:100,align:'center',},
+                {field:'completion_date',title:'完工日期',width:100,align:'center',formatter:function(value,row,index){
+                    if(value){
+                        return value;
+                    }
+                    return  '未完工';
+                }
+                },
+                {field:'expected_days',title:'预计天数',width:100,align:'center',},
+                {field:'status',title:'状态',width:100,align:'center',formatter:function(value,row,index){
+                    if (row.app_status=="1"||row.app_status=="2"&&value=="1"){
+                        return  '已完成,等待审核';
+                    }
+                    if(value=='1'){
+                        return '未完成';
+                    }
+                    return  '已完成';
+                }},
+                {field:'opera',title:'操作',width:200,align:'center',formatter:function(value,row,index){
+                    var str='<a href="javascript:addSchedulePhoto(&apos;'+row.guid+'&apos;);">图片</a>&nbsp;';
+                    str+='<a href="javascript:addScheduleField(&apos;'+row.guid+'&apos;);">附件</a>&nbsp;';
+                    if (row.status=="2"){
+                        return str;
+                    }
+                    if(row.app_status=="1"||row.app_status=="2"&&row.status=="1"){
+                        str+='<a href="javascript:editCheck(&apos;'+row.guid+'&apos;);">验收</a>';
+                    }
+                    return str;
+                }},
+            ]]
+
+        });
+    });
+    function addBudgetPro(){
+        var href='{:url("showAddBudgetHtml")}';
+        var url="{:url('saveAddBudgetData')}/guid/"+'{$guid}';
+        var title='新增进度';
+        var msg='新增项目进度成功';
+        dlog(href,url,title,msg);
+    }
+    function editCheck(a) {
+        var url="{:url('editCheck')}/guid/"+a+"/pro_id/{$guid}";
+//        $.post(url,{guid:a,pro_id:'{$guid}',desc:$("#name").val()}, function (data) {
+//            $.messager.progress('close');
+//            if (data.code != 1001) {
+//                layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+//            } else {
+//                layer.msg('申请成功，等待验收', {icon: 1});
+//                $("#dlog").dialog('close');
+//            }
+//        }, 'json');
+        var href="{:url('design_extract/showapprovaledit')}";
+        $('#dlog').dialog({
+            title: '验收',
+            iconCls: 'icon-save',
+            width: 400,
+            height:200,
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#dlog").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            if($("#dep_manager").textbox('getValue')=="0"){
+//                                layer.msg('请选择审核',{icon:2});
+//                                return false;
+                                $("#dlog").dialog('close');
+                                return false;
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url,$(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg('操作成功', {icon: 1});
+                                    $("#dlog").dialog('close');
+                                    $('#schedule').datagrid('reload');
+                                }
+                            }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#dlog").dialog('close');
+                }
+            }]
+        });
+
+    }
+    function addSchedulePhoto(a){
+        var href='{:url("showSchedulePhotoHtml")}/guid/'+a;
+
+        window.parent.addTab("进度图片",href,'close');
+//        var title='新增图片';
+    //        var msg='新增图片成功';
+    //        $('#dlog1').dialog({
+    //            title: title,
+    //            iconCls: 'icon-save',
+    //            width: '60%',
+    //            height:'70%',
+    //            cache: false,
+    //            href: href,
+    //            modal: true,
+    //            collapsible: false,
+    //            minimizable: false,
+    //            resizable: false,
+    //            maximizable: false,
+    //        })
+    }
+    function addScheduleField(a) {
+        var href='{:url("showScheduleFieldHtml")}/guid/'+a;
+
+        window.parent.addTab("进度文件",href,'close');
+    }
+
+    function dlog(href,url,title,msg,width,height) {
+        $('#dlog').dialog({
+            title: title,
+            iconCls: 'icon-save',
+            width: width ? width :400,
+            height:height ? height:300,
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#dlog").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            if($("#dd").datetimebox("getValue")){
+//                                if(Date.parse(new Date()) > Date.parse(new Date($("#dd").datetimebox("getValue")))){
+//                                    layer.msg('开始日期小于当前日期',{icon:2});
+//                                    return false;
+//                                }
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(msg, {icon: 1});
+                                    $("#dlog").dialog('close');
+                                    $('#schedule').datagrid('reload');
+                                }
+                            }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#dlog").dialog('close');
+                }
+            }]
+        });
+    }
+</script>
+</body>
+</html>

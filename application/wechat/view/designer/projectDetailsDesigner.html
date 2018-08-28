@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>项目明细</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+
+<body>
+<div id="details">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <h1 class="mui-title">项目明细</h1>
+        <a id="menu" class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>
+        <!--<a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right mui-btn-primary mui-btn-block" id="openPopover" style="font-size: 24px;"></a>-->
+    </header>
+
+    <div id="topPopover" class="mui-popover"
+         style="display:none;font-size: 14px; top: 57px; left: 35px;height: 7.8rem;width: 2.5rem">
+        <div class="mui-popover-arrow" style="left:2.48rem"></div>
+        <div class="mui-scroll-wrapper" data-scroll="1">
+            <div class="mui-scroll" style="transform: translate3d(0px, 0px, 0px) translateZ(0px);">
+                <ul class="mui-table-view">
+
+                    <li class="mui_popver" @click="house"><a href="#">房屋结构信息</a>
+                    </li>
+                    <li class="mui_popver" @click="building()"><a href="#">楼盘信息</a>
+                    </li>
+                    <li class="mui_popver" @click="addLog"><a href="#">日志信息</a>
+                    </li>
+                    <li class="mui_popver" @click="addContact()"><a href="#">联系人信息</a>
+                    </li>
+                    <li class="mui_popver" @click="addColl()"><a href="#">提醒信息</a>
+                    </li>
+                    <li class="mui_popver" @click="transferRequest()"><a href="#">转部申请</a>
+                    </li>
+                    <li class="mui_popver" @click="addFile()"><a href="#">上传图片</a>
+                    </li>
+                    <li class="mui_popver" @click="addFileFile()"><a href="#">上传文件</a>
+                    </li>
+                    <li class="mui_popver" @click="seePhoto()"><a href="#">查看图片</a>
+                    </li>
+                    <!--<li class="mui-table-view-cell" @click="progress()"><a href="#">我的进度</a>-->
+                    <!--</li>-->
+                </ul>
+            </div>
+            <div class="mui-scrollbar mui-scrollbar-vertical">
+                <div class="mui-scrollbar-indicator"
+                     style="transition-duration: 0ms; display: none; height: 8px; transform: translate3d(0px, -8px, 0px) translateZ(0px);"></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="addBoss">
+        <div class="addFirst">
+            <div class="addPro">项目详情</div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">项目名称：</div>
+                <div  class="detailRightOnly">
+                    {$project.project_name}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">客户来源：</div>
+                <div class="detailRightOnly">
+                    {$value.customer_source[$project.customer_source] ?? "--"}
+                </div>
+            </div>
+            <div class="detail_line">
+                <div class="detailLeftBoth">
+                    <span>装修类型：</span> <span>{$value.decoration_type[$project.decoration_type] ?? "--"}</span>
+                </div>
+                <div class="detailLeftBoth">
+                    <span>装修档次：</span> <span>{$value.decoration_grade[$project.decoration_grade] ?? "--"}</span>
+                </div>
+            </div>
+            <div class="detail_line">
+                <div class="detailLeftBoth">
+                    <span>色彩取向：</span> <span>{$value.color_orientation[$project.color_orientation] ?? "--"}</span>
+                </div>
+                <div class="detailLeftBoth">
+                    <span>装修风格：</span> <span>{$value.decoration_style[$project.decoration_style] ?? "--"}</span>
+                </div>
+            </div>
+            <div class="detail_line">
+                <div class="detailLeftBoth">
+                    <span>装修面积：</span> <span>{$project.decoration_area ?? "--"}</span>
+                </div>
+                <div class="detailLeftBoth">
+                    <span>预算总工期：</span> <span>{$project.expected_duration ?? "--"}</span>
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">工程地址：</div>
+                <div class="detailRightOnly">
+                    {$project.project_address ?? "--"}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">工程预算：</div>
+                <div class="detailRightOnly">
+                    {$project.project_budget ?? "--"}
+                </div>
+            </div>
+            <div class="detailBoss ">
+
+                <div class="detailLeftOnly ">项目要求：</div>
+                <div class="detailRightOnly">
+                    {$project.project_description ?? "--"}
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class=" mt10 ml50" >
+        <div class="detailBtn" @click="progressDone"> <span class=" mui-badge-danger detailIcon">{$project.hasDone}</span>未完成项目进度</div>
+        <div class="detailBtn detailml10"  @click="progressNoDone"><span class=" mui-badge-danger detailIcon">{$project.hasNoDone }</span> 已完成项目进度</div>
+
+    </div>
+    <div class=" mt10 ml50" >
+        <div class="detailBtn" @click="house"> <span class=" mui-badge-danger detailIcon">{$project.house}</span>房屋信息</div>
+        <div class="detailBtn detailml10"  @click="building()"><span class=" mui-badge-danger detailIcon">{$project.building}</span> 楼盘信息</div>
+
+    </div>
+    <div class="ml50 mt10" >
+        <div class="detailBtn" @click="addLog"> <span class=" mui-badge-danger detailIcon">{$project.log}</span>日志信息</div>
+        <div class="detailBtn detailml10" @click="addContact()"><span class=" mui-badge-danger detailIcon">{$project.contacts}</span> 联系人信息</div>
+
+    </div>
+    <div class="ml50 mt10" >
+        <div class="detailBtn" @click="addColl()"> <span class=" mui-badge-danger detailIcon">{$project.time}</span>提醒信息</div>
+        <div class="detailBtn detailml10" @click="transferRequest()"><span class=" mui-badge-danger detailIcon">{$project.audit}</span> 转部信息</div>
+
+    </div>
+    <div class="ml50 mt10" >
+        <div class="detailBtn " @click="seePhoto()"><span class=" mui-badge-danger detailIcon">{$project.image}</span> 图片信息</div>
+
+        <div class="detailBtn detailml10" @click="budget()">预算信息</div>
+
+    </div>
+</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('/erp/project/showContacts/project_guid/' + "{$project.guid}", {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                console.log("{$project.guid}")
+                console.log(response);
+                dataA.res = response.rows;
+                var vue = new Vue({
+                    el: '#details',
+                    data: dataA,
+                    methods: {
+                        addContact: function (id) {
+                            mui.openWindow({
+                                url: "{:url('designer/projectContactsD',['guid'=>$project.guid])}"
+                            })
+                        },
+                        addColl: function (id) {
+                            mui.openWindow({
+                                url: "{:url('designer/projectCollD',['guid'=>$project.guid])}"
+                            })
+                        },
+                        addLog: function (id) {
+                            mui.openWindow({
+                                url: "{:url('designer/projectLogD',['guid'=>$project.guid])}"
+                            })
+                        },
+                        house: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/projectStructureD',['guid'=>$project.guid])}"
+                            })
+                        },
+                        building: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/projectBuildingD',['guid'=>$project.guid])}"
+                            })
+                        },
+                        transferRequest: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/transferDetailsD',['guid'=>$project.guid])}"
+                            })
+                        },
+                        addFile: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/addFileD',['guid'=>$project.guid])}"
+                            })
+                        },
+                        addFileFile: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/addFileDesigner',['guid'=>$project.guid])}"
+
+                            });
+
+                        },
+                        seePhoto: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/seePhotoD',['guid'=>$project.guid])}"
+                            })
+                        },
+                        progressDone:function () {
+                            mui.openWindow({
+                                url: "{:url('designer/progressDone',['guid'=>$project.guid,'typeHasDone'=>1])}"
+                            })
+                        },
+                        progressNoDone:function () {
+                            mui.openWindow({
+                                url: "{:url('designer/progressDone',['guid'=>$project.guid,'typeHasDone'=>2])}"
+                            })
+                        },
+                        close: function () {
+                            $("#addC").css("display", "none")
+                        },
+                        closeLog: function () {
+                            $(".addLog").css("display", "none")
+                        },
+                        budget:function () {
+                            mui.openWindow({
+                                url: "{:url('budget/budgetDetails',['guid'=>$project.guid])}"
+                            })
+                        }
+
+                    }
+                })
+            }
+        })
+    }
+</script>

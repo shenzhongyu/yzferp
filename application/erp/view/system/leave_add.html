@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {include file="base/css" /}
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+
+
+    <style>
+        #fm{font-size: 16px;}
+        #fm section{margin-bottom: 18px;}
+        #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+        #button a{width: 100px !important;margin: 0 0 0 10px}
+        .myPanelHead .panel-title{font-size: 15px;padding-left: 43%;height: 25px;line-height: 25px;}
+    </style>
+</head>
+<body>
+<div class="container">
+        <div id="p" class="easyui-panel" title="请假申请"   style="width:100%;padding:15px;margin-bottom: 20px;height: 500px;"  data-options="headerCls:'myPanelHead'">
+            <form id="fm" style="padding:0 0px;width:50%;height: 400px;margin-left: 20%" method="post" name="form">
+            <section>
+                <label class="label_1"  style="">请假人:</label>
+                <label class="label_2"  style="">
+                    {$name}
+                </label>
+            </section>
+            <section>
+                <label  class="label_1">公司:</label>
+                <label  class="label_2">
+                    {$company}
+                </label>
+            </section>
+            <section>
+                <label  class="label_1">部门:</label>
+                <label  class="label_2">
+                    {$department}
+                </label>
+            </section>
+            <section>
+                <label  class="label_1">职位:</label>
+                <label  class="label_2">
+                    {$jobs}
+                </label>
+            </section>
+            <section>
+                <label class="label_1">请假类型:</label>
+                <label class="label_2">
+                    <input class="easyui-combobox"  id="leave_type"  name="leave_type" style="width:80%;" value=""
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/leave_type')}',method:'get',">
+                </label>
+            </section>
+
+            <section>
+                <label class="label_1" style="">开始日期:</label>
+                <label class="label_2" style="">
+                    <input class= "easyui-datetimebox" name="start_time" data-options="showSeconds:false,editable:false,"  style="width:80%" id="start_time">
+                </label>
+            </section>
+            <section>
+                <label class="label_1" style="">结束日期:</label>
+                <label class="label_2" style="">
+                    <input class= "easyui-datetimebox" name="end_time" data-options="showSeconds:false,editable:false,"  style="width:80%" id="end_time">
+                </label>
+            </section>
+            <section>
+                <label  class="label_1">请假事由:</label>
+                <label  class="label_2">
+                    <textarea  name="leave_content" id="textara1" style="width:80%;height: 60px;outline:none;resize:none;" data-options="required:true," placeholder="请填写请假事由" ></textarea>
+                </label>
+            </section>
+            <input type="hidden" name="dep_manager" value="0">
+            <input type="hidden" name="admin_supervisor" value="0">
+            <input type="hidden" name="total_manager" value="0">
+            </form>
+        </div>
+        <div id="button">
+            <a style="margin-left: 37%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">提 交 申 请</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重 置</a>
+        </div>
+
+
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript" src="__STATIC__/daterangepicker/require.js"></script>
+<script type="text/javascript" src="__STATIC__/easyui_151/datagrid-filter.js"></script>
+<script>
+    //表单提交(下一步)
+    function submitForm(){
+        var  url='{:url("/erp/system/addLeaveData")}';
+        $('#fm').form('submit',{
+            onSubmit:function(){
+                if(!$("#leave_type").combobox('getValue')){
+                    layer.msg("请选择请假类型", {icon: 2});
+                    return false;
+                }
+//                 if(Date.parse(new Date()) > Date.parse(new Date($("#start_time").datetimebox("getValue"))) ){
+//                     layer.msg("请假的开始日期小于当前时间,请重新选择请假时间", {icon: 2});
+//                     return false;
+//                 }
+                 if( Date.parse(new Date()) > Date.parse(new Date($("#end_time").datetimebox("getValue")))){
+                     layer.msg("请假的结束日期小于当前时间,请重新选择请假时间", {icon: 2});
+                     return false;
+                 }
+                if(Date.parse(new Date($("#end_time").datetimebox("getValue"))) <= Date.parse(new Date($("#start_time").datetimebox("getValue")))){
+                    layer.msg("结束日期小于开始日期，请重新选择日期", {icon: 2});
+                    return false;
+                }
+                if( !$("#start_time").datetimebox("getValue") || !$("#end_time").datetimebox("getValue") ){
+                    layer.msg("请选择请假时间", {icon: 2});
+                    return false;
+                }
+                if(!$("#textara1").val()){
+                    layer.msg("请假事由不能为空", {icon: 2});
+                    return false;
+                }else{
+                    $.messager.progress({text: '假条提交中，请稍候...'});
+                    $.post(url, $(this).serialize(), function (data) {
+                        $.messager.progress('close');
+                        if (data.code == 1001) {
+                            layer.msg("申请已提交，正在等待审核", {icon: 1});
+                            $('#fm').form('clear');
+                            setTimeout(function(){
+                                window.parent.closeTab('请假申请');
+                            },1500);
+                        }else{
+                            if(data.msg!=""){
+                                layer.msg(data.msg, {icon: 2});
+                            }else{
+                                layer.msg("请假申请失败，请联系管理员", {icon: 2});
+                            }
+                        }
+                    }, 'json');
+                    return false;
+                }
+            }
+        });
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        $('#fm').form('clear');
+    }
+</script>
+</body>
+</html>

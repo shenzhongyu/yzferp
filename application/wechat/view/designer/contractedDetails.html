@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>项目明细</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+    <h1 class="mui-title">项目明细</h1>
+</header>
+<div class="addBoss">
+    <div class="addFirst">
+        <div class="addPro">项目详情</div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">项目名称：</div>
+            <div class="detailRightOnly">
+                {$project.project_name}
+            </div>
+        </div>
+        <div  class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">客户来源：</div>
+            <div class="detailRightOnly">
+                {$value.customer_source[$project.customer_source] ?? "--"}
+            </div>
+        </div>
+        <div class="detail_line">
+            <div class="detailLeftBoth">
+                <span>装修类型：</span> <span>{$value.decoration_type[$project.decoration_type] ?? "--"}</span>
+            </div>
+            <div class="detailLeftBoth">
+                <span>装修档次：</span> <span>{$value.decoration_grade[$project.decoration_grade] ?? "--"}</span>
+            </div>
+        </div>
+        <div class="detail_line">
+            <div class="detailLeftBoth">
+                <span>色彩取向：</span> <span>{$value.color_orientation[$project.color_orientation] ?? "--"}</span>
+            </div>
+            <div class="detailLeftBoth">
+                <span>装修风格：</span> <span>{$value.decoration_style[$project.decoration_style] ?? "--"}</span>
+            </div>
+        </div>
+        <div class="detail_line">
+            <div class="detailLeftBoth">
+                <span>装修面积：</span> <span >{$project.decoration_area ?? "--"}</span>
+            </div>
+            <div class="detailLeftBoth">
+                <span>预算总工期：</span> <span>{$project.expected_duration ?? "--"}</span>
+            </div>
+        </div>
+        <div  class="detail_line">
+            <div class="detailLeftBoth">
+                <span>工程地址：</span> <span>{$project.project_address ?? "--"}</span>
+            </div>
+            <div class="detailLeftBoth">
+                <span>工程预算：</span> <span>{$project.project_budget ?? "--"}</span>
+            </div>
+        </div>
+        <div  class="detailBoss">
+
+                <div class="detailLeftOnly">项目要求：</div>
+                <div class="detailRightOnly">
+                    {$project.project_description ?? "--"}
+                </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('/erp/project/showContacts/project_guid/'+"{$project.guid}", {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                var vue = new Vue({
+                    el: '#details',
+                    data: dataA,
+                    methods: {
+//                        detailsBack:function () {
+//
+//                            mui.openWindow({
+//                                url: "{:url('designer/contracted')}"
+//                            })
+//                        }
+//
+                    }
+                })
+            },
+            error:function () {
+                mui.toast("请求失败",{ duration:'short', type:'div' });
+            }
+        })
+    }
+</script>

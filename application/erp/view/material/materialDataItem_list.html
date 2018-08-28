@@ -1,0 +1,59 @@
+data_list.html{extend name="base/base_search_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false}
+, { field: 'base_id', title: '定额类别', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'data_id', title: '数据类别', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'dataitem_name', title: '数据项名称', width: '100', align: 'center', sortable: true}
+, { field: 'item_specifications', title: '规格', width: '100', align: 'center', sortable: true}
+, { field: 'item_pin', title: '品牌', width: '100', align: 'center', sortable: true}
+, { field: 'item_unit_name', title: '单位', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'unit_price_sum', title: '单价(元)', width: '100', align: 'center', sortable: true}
+, { field: 'base_price', title: '发包价(元)', width: '100', align: 'center', sortable: true}
+, { field: 'item_desc', title: '备注',width: 180, align: 'center', sortable: true}
+]]{/block}
+
+{block name="filter"}[
+{:widget('Easyui/showFilter', ["data_id","combobox"])}
+{:widget('Easyui/showFilter', ["base_id","combobox"])}
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showValueByUrl',["data_id","data_name",$map])}
+{:widget('Easyui/showArrayByUrl',["data_id","data_name",$map])}
+{:widget('Easyui/showValueByUrl',["base_id","base_name",$map])}
+{:widget('Easyui/showArrayByUrl',["base_id","base_name",$map])}
+{:widget('Easyui/showAll', ["item_unit_name","unit_name"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+}else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'添加', iconCls: 'icon-add', handler:function(){ mikkleClass.addForm(620,700)} },'-',
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm(620,700);} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>单据明细</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+        ul li:hover{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">单据明细</h1>
+    <!--<a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right mui-btn-primary mui-btn-block" id="openPopover" style="font-size: 24px;"></a>-->
+</header>
+
+<div class="addBoss" id="app">
+    <div class="addFirst"  v-for="item in res">
+        <div class="addPro" >单据明细</div>
+        <div >
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">项目名称：</div>
+                <div class="detailRightOnly">
+                    {{item.project_name}}
+                </div>
+
+            </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">材料名称：</div>
+            <div class="detailRightOnly">
+                {{item.material_name}}
+            </div>
+
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">单位：</div>
+            <div class="detailRightOnly">
+                {{item.unit}}
+            </div>
+
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">规格：</div>
+            <div class="detailRightOnly">
+                {{item.specifications}}
+            </div>
+
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">采购数量：</div>
+            <div class="detailRightOnly">
+                {{item.number}}
+            </div>
+
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">单价：</div>
+            <div class="detailRightOnly">
+                {{item.floor_price}}
+            </div>
+
+        </div>
+        <div class="detailBoss">
+
+            <div class="detailLeftOnly">金额：</div>
+            <div class="detailRightOnly">
+                {{item.price}}
+            </div>
+
+        </div>
+        </div>
+
+    </div>
+    </div>
+
+</div>
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+
+
+        mui.ajax('{:url("",["guid"=>$guid,"project_id"=>$project_id])}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                var dataA={};
+                dataA.res = response.rows;
+                console.log(dataA.res);
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {
+
+                    }
+                })
+            }
+        })
+
+    }
+</script>

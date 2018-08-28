@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>签到列表</title>
+    {include file="base_mui/weui_wechat"/}
+    {include file="base_mui/weui_jssdk_info"/}
+    <script type="text/javascript" src="/static/mui/js/mui.picker.min.js"></script>
+    <!--<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=6OWgWaTFHxegVSOLgLD8QOU3w9aBOGc7"></script>-->
+    <link href="/static/mui/css/mui.picker.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="app">
+
+
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <h1 class="mui-title">({$name})签到列表</h1>
+        <a  class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>
+    </header>
+    <div class="addBoss" >
+
+
+    </div>
+    <div id="topPopover" class="mui-popover " style="font-size: 14px;display: none; top: 57px; left: 35px;height: 1.8rem;width: 2.5rem">
+        <div class="mui-popover-arrow" style="left:2.48rem"></div>
+        <div class="mui-scroll-wrapper" data-scroll="1">
+            <div class="mui-scroll" style="transform: translate3d(0px, 0px, 0px) translateZ(0px);">
+                <ul class="mui-table-view">
+
+                    <li  class="mui_popver" onclick="month(1)" id="thismon"><a href="#">本月</a>
+                    </li>
+                    <li class="mui_popver" onclick="month(2)"><a href="#">上月</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="mui-scrollbar mui-scrollbar-vertical"><div class="mui-scrollbar-indicator" style="transition-duration: 0ms; display: none; height: 8px; transform: translate3d(0px, -8px, 0px) translateZ(0px);"></div></div></div>
+
+    </div>
+
+    <ul class="mui-table-view">
+        <div class=""  >
+            <li class="mui-table-view-cell mui-collapse fz26"  style="position: relative"  v-cloak v-for="item in res" >
+                <div class="purchaseBoth" >
+                    <div  class="purchaseLeft">  <span v-if="item.type==1" style="color: red">签到</span>
+                        <span v-if="item.type==2">签退</span></div>
+
+                    <span >  {{item.update_time}}</span>
+
+                </div>
+                <a class="mui-navigate-right" href="#" style="display: inline-block;position: fixed;right: 0.2rem;">
+                </a>
+                <div class="mui-collapse-content">
+                    <div class="detailBoss detail_line" >
+                        <div  class="purchaseLeft"> 时间：</div>
+                        <div class=" red purchaseRight" >
+                            {{item.update_time}}
+                        </div>
+
+                    </div>
+                    <div class="detailBoss detail_line" >
+
+                        <div  class="purchaseLeft"> 图片：</div>
+                        <div class="purchaseRight ">
+                        <a @click="dianji(item.photo_m)">查看图片</a>
+
+                            <!--<img :src="item.image" :data="item.photo_m" style="width: 3rem"-->
+                                 <!--@click="dianji(item.photo_m)">-->
+                        </div>
+                    </div>
+                    <div class="detailBoss detail_line" >
+                        <div  class="purchaseLeft"> 说明：</div>
+                        <div class="  purchaseRight" >
+                            {{item.message}}
+                        </div>
+
+                    </div>
+                    <div class="detailBoss detail_line" >
+
+                        <div  class="purchaseLeft">  地址：</div>
+                        <div class="purchaseRight ">
+                            <a id="total" @click="total(item.latitude,item.longitude,$event)">查看详情</a>
+                            <span class="aa" type="text"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </li>
+
+        </div>
+
+    </ul>
+    <div v-if="res == 0" class="text-center" v-cloak>暂无数据</div>
+    <div style="width: 100%;height: 100%;background: rgba(0,0,0,.4);position: fixed;top: 1rem;overflow: scroll;display: none"
+         id="img_div" @click="img">
+        <img src="" id="img">
+    </div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript">
+//    function loaction_info(latitude,longitude) {
+//        wx.openLocation({
+//            latitude: 20.02712, // 纬度，浮点数，范围为90 ~ -90
+//            longitude: 110.3228, // 经度，浮点数，范围为180 ~ -180。
+//            name: '我的位置', // 位置名
+//            address: '签到地址__', // 地址详情说明
+//            scale: 1, // 地图缩放级别,整形值,范围从1~28。默认为最大
+//            infoUrl: 'https://www.baidu.com' // 在查看位置界面底部显示的超链接,可点击跳转
+//        });
+//
+//        $(".aa").html(name)
+//    }
+
+
+
+function myAjax() {
+    mui.ajax('{:url("",["guid"=>$uuid])}', {
+        dataType: 'json',//服务器返回json格式数据
+        type: 'post',//HTTP请求类型
+        success: function (response) {
+//                        console.log(response);
+            var dataA = {};
+            dataA.res = response;
+            vueBoss(dataA)
+        }
+    })
+}
+(function (rr) {
+    var result1 = document.getElementById("remind_time");
+    var btn1 = $('#remind_time');
+    btn1.each(function (i, btn) {
+        btn.addEventListener('tap', function () {
+            var optionsJson = this.getAttribute('data-options') || '{}';
+            var options = JSON.parse(optionsJson);
+            var id = this.getAttribute('id');
+            var picker = new rr.DtPicker(options);
+            picker.show(function (rs) {
+                result1.value = rs.text;
+                picker.dispose();
+                content = rs.text;
+            });
+        }, false);
+    });
+})(mui, document);
+var myvue;
+function vueBoss(dataA) {
+console.log(dataA);
+
+     myvue = new Vue({
+        el: '#app',
+        data: dataA,
+        methods: {
+            dianji: function (t) {
+                $("#img").attr("src", "http://wechat.yzferp.com/upload/show_images/" + t + "/320_480")
+                $("#img_div").css('display', 'block');
+            },
+            img: function () {
+                $("#img_div").css('display', 'none');
+            },
+            total:function (a,b) {
+                wx.openLocation({
+                    latitude: a, // 纬度，浮点数，范围为90 ~ -90
+                    longitude: b , // 经度，浮点数，范围为180 ~ -180。
+                    name: '', // 位置名
+                    address: '', // 地址详情说明
+                    scale: 17                                                                                                                                        , // 地图缩放级别,整形值,范围从1~28。默认为最大
+                    infoUrl: 'https://www.baidu.com' // 在查看位置界面底部显示的超链接,可点击跳转
+                });
+                console.log(a,b);
+                loaction_info(a,b);
+            }
+
+        }
+    })
+}
+function month(a) {
+    $("#topPopover").removeClass("mui-active");
+    $("#topPopover").css("display","none");
+    $(".mui-backdrop").css("display","none");
+    mui.ajax('{:url("",["guid"=>$uuid])}/type/'+a, {
+        dataType: 'json',//服务器返回json格式数据
+        type: 'post',//HTTP请求类型
+        data:a,
+        success: function (response) {
+            dataA={};
+            dataA.res=response;
+            myvue.$set(myvue.$data,'res',response);
+        }
+    })
+}
+
+window.onload = function () {
+    myAjax();
+    }
+</script>
+

@@ -1,0 +1,56 @@
+
+<body>
+<table id="project_list" class="easyui-datagrid"></table>
+<div id="project_div" ></div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('#project_list').datagrid({
+            singleSelect: false,
+            rownumbers: true,
+            resizeHandle: 'both',
+            ctrlSelect: true,
+            collapsible: false,
+            method: 'post',
+            url:'{$data_url}',
+            striped: true,
+            _customTitle: true,//开启自定义表头
+            _customWidth: false,//自定义列宽
+            pagination: true,
+            showFooter: false,//是否显示合计行
+            filterBtnIconCls: 'icon-filter',
+            multiSort: true,
+            remoteFilter:false,
+            pageSize:20,
+            columns:[
+                [{ field: 'project_name', title: '项目名称', width: '40%', align: 'center', }
+                , { field: 'status', title: '项目状态',width:'30%',align: 'center',
+                    formatter:function(value,row,index){
+                        if(row.status=="-2"){
+                            return '已废单'
+                        }else if(row.feedback_stage=="1"){
+                            return '正在跟踪'
+                        }else if(row.feedback_stage=="2"){
+                            return '设计阶段'
+                        }else if(row.feedback_stage=="3"){
+                            return '施工阶段'
+                        }else if(row.engin_status=="2"){
+                            return '已完工'
+                        }else{
+                            return '未知状态'
+                        }
+                    }
+                }
+                , { field: 'create_time', title: '录入时间', width: '28%', align: 'center', }
+                ]
+
+            ],
+            toolbar:[],
+            nowrap:false,//超出部分自动换行
+        });
+    });
+</script>
+</body>
+</html>
+

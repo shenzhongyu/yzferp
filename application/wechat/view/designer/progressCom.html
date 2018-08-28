@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>部门项目表</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+<body>
+<div id="app">
+
+
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <h1 class="mui-title">部门项目进度</h1>
+        <!--<a class="mui-icon mui-icon mui-icon mui-icon-more mui-pull-right" @click="addLogclick"-->
+           <!--style="font-size:30px;"></a>-->
+        <a class="mui-icon mui-icon mui-icon mui-icon-more mui-pull-right" href="#topPopover"
+           style="font-size:30px;"></a>
+    </header>
+    <div class="addBoss">
+        <div id="topPopover" class="mui-popover "
+             style="display:none; top: 57px; left: 35px;height: 1.9rem;width: 2.5rem;color: black">
+            <div class="mui-popover-arrow" style="left:2.48rem"></div>
+            <div class="mui-scroll-wrapper" data-scroll="1">
+                <div class="mui-scroll" style="transform: translate3d(0px, 0px, 0px) translateZ(0px);">
+                    <ul class="mui-table-view">
+
+                        <li class="mui_popver" id="addT" @click="alloat"><a href="#">分配设计师</a>
+                        </li>
+
+                        <li class="mui_popver" @click="addLogclick"><a href="#">项目详情</a>
+                        </li>
+
+
+                    </ul>
+                </div>
+                <div class="mui-scrollbar mui-scrollbar-vertical">
+                    <div class="mui-scrollbar-indicator"
+                         style="transition-duration: 0ms; display: none; height: 8px; transform: translate3d(0px, -8px, 0px) translateZ(0px);"></div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="addPro">（ {$pro_info["project_name"]}）进度</div>
+        <div class="addFirst" v-for="item in res" v-cloak>
+
+
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">项目名称：</div>
+                <div class="detailRightOnly">
+                    {$pro_info["project_name"]}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">设计阶段：</div>
+                <div class="detailRightOnly">
+                    {{item.design_phase}}
+                </div>
+            </div>
+
+
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">开始日期：</div>
+                <div class="detailRightOnly">
+                    {{item.start_data}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">验收日期：</div>
+                <div class="detailRightOnly">
+                    {{item.acceptance_date}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">负责人：</div>
+                <div class="detailRightOnly">
+                    {{item.design_user}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">完工日期：</div>
+                <div class="detailRightOnly">
+                    {{item.completion_date}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">预计天数：</div>
+                <div class="detailRightOnly">
+                    {{item.expected_days}}
+                </div>
+            </div>
+            <div class="detailBoss">
+
+                <div class="detailLeftOnly">状态：</div>
+                <div class="detailRightOnly">
+                    <!--<span v-if="item.app_status == 1&&item.app_status ==1">已完成，等待审核</span>-->
+                    <!--<span v-if="item.status == 2&&item.app_status ==2 ">完成</span>-->
+                    <!--<span v-if="item.status == 1&&item.app_status ==2||item.status == 2&&item.app_status ==1 ">未完成</span>-->
+                    <!--<span v-if="item.app_status == 1" style="color: green">已完成，等待审核</span>-->
+                    <!--<span v-if="item.status == 1&&item.app_status ==2 " style="color: red">未完成</span>-->
+                    <!--<span v-if="item.status == 1&&item.app_status =='' " style="color: red">未完成</span>-->
+                    <!--<span v-if="item.status == 2" style="color: green">完成</span>-->
+
+                    <span v-if="item.status == 1&&(!item.app_status)" style="color: red">未完成</span>
+                    <span v-if="item.app_status == 1&&item.app_status == 1" style="color: green">已完成，等待审核</span>
+                    <span v-if="item.status == 2" style="color: green">完成</span>
+
+                </div>
+            </div>
+            <!--<div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;">-->
+
+                <!--<div style="display: inline-block;width: 23%;float: left;">操作：</div>-->
+                <!--<div style="display: inline-block;width: 77%;">-->
+                    <!--<button type="button" @click="img(item.guid)">图片</button>-->
+                    <!--<button type="button" @click="appendix">附件</button>-->
+                    <!--<button type="button" @click="alloat">设计师</button>-->
+                    <!--{{item.create_time}}-->
+                <!--</div>-->
+            <!--</div>-->
+
+        </div>
+
+
+    </div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+
+        mui.ajax('{:url("erp/design/showbudgetlist",["guid"=>$project_guid])}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                console.log(response);
+                dataA.res = response.rows;
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {
+                        addLogclick: function () {
+
+
+                            mui.openWindow({
+                                url: "{:url('designer/projectDetailsCom',['guid'=>$Request.param.guid])}"
+                            })
+
+//                            mui.openWindow({
+//                                url: "{:url('project/projectdetails',['guid'=>$Request.param.guid])}"
+//                            })
+                        },
+//                        linkBack: function () {
+//                            mui.openWindow({
+//                                url: "{:url('designer/projectListDesignerCom',['guid'=>$Request.param.guid])}"
+//                            })
+//                        },
+                        img: function (id) {
+
+                            mui.openWindow({
+                                url: "{:url('designer/progressImg',['id'=>$Request.param.guid])}/guid/" + id
+                            })
+                        },
+                        appendix: function () {
+                            mui.toast("正在开发中", {duration: 'short', type: 'div'});
+                        },
+                        alloat: function () {
+                            mui.openWindow({
+                                url: "{:url('designer/designer',['guid'=>$Request.param.guid])}"
+                            })
+                        }
+
+
+                    }
+                })
+            }
+        })
+    }
+</script>

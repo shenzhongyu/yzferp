@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<table id="dg" class="easyui-datagrid" title="{$title}" style="width:100%;height:auto"
+       data-options="
+                nowrap:false,
+				iconCls: 'icon-edit',
+				singleSelect: true,
+				toolbar: '#tb',
+				url: '{$data_url}',
+				method: 'post',
+				nowrap:false,
+				onDblClickCell: onClickRow,
+				pagination:true,
+				pageSize:30,
+			">
+    <thead>
+    <tr>
+        <th data-options="field:'name',width:250,align:'center',editor:'text'" >名称</th>
+        <th data-options="field:'loss_coefficient',width:120,align:'center',editor:{type:'numberbox',options:{precision:2}}" >损耗</th>
+        <th data-options="field:'mechanical_coefficient',width:120,align:'center',editor:{type:'numberbox',options:{precision:2}}">机械</th>
+        <th data-options="field:'unit_profit',width:150,align:'center',editor:{type:'numberbox',options:{precision:2}}">主材毛利润</th>
+        <th data-options="field:'auxiliary_profit',width:150,align:'center',editor:{type:'numberbox',options:{precision:2}}">辅材毛利润</th>
+        <th data-options="field:'artificial_profit',width:150,align:'center',editor:{type:'numberbox',options:{precision:2}}">人工毛利润</th>
+        <th data-options="field:'op',width:200,align:'center',
+                        formatter:function(value,row){
+							return del(row.guid);
+                        },">操作</th>
+    </tr>
+    </thead>
+</table>
+
+<div id="tb" style="height:auto">
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">新增</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    var editIndex = undefined;
+    var clickIndex; //点击的下标
+    var flag;  //判断提交的数据是否成功
+    setInterval(function(){
+        var rows = $('#dg').datagrid('getChanges');
+        if(rows.length!=0){
+            accept();
+        }
+    },60000);
+    function del(a) {
+        return '<a href="javascript:delData(&apos;'+a+'&apos;);">删除</a>';
+    }
+    function editRow(index, row, changes) {
+        if(!$.isEmptyObject(changes)){
+            flag=index;
+            layer.msg('数据保存成功',{icon:1});
+        }
+    }
+    function onClickRow(index){
+        if(clickIndex===0||clickIndex){
+            $('#dg').datagrid('endEdit', clickIndex);
+            var  rows= $('#dg').datagrid('getChanges');
+            var obj_new=$('#dg').datagrid('getRows')[clickIndex];
+            var url='{:url("addDataWithDefaultRate")}';
+            if(flag==clickIndex){
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data:obj_new ,
+                    dataType: "json",
+                    success: function(data){
+                        if (data.code=="1001"){
+                            $('#dg').datagrid('endEdit', clickIndex);
+                            $('#dg').datagrid('selectRow', index)
+                                .datagrid('beginEdit', index);
+                            clickIndex=index;
+                        }else{
+
+                            layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                        }
+                    }
+                });
+            }else{
+                $('#dg').datagrid('endEdit', clickIndex);
+                $('#dg').datagrid('selectRow', index)
+                    .datagrid('beginEdit', index);
+                clickIndex=index;
+            }
+        }else{
+            $('#dg').datagrid('selectRow', index).datagrid('beginEdit', index);
+            clickIndex=index;
+        }
+    }
+    function append(){
+        if(clickIndex!==undefined){
+            if($('#dg').datagrid('validateRow', clickIndex)){
+                $('#dg').datagrid('endEdit', clickIndex);
+                var obj_new=$('#dg').datagrid('getRows')[clickIndex];
+                var url='{:url("addDataWithDefaultRate")}';
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data:obj_new ,
+                    dataType: "json",
+                    success: function(data){
+                        if (data.code=="1001"){
+                            $('#dg').datagrid('insertRow',{index: 0
+                                ,row:{
+                                    loss_coefficient:0.00,
+                                    mechanical_coefficient:0.00,
+                                    unit_profit:0.00,
+                                    auxiliary_profit:0.00,
+                                    artificial_profit:0.00,}
+                            });
+                            clickIndex=0,
+                                $('#dg').datagrid('selectRow', clickIndex)
+                                    .datagrid('beginEdit', clickIndex);
+                        }else{
+                            $('#dg').datagrid('selectRow', clickIndex)
+                                .datagrid('beginEdit', clickIndex);
+                            layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                        }
+                    }
+                });
+            }else{
+                return false;
+            }
+
+        }else{
+            $('#dg').datagrid('insertRow',{index: 0
+                ,row:{
+                    loss_coefficient:0.00,
+                    mechanical_coefficient:0.00,
+                    unit_profit:0.00,
+                    auxiliary_profit:0.00,
+                    artificial_profit:0.00,
+                }
+            });
+            clickIndex=0;
+            $('#dg').datagrid('selectRow', clickIndex)
+                .datagrid('beginEdit', clickIndex);
+        }
+    }
+    function removeit(){
+        if (editIndex == undefined){return}
+        $('#dg').datagrid('cancelEdit', editIndex)
+            .datagrid('deleteRow', editIndex);
+        editIndex = undefined;
+        $("#dg").datagrid('reload');
+    }
+    function accept(){
+        $('#dg').datagrid('endEdit', clickIndex);
+        var obj_new=$('#dg').datagrid('getRows')[clickIndex];
+        ajax('{:url("addDataWithDefaultRate")}',obj_new);
+
+    }
+    function ajax(url,obj){
+        $.ajax({
+            type: "POST",
+            url: url,
+            data:obj ,
+            dataType: "json",
+            success: function(data){
+                if (data.code=="1001"){
+                    layer.msg('数据保存成功',{icon:1});
+                    removeit();
+                }else{
+                    $('#dg').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                    layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                }
+            }
+        });
+    }
+    function delData(a){
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("Design/delDataWithDefaultRate")}', {id: a}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    $("#dg").datagrid('reload');
+                }
+            }, 'json');
+        });
+
+    }
+</script>
+</body>
+</html>

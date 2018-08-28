@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <table id="dg" class="easyui-datagrid" title="模板空间的装饰项目" style="width:100%;height:auto"
+           data-options="
+                nowrap:false,
+				iconCls: 'icon-black',
+				singleSelect: true,
+				toolbar: '#tb',
+				url: '{$data_url}',
+				method: 'post',
+				idField:'guid',
+                treeField:'name',
+				nowrap:false,
+			">
+        <thead>
+        <tr>
+            <th data-options="field:'chk',checkbox:'true'">装饰项目名称</th>
+            <th data-options="field:'name',align:'center',width:'20%' ">装饰项目名称</th>
+            <th data-options="field:'unit',align:'center',width:'5%'">单位</th>
+            <th data-options="field:'number',align:'center',width:'10%' ,editor:{type:'numberbox',options:{precision:2}}">数量</th>
+            <th data-options="field:'price',align:'center',width:'10%' ">单价</th>
+            <th data-options="field:'price_sum',align:'center',width:'15%'">金额</th>
+            <th data-options="field:'desc',align:'center',width:'40%'">说明</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div id="tb" style="height:auto;">
+        <a href="javascript:void(0)" style="display: {$none}" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="copyMore()">批量提取</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="returnTo()">返回上一级</a>
+        <a style="margin-left: 15px;">装饰项目名称：<input type="text" id="name"></a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">
+            <span class="l-btn-icon icon-search"></span>
+            <span class="l-btn-text l-btn-icon-left">搜索</span>
+        </a>
+        <a style="margin-left: 10%;font-size: 16px;font-weight: 400">模板空间名称：{$name}</a>
+    </div>
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    function returnTo() {
+        window.parent.closeTab("模板空间内容");
+    }
+    function sear() {
+        var tex=$("#name").val();
+        console.log(tex);
+        if(tex){
+            var str='[{"field":"name","op":"equal","value":"'+tex+'","type":"text"}';
+            str+=']';
+            $('#dg').datagrid({
+                queryParams: {
+                    filterRules:str,
+                }
+            });
+        }else{
+            $('#dg').datagrid('load',{});
+        }
+    }
+    function copyMore() {
+        var rows = $("#dg").datagrid('getSelections');
+        if (rows.length==0){
+            layer.msg('请选择要提取的数据', {icon: 2});
+            return false;
+        }
+        var arr=[];
+        $.each(rows,function (i,t) {
+            arr.push(t.guid);
+        });
+        $.messager.confirm('提示信息', '提取装饰项目会自动创建所属空间的名称', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("saveTemData")}', {arr: arr,pro_id:'{$pro_id}'}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                }
+            }, 'json');
+        });
+    }
+</script>
+</body>
+</html>

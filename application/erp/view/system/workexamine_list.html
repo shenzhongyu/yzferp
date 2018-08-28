@@ -1,0 +1,91 @@
+workexamine_list.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+{block name="my_css"}
+
+{/block}
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'plan_name', title: '名称', width: '100', align: 'center', sortable: true}
+, { field: 'plan_content', title: '内容', width: '100', align: 'center', sortable: true}
+, { field: 'name', title: '实施人', width: '100', align: 'center', sortable: true}
+, { field: 'end_time', title: '计划完成时间', width: '180', align: 'center', sortable: true}
+, { field: 'plan_grade', title: '计划重要程度',width: '180', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'dep_manager', title: '计划审核状态',width: '180', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'plan_desc', title: '计划备注', width: '100', align: 'center', sortable: true}
+]]{/block}
+
+{block name="filter"}[
+{:widget('Easyui/showFilter', ["plan_grade","combobox"])}
+
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["plan_grade","plan_grade"] )}
+{:widget('Easyui/showAll', ["audit_status","audit_status"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'plan_grade') {
+if( value=="4"){
+return '<a style="color: red">'+eval("value_" + field)[value]+'</a>';
+}
+return eval("value_" + field)[value];
+}else if(field == 'dep_manager'){
+if(value=="1"){
+return  '<a style="color:green">'+ eval("value_audit_status")[value]+'</a>';
+}else{
+return  '<a style="color:blue;font-size: 12px;cursor: pointer" class="iconfont sider-nav-icon" onclick="audit(&apos;'+row.guid+'&apos;)">&#xe655; '+ eval("value_audit_status")[value]+'</a>';
+}
+}
+else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+{block name="my_js"}
+<script>
+    function audit(a){
+        $(mikkleClass.dialog).dialog({
+            title: '每日一记',
+            iconCls: 'icon-save',
+            width: 400,
+            height: 200,
+            cache: false,
+            href: '{:url("Work/showPlanExamine")}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons: mikkleClass.button_add('{:url("Work/editPlanExamine")}/guid/'+a,"确 定"),
+        });
+    }
+</script>
+{/block}
+
+{block name="toolbar"}[
+{ text:'审核', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm(420,200);} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

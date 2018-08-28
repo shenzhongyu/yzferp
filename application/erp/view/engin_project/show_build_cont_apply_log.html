@@ -1,0 +1,37 @@
+
+<table id="build_log">
+</table>
+
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $("#build_log").datagrid({
+            width:'100%',
+            height:'auto',
+            url:'{$data_url}',
+            columns:[[
+                {field:'apply_name',title:'申请人',width:'12%',align:'center'},
+                {field:'apply_desc',title:'申请原因',width:'22%',align:'center'},
+                {field:'examine_name',title:'审核人',width:'12%',align:'center'},
+                {field:'examine_desc',title:'审核内容',width:'22%',align:'center'},
+                {field:'examine_status',title:'审核状态',width:'12%',align:'center',
+                    formatter:function(value,row,index){
+                        if (value=="1"){
+                            return '<a style="color: #01AAED">通过</a>';
+                        }else if(value=="-1"){
+                            return '<a style="color: red">不通过</a>';
+                        }else{
+                            return '<a style="color: #09bb07">等待验收</a>';
+                        }
+                    }
+                },
+                {field:'create_time',title:'时间',width:'15%',align:'center'}
+            ]],
+            rownumbers:true,
+            pagination: true,
+            nowrap:false,
+            pageSize:20,
+        });
+    })
+</script>

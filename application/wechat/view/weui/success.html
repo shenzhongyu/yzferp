@@ -1,0 +1,36 @@
+{extend name="base_weui/weui_base" /}
+
+{block name="title"}{$title?:'none'}{/block}
+{block name="footer"}{__block__}{/block}
+{block name="foot_js"}{__block__}{/block}
+{block name="js_sdk"}{__block__}{/block}
+
+{block name="header"}
+<!-- 直接编写的头部内容 -->
+{/block}
+
+{block name="main"}
+<div class="weui-msg">
+	<div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
+	<div class="weui-msg__text-area">
+		<h2 class="weui-msg__title">已通过微信登录成功，请点击登录吧</h2>
+		<!--<p class="weui-msg__desc">你已经成功绑定手机号码，快去进行微信扫码登录吧！</p>-->
+	</div>
+	<div class="weui-msg__opr-area">
+		<p class="weui-btn-area">
+			<!--<a href="javascript:wx.closeWindow();;" class="weui-btn weui-btn_primary">登录</a>-->
+			<a href="javascript:;" class="weui-btn weui-btn_primary" onclick="denglu()">登录</a>
+		</p>
+	</div>
+</div>
+<script>
+    function denglu(){
+        location.href="{:url('index/index')}";
+    }
+</script>
+{/block}
+
+
+{block name="my_js"}
+{/block}
+

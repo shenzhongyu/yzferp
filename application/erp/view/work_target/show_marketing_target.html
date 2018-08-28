@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<div style="margin-bottom:10px">
+    {volist name="dep_list" id="vo" empty="暂时部门" }
+    <a href="javascript:addMarketTab('{$vo.department_name}','{$vo.guid}');" class="easyui-linkbutton" >{$vo.department_name}</a>
+    {/volist}
+</div>
+<div id="tt" class="easyui-tabs" style="width:100%;height:600px;">
+    <div title="{$first_title}">
+        <iframe class="page-iframe" src="{$data_url}/guid/{$first_url}"  frameborder="no"   border="no" height="98%" width="100%" scrolling="auto" ></iframe>
+    </div>
+</div>
+<div id="dialog_div" ></div>
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function () {
+        $('#tt').tabs({
+            tabHeight: 44,
+            onSelect: function (title, index) {
+                var currentTab = $('#tt').tabs("getSelected");
+                if (currentTab.find("iframe") && currentTab.find("iframe").size()) {
+                    currentTab.find("iframe").attr("src", currentTab.find("iframe").attr("src"));
+                }
+            }
+        });
+    });
+    function addMarketTab(title, url){
+        var url='{$data_url}/guid/'+url;
+        if ($('#tt').tabs('exists', title)){
+            $('#tt').tabs('select', title);
+        } else {
+            var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'" style="width:100%;height:98%;"></iframe>';
+            $('#tt').tabs('add',{
+                title:title,
+                content:content,
+                closable:true
+            });
+        }
+    }
+    function showDlog(url) {
+        $("#dialog_div").dialog({
+            title: '设置指标',
+            iconCls: 'icon-save',
+            width: 400,
+            height: 300,
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text: name ? name : ' 确 定 ',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        $("#dialog_div").find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post(url, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else {
+                                        layer.msg(data.msg, {icon: 1});
+                                        $("#dialog_div").dialog('close');
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },{
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $("#dialog_div").dialog('close');
+                    }
+                }
+
+            ]
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+role_list.html{extend name="base/base_search_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'role_name', title: '角色名称', width: 150,align: 'center', sortable: true }
+, { field: 'role_desc', title: '角色备注', width: 180,align: 'center', sortable: true }
+, { field: 'company_id', title: '所属公司', width:200,align: 'center', sortable: true ,{:widget('Easyui/formatter')} }
+, { field: 'status', title: '状态', width: 60,align: 'center', sortable: true,{:widget('Easyui/formatter')}  }
+,{ field: 'operate', title: '操作', width: 300,align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+]]{/block}
+
+
+{block name="filter"}[
+{field: 'create_time', type: 'datebox', options: { precision: 1 }, op: ['betweendate'] },
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber'] },
+{:widget('Easyui/showFilter', ["status","combobox"])}
+]{/block}
+
+
+{block name="value"}
+{:widget('Easyui/ShowArray',["status",'status'] )}
+{:widget('Easyui/ShowValue',["status",'status_value'] )}
+{:widget('Easyui/showValueByUrl',["company_id","company_json"])}
+{:widget('Easyui/showArrayByUrl',["company_id","company_json"])}
+
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'operate'){
+return '<a href="javascript:;" onclick="editPower(&apos;'+row.guid+'&apos;)" >查看</a> | <a href="javascript:;" onclick="editPower(&apos;'+row.guid+'&apos;)">编辑PC</a>  |  <a href="javascript:;" onclick="editMobilePower(&apos;'+row.guid+'&apos;)">编辑手机</a>';
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+<script>
+    function editPower(o){
+        window.parent.addTab('权限编辑','{:url("system/editUserNodeRole")}/rid/'+o,'close');
+    }
+    function editMobilePower(o){
+        window.parent.addTab('手机端权限编辑','{:url("system/editUserNodeRole",["is_mobile"=>1])}/rid/'+o,'close');
+    }
+</script>
+
+{/block}
+
+
+
+
+
+
+
+
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'添加', iconCls: 'icon-add', handler:function(){ mikkleClass.addForm(420,280);} },'-',
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm(420,280);} },'-',
+{ text:'删除', iconCls: 'icon-cancel', handler: function(){ mikkleClass.delForm();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

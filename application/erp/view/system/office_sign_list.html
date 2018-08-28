@@ -1,0 +1,41 @@
+office_sign_list.html{extend name="base/base_search_simple" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[
+{ field: 'user_name', title: '用户姓名', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'sign_time', title: '签到时间', width: '200', align: 'center', sortable: true}
+, { field: 'return_time', title: '签退时间', width: 200,align: 'center', sortable: true }
+, { field: 'create_time', title: '创建时间', width: 180,align: 'center', sortable: true }
+]]{/block}
+
+{block name="filter"}[
+{:widget('Easyui/showFilter', ["user_name","combobox"])}
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showArrayByUrl',["user_name","user_name_json"])}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+}else{
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+{/block}
+
+

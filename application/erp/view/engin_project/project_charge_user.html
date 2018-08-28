@@ -1,0 +1,151 @@
+
+<div style="width: 84%;float: left">
+    <table id="user_dg">
+    </table>
+</div>
+<div style="width: 15%;float: right">
+    <div style="margin-top: 5px;padding-left: 5px">
+        <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton" onclick="appoint()">添加负责人</a>
+    </div>
+    <div style="margin-top: 5px;padding-left: 5px">
+        <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton" onclick="remindAppointUser()">提醒负责人</a>
+    </div>
+    <div style="margin-top: 5px;padding-left: 5px">
+        <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton" onclick="showAppointUser()">查看提醒</a>
+    </div>
+
+</div>
+<div id="appoint"></div>
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $('#user_dg').datagrid({
+            url:'{$url}',
+            height:315,
+            rownumbers:true,
+            singleSelect:true,
+            pagination:false,
+            method:'post',
+            columns:[[
+                {field:'build_uuid_department',title:'部门',width:'15%',align:'center'},
+                {field:'build_uuid_name',title:'姓名',width:'15%',align:'center'},
+                {field:'build_uuid_jobs',title:'职务',width:'15%',align:'center'},
+                {field:'type',title:'职责',width:'15%',align:'center',
+                    formatter:function(value,row,index){
+                        if(value=="1"){
+                            return '负责人';
+                        }
+                    }
+                },
+                {field:'mobile',title:'联系电话',width:'18%',align:'center', sortable: true},
+                {field:'operate',title:'操作',width:'20%',align:'center',formatter:
+                    function(value,row,index){
+                       var str='<a href="javascript:changChargeUser(&apos;'+row.guid+'&apos;);">设为负责人</a>&nbsp;&nbsp;';
+                        str+='<a href="javascript:delUser(&apos;'+row.guid+'&apos;);">删除</a>';
+                        return str;
+                    }
+                }
+            ]]
+        });
+    });
+
+    function appoint() {
+        $('#appoint').dialog({
+            title: "人员",
+            iconCls: 'icon-save',
+            width: '50%',
+            height: '400',
+            cache: false,
+            href: '{:url("showUser",["id"=>$guid])}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function changChargeUser(a) { //设置负责人
+        $.post("{:url('changChargeUser')}",{id:a},function (data) {
+            if(data.code!="1001"){
+                layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+            }else{
+                layer.msg(data.msg  , {icon: 1});
+                $("#user_dg").datagrid('reload');
+            }
+        },'json');
+    }
+    function remindAppointUser() {
+        var url='{:url("remindAppointUser",["id"=>$guid])}';
+        $('#appoint').dialog({
+            title: "添加提醒",
+            iconCls: 'icon-save',
+            width: '400',
+            height: '300',
+            cache: false,
+            href:url ,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#appoint').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url,$(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#appoint').dialog('close');
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#appoint').dialog('close');
+                }
+            }],
+
+        })
+    }
+    function showAppointUser() {
+        $('#appoint').dialog({
+            title: "提醒",
+            iconCls: 'icon-save',
+            width: '50%',
+            height: '400',
+            cache: false,
+            href: '{:url("showAppointUser",["id"=>$guid])}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function delUser(a) {
+        var url='{:url("delUser")}';
+        $.post(url,{id:a},function (data){
+            if (data.code!="1001"){
+                layer.msg(data.msg,{icon:2});
+            }else{
+                layer.msg(data.msg,{icon:1});
+                $('#user_dg').datagrid('reload');
+            }
+        },'json')
+    }
+</script>

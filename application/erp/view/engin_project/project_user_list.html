@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="pro_tb" style="height:auto;">
+        <a style="margin-left: 10px;">搜索条件:</a>
+        <a style="margin-left: 15px;">项目名称：<input type="text" id="name"></a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">
+            <span class="l-btn-icon icon-search"></span>
+            <span class="l-btn-text l-btn-icon-left">搜索</span>
+        </a>
+    </div>
+</div>
+<div id="pro_dlog">
+</div>
+<table id="pro_dg" title="{$title}"></table>
+
+{include file="base/js" /}
+
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    $(function(){
+        $('#pro_dg').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:'project_name',title:'项目名称',width:'15%',align:'center'},
+                {field:'project_address',title:'工程地址',width:'20%',align:'center'},
+                {field:'op',title:'操作',width:"15%",align:'center',
+                    formatter:function(value,row,index){
+                        var str='<a href="javascript:;" onclick="look(&apos;'+row.id+'&apos;)">查看</a>&nbsp;&nbsp;&nbsp;';
+                        str+='<a href="javascript:;" onclick="assignJobs(&apos;'+row.guid+'&apos;)">施工分配</a>&nbsp;&nbsp;&nbsp;';
+                        return str;
+                    }
+                },
+            ]],
+            singleSelect: true,
+            toolbar: '#pro_tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+    function sear(){
+        var tex=$("#name").val();
+        if(tex){
+            var str='[{"field":"project_name","op":"contains","value":"'+tex+'","type":"text"}';
+            str+=']';
+            $('#pro_dg').datagrid({
+                queryParams: {
+                    filterRules:str,
+                }
+            });
+        }else{
+            $('#pro_dg').datagrid('load',{});
+        }
+    }
+    function look(t){
+        window.parent.addTab('项目明细','{:url("Project/showProjectOfCompany")}/id/'+t,'close');
+    };
+    function assignJobs(id) {
+        window.parent.addTab('用工分配','{:url("assignJobs")}/guid/'+id,'close');
+    }
+</script>
+</body>
+</html>

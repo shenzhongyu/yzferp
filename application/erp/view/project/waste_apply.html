@@ -1,0 +1,21 @@
+<form id="fm" style="padding:10px 30px;" method="post" name="form">
+    <section>
+        <label class="label_1">项目名称:</label>
+        <label class="label_2">
+            {$title}
+        </label>
+    </section>
+    <section>
+        <label class="label_1">废单类型:</label>
+        <label class="label_2">
+            <input id="dep" class="easyui-combobox" name="apply_type"
+                   data-options="required:true,invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField:'value',textField:'text',url:'{:url('/erp/api/showFieldJson/name/waste_single_type')}'" />
+        </label>
+    </section>
+    <section style="margin-top: 10px;">
+        <label class="label_1">废单说明:</label>
+        <label class="label_2">
+            <textarea placeholder="请填写说明" name="apply_desc" style="width:80%;height: 70px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+</form>

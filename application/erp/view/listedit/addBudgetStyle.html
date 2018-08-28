@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Basic Form - jQuery EasyUI Demo</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+    <!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+    <!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+    {include file="base/js" /}
+    <style>
+        table tr{ width: 100%}
+        table tr td:nth-of-type(odd){text-align: right;width: 20%}
+        table tr td:nth-of-type(even){text-align: left;width: 30%}
+        table tr td:nth-of-type(even) input{width:auto;}
+        img{border:0}
+    </style>
+</head>
+<body>
+<div id="log"></div>
+<div style="margin:20px 0;"></div>
+<div class="easyui-panel" title="公司预算书定义" style="width:50%">
+    <div style="padding:10px 30px 20px 30px">
+        <form id="ff" method="post">
+            <table cellpadding="5" style="width: 100%">
+                <tr>
+                    <td>预算书名称:</td>
+                    <td><input class="easyui-textbox" type="text" name="style" value="{$style ? $style :''}" data-options="required:true,"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td >公司名称:</td>
+                    <td><input class="easyui-textbox" type="text" name="com_name" value="{$company_name}" data-options="required:true,"></td>
+
+                </tr>
+                <tr>
+                    <td>公司电话:</td>
+                    <td><input class="easyui-textbox" type="text" name="telephone" value="{$telephone ? $telephone :''}" data-options=""></input></td>
+                </tr>
+                <tr>
+                    <td>公司地址:</td>
+                    <td colspan="2"><input class="easyui-textbox" type="text" name="address" value="{$address ? $address :''}" data-options=""></input></td>
+                </tr>
+                <tr>
+                    <td>公司logo:</td>
+                    <td colspan="1">
+                        <input class="easyui-textbox" id="imgs"  value="{$logo ? $logo :''}"  name="logo" data-options="onChange:function(newValue, oldValue){imgSrc(newValue, oldValue)}" readonly >
+                        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="showUp()">上 传</a>
+                    </td>
+                    <td>
+                        <img style="display: {$logo ? 'block': 'none'}" id="imgSrc" width="100" height="60" src="{$logo}" />
+                    </td>
+                </tr>
+                <tr>
+
+                </tr>
+                <tr>
+                    <td>预算协议:</td>
+                    <td colspan="3"><textarea style="width: 88%;height:240px;resize: none" name="desc">{$desc}</textarea></td>
+                </tr>
+            </table>
+        </form>
+        <div style="text-align:center;padding:5px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="margin-right: 2%">确 认</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">取 消</a>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function showUp() {
+        $("#log").dialog({
+            title:'上传图片',
+            width:400,
+            height:300,
+            href:'{:url("showUploadHtml",["idName"=>"imgs"])}',
+        });
+    }
+    $(function(){
+        $("#upload1").filebox({
+            buttonText:'选择图片'
+        });
+    })
+
+    function submitForm(){
+        var url='{:url("addDataWithBudgetStyle")}/guid/'+'{$guid}';
+        var data=$("#ff").serialize();
+        $.ajax({
+            url: url,
+          　data:data,
+        　　type: "POST",
+            dataType:'json',
+            success:function(data){
+                if(data.code=="1001"){
+                    layer.msg('预算书模板创建成功',{icon:1});
+                    setTimeout(function(){
+                        window.parent.closeTab('预算书模板');
+                        window.parent.addTab('预算书模板定义','{:url("material/showeditbudgetstyle")}');
+                    },800);
+
+                }else{
+                    layer.msg(data.msg,{icon:2});
+                }
+            }
+        })
+
+    }
+    function clearForm(){
+        window.parent.closeTab('预算书模板');
+    }
+    function imgSrc() {
+        var value=$('#imgs').textbox('getValue');
+        $("#imgSrc").attr('src',value);
+        $('#imgSrc').css("display",'block');
+    }
+</script>
+</body>
+</html>

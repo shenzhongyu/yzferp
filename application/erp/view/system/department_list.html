@@ -1,0 +1,65 @@
+department_list.html{extend name="base/base_search_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+
+{block name="columns"}[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'company_id', title: '所属公司', width: 200, align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'department_type', title: '部门类型',width: 200, align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+, { field: 'department_name', title: '部门名称',width: 200, align: 'center', sortable: true }
+, { field: 'department_desc', title: '部门备注', width: 200,align: 'center', sortable: true }
+, { field: 'status', title: '状态', width: 60,align: 'center', sortable: true ,{:widget('Easyui/formatter')}}
+, { field: 'create_time', title: '创建时间', width: 150,align: 'center', sortable: true }
+]]{/block}
+
+
+{block name="filter"}[
+{field: 'create_time', type: 'datebox', options: { precision: 1 }, op: ['betweendate'] },
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber'] },
+{:widget('Easyui/showFilter', ["status","combobox"])}
+{:widget('Easyui/showFilter', ["company_id","combobox"])}
+{:widget('Easyui/showFilter', ["department_type","combobox"])}
+]{/block}
+
+
+{block name="value"}
+{:widget('Easyui/ShowArray',["status",'status'] )}
+{:widget('Easyui/ShowValue',["status",'status_value'] )}
+{:widget('Easyui/showValueByUrl',["company_id","company_json"])}
+{:widget('Easyui/showArrayByUrl',["company_id","company_json"])}
+{:widget('Easyui/showAll', ["department_type","department_type"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url()) }'
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'添加', iconCls: 'icon-add', handler:function(){ mikkleClass.addForm(420,300);} },'-',
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm(420,300);} },'-',
+{ text:'删除', iconCls: 'icon-cancel', handler: function(){ mikkleClass.delForm();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

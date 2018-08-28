@@ -1,0 +1,39 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">阶段类型：</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="design_type"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/design_type')}',method:'get',"
+                   style="width:76%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">设计阶段：</label>
+        <label class="label_2" style="" id="stater">
+            <input class="easyui-validatebox" type="text" name="design_phase" id=""
+                   data-options="required:true,validType:'length[1,14]'"
+                   style="width:76%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">开始日期</label>
+        <label class="label_2" style="width: 75%">
+            <input class="easyui-datetimebox" name="start_data" id="dd"
+                   data-options="required:true,showSeconds:true,editable:false"   style="width:150px">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">预计天数</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="expected_days"
+                   data-options="required:true,validType:'length[1,14]'"
+                   style="width:45%"> 天
+        </label>
+    </section>
+    <section>
+        <label class="label_1">备注:</label>
+        <label class="label_2">
+            <textarea   name="design_desc" style="width:76%;height: 70px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+</form>

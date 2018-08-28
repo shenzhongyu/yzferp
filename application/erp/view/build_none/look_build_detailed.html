@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="pro_tb" style="height:auto;">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="backReturn()">返回</a>
+
+        <a style="margin-left: 10px;font-size: 16px;">{$name}</a>
+    </div>
+</div>
+<div id="pro_dlog">
+</div>
+<table id="pro_dg" title="{$title}"></table>
+
+
+
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function(){
+        $('#pro_dg').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:'xuhao',title:'序号',width:"10%",align:'center'},
+                {field:'name',title:'工程名称',width:"20%",align:'center'},
+                {field:'unit',title:'单位',width:"10%",align:'center',},
+                {field:'number',title:'数量',width:"10%",align:'center',},
+                {field:'control_price',title:'单价',width:"10%",align:'center',},
+                {field:'price_num',title:'金额',width:"10%",align:'center',},
+                {field:'desc',title:'说明',width:"30%",align:'center',},
+            ]],
+            singleSelect: true,
+            toolbar: '#pro_tb',
+            method: 'post',
+            nowrap:false,
+
+        });
+    });
+    function backReturn() {
+        window.parent.closeTab('工程明细');
+        window.parent.addTab('项目工程','{:url("lookBuild",["guid"=>$pro_id])}','close');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>通讯录信息</title>
+    {include file="base_mui/weui_wechat"/}
+
+</head>
+<body>
+<div id="app">
+
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <h1 class="mui-title">通讯录信息</h1>
+
+    </header>
+
+<div style="height: 0.8rem;width: 100%;margin-top: 50px;font-size: 0.30rem;border-bottom: 1px solid black" v-cloak>
+    <div style="width: 30%;float: left;height: 100%;text-align: center;line-height: 0.8rem">姓名</div>
+    <div style="width: 25%;float: left;height: 100%;text-align: center;line-height: 0.8rem">部门</div>
+    <div style="width: 25%;float: left;height: 100%;text-align: center;line-height: 0.8rem">职位</div>
+    <div style="width: 20%;float: left;height: 100%;text-align: center;line-height: 0.8rem">电话</div>
+</div>
+<div style="height: 0.8rem;width: 100%;font-size: 0.30rem;border-bottom: 1px solid black" v-for="item in res">
+    <div style="width: 30%;float: left;height: 100%;text-align: left    ;line-height: 0.8rem;padding-left: 0.2rem">{{item.name}}
+    </div>
+    <div style="width: 25%;float: left;height: 100%;text-align: center;line-height: 0.8rem">{{item.department_name}}
+    </div>
+    <div style="width: 25%;float: left;height: 100%;text-align: center;line-height: 0.8rem">{{item.jobs_name}}
+    </div>
+    <div style="width: 20%;float: left;height: 100%;text-align: center;line-height: 0.8rem">
+        <a :href="'tel:'+item.mobile" style="color:#078ea8;" >
+            <i class="mui-icon  mui-media-object iconfont icon-dianhua" style="font-size: 0.5rem;margin-top: 0.15rem "></i></a>
+    </div>
+</div>
+
+</div>
+</body>
+
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        var id = ""
+        mui.ajax('{:url("",["company_id"=>$company_id])}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+               if(response.code ==1001){
+                   dataA.res = response.data;
+                   var vue = new Vue({
+                       el: '#app',
+                       data: dataA,
+                       methods: {
+                       }
+                   })
+
+               }else{
+                   mui.toast(response.msg, {duration: 'short', type: 'div'});
+               }
+
+
+            }
+        })
+    }
+</script>

@@ -1,0 +1,84 @@
+leave_not_list.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+{block name="my_css"}
+
+{/block}
+
+
+{block name="columns"}[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'leave_username', title: '姓名', width: '80', align: 'center', sortable: true }
+, { field: 'company_name', title: '公司',width: '100', align: 'center', sortable: true }
+, { field: 'department_name', title: '部门',width: '100', align: 'center', sortable: true }
+, { field: 'jobs_name', title: '职位', width: 100,align: 'center', sortable: true }
+, { field: 'leave_type', title: '请假类型', width: 80,align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+, { field: 'leave_content', title: '请假事由', width: 200,align: 'center', sortable: true }
+, { field: 'start_time', title: '开始日期', width: 120,align: 'center', sortable: true}
+, { field: 'end_time', title: '结束日期', width: 120,align: 'center', sortable: true }
+, { field: 'dep_manager', title: '审核状态', width: 100,align: 'center', sortable: true,{:widget('Easyui/formatter')}  }
+]]{/block}
+
+{block name="filter"}[
+{:widget('Easyui/showFilter', ["leave_name","combobox"])}
+{:widget('Easyui/showFilter', ["company_id","combobox"])}
+{:widget('Easyui/showFilter', ["department_id","combobox"])}
+{:widget('Easyui/showFilter', ["leave_type","combobox"])}
+{:widget('Easyui/showFilter', ["dep_manager","combobox"])}
+{:widget('Easyui/showFilter', ["admin_supervisor","combobox"])}
+{:widget('Easyui/showFilter', ["total_manager","combobox"])}
+{:widget('Easyui/showFilter', ["jobs_id","combobox"])}
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["leave_type","leave_type"] )}
+{:widget('Easyui/showAll', ["audit_status","audit_status"] )}
+{:widget('Easyui/showArray', ["dep_manager","audit_status"] )}
+{:widget('Easyui/showArray', ["admin_supervisor","audit_status"] )}
+{:widget('Easyui/showArray', ["total_manager","audit_status"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if(field == 'dep_manager'){
+    if(value=="1"){
+    return  '<a style="color:green">'+ eval("value_audit_status")[value]+'</a>';
+    }else{
+    return  '<a style="color:blue;font-size: 12px;cursor: pointer" class="iconfont sider-nav-icon" onclick="audit(&apos;'+row.guid+'&apos;)">'+ eval("value_audit_status")[value]+'</a>';
+    }
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+<script>
+    function audit(a){
+        mikkleClass.dialogForm('edit',a,'审核',420,200);
+    }
+</script>
+{/block}
+
+
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'审核假条', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm(420,200);} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}
+

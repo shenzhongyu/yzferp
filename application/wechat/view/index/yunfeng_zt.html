@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>七搜ERP云管家</title>
+    {include file="base_mui/weui_wechat"/}
+    {include file="base_weui/weui_jssdk"/}
+    <meta name="format-detection" content="telephone=yes">
+    <style>
+            .signphotoP{
+                color: black;
+                padding-left: 0.2rem;
+                padding-right: 0.2rem;
+                font-size: 0.28rem;
+                line-height: 0.45rem;
+
+            }
+            .text-indent{
+                text-indent:2em
+            }
+        .signphotoDiv{
+            height: 1.9rem;
+            background: #197cb9;
+            width: 100%;
+            text-align: center;
+            line-height: 1.9rem;
+            font-size: 0.4rem;
+            color: white;
+        }
+            .signphotoDivTwo{
+                height: 1.9rem;
+                background: #197cb9;
+                width: 100%;
+                text-align: center;
+                line-height: 0.85rem;
+                font-size: 0.38rem;
+                color: white;
+            }
+            .signphotoDivThree{
+                height: 1.9rem;
+                background: #197cb9;
+                width: 100%;
+                text-align: center;
+                line-height: 0.63rem;
+                font-size: 0.38rem;
+                color: white;
+            }
+            .signphotoDivThree P{
+                color: white;
+            }
+            .signphotoDivTwo P{
+                color: white;
+            }
+        .signphotoSmollP{
+            color: black;
+            padding-left: 0.2rem;
+            padding-right: 0.2rem;
+            font-size: 0.35rem;
+            line-height: 0.5rem;
+
+        }
+        .fz32{
+            font-size: 0.24rem;
+        }
+        .fz40{
+            font-size: 0.4rem;
+        }
+
+    </style>
+</head>
+<body>
+
+<div style="position: relative">
+    <img src="/static/mui/image/yunfeng-2018.jpg" style="width: 100%">
+
+</div>
+<!--<div style="width: 100%;height: 1.4rem;background-color: white;padding-top: 0.1rem;text-align: center">-->
+    <!--<span style=";font-size: 0.28rem">咨询电话：<a href="tel:400-1330227" style="color: black">400-133-0227</a></span>-->
+    <!--&lt;!&ndash;<span style="margin-left: 0.5rem;font-size: 0.28rem">QQ:  <a href="mqqwpa://im/chat?chat_type=wpa&amp;uin=619428888&amp;version=1&amp;src_type=web&amp;web_src=oicqzone.com" style="color: black">619428888</a>&ndash;&gt;-->
+    <!--</span>-->
+    <!--<div style="padding-left: 0.5rem;padding-right: 0.5rem;margin-top: 0.1rem;margin-bottom: 0.2rem">-->
+        <!--<div type="button" style="width: 45%;height: 0.6rem;border-radius: 0.2rem;background: #2075ad;color:white;font-size: 0.30rem;line-height: 0.6rem;text-align: center;float: left" id="apply">申请使用</div >-->
+        <!--<div type="button" style="width: 45%;height: 0.6rem;border-radius: 0.2rem;background: #2075ad;color:white;font-size: 0.30rem;line-height: 0.6rem;text-align: center;float: left;margin-left: 0.6rem" ><a href="tel:400-1330227" style="color:white;">电话咨询</a></div >-->
+    <!--</div>-->
+
+
+
+<!--</div>-->
+<div style="width: 100%;height: 1.4rem;background: #2775AD;padding-top: 0.4rem">
+    <div style="width: 2.5rem;height: 0.6rem;background: #BDC9DE;color: black;text-align: center;line-height: 0.6rem;font-size: 0.32rem;margin:  auto;border-radius: 0.2rem" id="apply">点此申请试用</div>
+</div>
+<div style="display: none;position: fixed;left: 20%;bottom: 30%" id="saoyisao">
+    <p style="text-align: center;color: black;background: white;width: 80%;padding-right: 0.2rem">请使用微信扫一扫<span style="float: right" onclick="closeo()">X</span></p>
+    <img id="srcCode" src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQH-8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyeDlzWkJGUWNjMGkxMDAwMHcwN2oAAgSDf_BZAwQAAAAA" style="width: 80%;height: 80%;">
+</div>
+
+
+
+
+</body>
+<script type="text/javascript">
+$("#apply").click(function () {
+$("#saoyisao").css("display","block");
+//    mui.openWindow({
+//        url: "{:url('index/apply')}"
+//    });
+})
+    function closeo() {
+        $("#saoyisao").css("display","none");
+    }
+
+
+</script>
+</html>

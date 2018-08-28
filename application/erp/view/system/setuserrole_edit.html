@@ -1,0 +1,15 @@
+
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label for="role_id" class="label_1">权限设置:</label>
+        <label for="role_id" class="label_2">
+            <input class="easyui-combobox" id="role_id"  name="role_id" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',required:true,editable:false,valueField: 'role_id',textField: 'role_name',url:'{:url('system/showRoleJson')}',method:'get'">
+        </label>
+    </section>
+    <section style="opacity: 0">
+        <label  class="label_2">
+            <input class="easyui-combobox" type="hidden"  name="status" style="width:80%;" value="1">
+        </label>
+    </section>
+</form>

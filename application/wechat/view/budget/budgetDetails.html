@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>预算信息</title>
+    {include file="base_mui/weui_wechat"/}
+    <style type="text/css">
+        .w50 {
+            width: 50%;
+        }
+
+        .colorred {
+            color: red;
+        }
+        .tishi {
+            width: 100%;
+            position: fixed;
+            bottom: 0.2rem;
+            font-size: 0.2rem;
+            text-align: center;
+            color: darkseagreen;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back"></a>
+        <h1 class="mui-title">预算详情</h1>
+        <a id="menu" class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>
+        <!--<a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right mui-btn-primary mui-btn-block" id="openPopover" style="font-size: 24px;"></a>-->
+    </header>
+
+    <div id="topPopover" class="mui-popover "
+         style="display:none;font-size: 14px; top: 57px; left: 35px;height: 3.5rem;width: 2.5rem">
+        <div class="mui-popover-arrow" style="left:2.48rem"></div>
+        <div class="mui-scroll-wrapper" data-scroll="1">
+            <div class="mui-scroll" style="transform: translate3d(0px, 0px, 0px) translateZ(0px);">
+                <ul class="mui-table-view">
+
+                    <li class="mui_popver" @click="addSpace()"><a href="#">添加空间</a>
+                    </li>
+                    <li class="mui_popver" @click="yusuan()"><a href="#">浏览预算</a>
+                    </li>
+                    <li class="mui_popver" @click="print()"><a href="#">申请打印</a>
+                    </li>
+                    <li class="mui_popver" @click="printNotes()"><a href="#">申请打印记录</a>
+                    </li>
+
+
+                </ul>
+            </div>
+            <div class="mui-scrollbar mui-scrollbar-vertical">
+                <div class="mui-scrollbar-indicator"
+                     style="transition-duration: 0ms; display: none; height: 8px; transform: translate3d(0px, -8px, 0px) translateZ(0px);"></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="addBoss" v-cloak>
+        <div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly w50">名称</div>
+                <div class="detailRightOnly w50">
+                    金额（元）
+                </div>
+            </div>
+            <div class="detailBoss detail_line" v-for="item in res.rows">
+
+                <div class="detailLeftOnly w50"><a @click="details(item.guid)">{{item.name}}</a></div>
+                <div class="detailRightOnly w50 colorred">
+                    {{item.value}}
+                    <span @click="copy(item.guid)" style="float: right;margin-left: 0.2rem"><a>复制</a></span>
+                  <span @click="deletespace(item.guid)" style="float: right"><a >删除</a></span>
+                </div>
+            </div>
+            <div class="detailBoss detail_line" v-for="item in response.rows">
+
+                <div class="detailLeftOnly w50">{{item.name}}<span v-if="item.rate_value">&nbsp;&nbsp;（费率：{{item.rate_value}}）</span></div>
+                <div class="detailRightOnly w50 colorred">
+                    {{item.value}}
+                    <!--<span @click="copy(item.guid)" style="float: right;margin-left: 0.2rem"><a>复制</a></span>-->
+                    <span @click="deleterate(item.guid)" style="float: right"  v-if="item.rate_value"><a>删除</a></span>
+                </div>
+            </div>
+            <div class="detailBoss detail_line" v-for="item in response.footer">
+
+                <div class="detailLeftOnly w50">{{item.name}}</div>
+                <div class="detailRightOnly w50 colorred">
+                    {{item.value}}
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+<div class="tishi">温馨提示：预算修改需谨慎，建议PC端操作</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+//v
+
+
+        mui.ajax('{:url("erp/design/showratetree",["id"=>$id])}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+
+
+                mui.ajax('{:url("erp/design/showspacetree",["id"=>$id])}', {
+                    dataType: 'json',//服务器返回json格式数据
+                    type: 'post',//HTTP请求类型
+                    success: function (res) {
+                        var dataA = {};
+                        dataA.response = response;
+                        dataA.res = res;
+                        var vue = new Vue({
+                            el: '#app',
+                            data: dataA,
+                            methods: {
+                                printNotes:function () {
+                                    mui.openWindow({
+                                        url: "{:url('budget/printNotes',['id'=>$id])}"
+                                    })
+                                },
+                                print:function () {
+
+                                    $("#topPopover").css("display","none")
+                                    $("#topPopover").removeClass("mui-active");
+                                    $(".mui-backdrop").css("display","none")
+                                    mui.prompt('请输入申请理由', '', '');
+                                    $(".mui-popup-button").eq(1).on('tap', function () {
+                                            mui.ajax('{:url("erp/design_extract/applyspace",["guid"=>$id])}', {
+                                                data: {desc: $(".mui-popup-input input").val()},
+                                                dataType: 'json',//服务器返回json格式数据
+                                                type: 'post',//HTTP请求类型
+                                                timeout: 10000,//超时时间设置为10秒；
+                                                success: function (response) {
+                                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                                    if(response.code==1001){
+                                                        setTimeout(function () {
+                                                            history.back()
+                                                        },2000)
+                                                    }
+                                                }
+                                            })
+
+
+                                    })
+                                },
+                                deleterate:function (pid) {
+                                    mui.confirm("确定删除此费率吗？直接费不能删除！", "提示");
+                                    $(".mui-popup-button-bold").on('tap', function () {
+
+                                        mui.ajax('{:url("erp/design/delratedata")}', {
+                                            data: {guid: [pid]},
+                                            dataType: 'json',//服务器返回json格式数据
+                                            type: 'post',//HTTP请求类型
+                                            timeout:10000,//超时时间设置为10秒；
+                                            success: function (response) {
+                                                mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                                if(response.code==1001){
+                                                    mui.ajax('{:url("erp/design/showratetree",["id"=>$id])}', {
+                                                        dataType: 'json',//服务器返回json格式数据
+                                                        type: 'post',//HTTP请求类型
+                                                        success: function (newresponse) {
+                                                            if(response.code==1001) {
+                                                                vue.$set(vue.$data, 'response', newresponse);
+                                                            }
+                                                        }
+                                                    })
+                                                }
+                                            },
+                                            error:function () {
+                                                mui.toast("请求失败", {duration: 'short', type: 'div'});
+                                            }
+                                        })
+                                    })
+                                },
+                                yusuan:function (id) {
+                                    mui.openWindow({
+                                        url: "{:url('project/lookBudget',['guid'=>$id])}"
+                                    })
+                                },
+                                details: function (guid) {
+                                    mui.openWindow({
+                                        url: "{:url('budget/budgetSpaceDetails',['id'=>$id])}/guid/" + guid
+                                    })
+                                },
+                                deletespace: function (pid) {
+                                    console.log(pid)
+
+                                    mui.confirm("确定删除此空间吗？", "提示");
+                                    $(".mui-popup-button-bold").on('tap', function () {
+
+                                        mui.ajax('{:url("erp/design/delspacedata")}', {
+                                            data:{guid:[pid]},
+                                            dataType: 'json',//服务器返回json格式数据
+                                            type: 'post',//HTTP请求类型
+                                            success: function (response) {
+                                                mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                                if(response.code==1001){
+                                                    mui.ajax('{:url("erp/design/showspacetree",["id"=>$id])}', {
+                                                        dataType: 'json',//服务器返回json格式数据
+                                                        type: 'post',//HTTP请求类型
+                                                        success: function (res) {
+                                                            if(response.code==1001) {
+                                                                vue.$set(vue.$data, 'res', res);
+                                                            }
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        })
+                                    })
+                                },
+                                addSpace:function () {
+                                    mui.openWindow({
+                                        url: "{:url('budget/budgetAddSpace',['id'=>$id])}"
+                                    })
+                                },
+                                copy:function (guid) {
+                                    mui.confirm("确定复制此空间吗？", "提示");
+                                    $(".mui-popup-button-bold").on('tap', function () {
+                                        mui.ajax('{:url("erp/design_extract/copys")}', {
+                                            data: {spa_id: [guid]},
+                                            dataType: 'json',//服务器返回json格式数据
+                                            type: 'post',//HTTP请求类型
+                                            success: function (response) {
+                                                mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                                if (response.code == 1001) {
+                                                    mui.ajax('{:url("erp/design/showspacetree",["id"=>$id])}', {
+                                                        dataType: 'json',//服务器返回json格式数据
+                                                        type: 'post',//HTTP请求类型
+                                                        success: function (res) {
+                                                            if(response.code==1001) {
+                                                                vue.$set(vue.$data, 'res', res);
+                                                            }
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        })
+                                    })
+                                }
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }
+</script>

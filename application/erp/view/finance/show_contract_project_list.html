@@ -1,0 +1,154 @@
+project_user.html{extend name="base/base_search_list" /}
+
+
+{block name="title"}{$title}{/block}
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true,  movable: false }
+, { field: 'book_number', title: '预算书编号', width: '100', align: 'center', sortable: true}
+, { field: 'project_name', title: '项目名称', width: '100', align: 'center', sortable: true}
+, { field: 'tracking_name', title: '跟踪人员', width: '180', align: 'center', sortable: true}
+, { field: 'design_schedule', title: '设计进度', width: '150', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'budget', title: '项目预算', width: '150', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'expected_duration', hidden:'true',title: '预计总工期', width: '80', align: 'center', sortable: true}
+, { field: 'customer_source',hidden:'true', title: '客户来源', width: '80', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'project_description', hidden:'true', title: '项目要求', width: '180', align: 'center', sortable: true}
+, { field: 'operate', title: '操作', width: 280,align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+]]{/block}
+
+{block name="filter"}[
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber']},
+
+{:widget('Easyui/showFilter', ["decoration_grade","combobox"])}
+{:widget('Easyui/showFilter', ["decoration_style","combobox"])}
+{:widget('Easyui/showFilter', ["decoration_type","combobox"])}
+{:widget('Easyui/showFilter', ["color_orientation","combobox"])}
+{:widget('Easyui/showFilter', ["customer_source","combobox"])}
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["decoration_grade","decoration_grade"] )}
+{:widget('Easyui/showAll', ["decoration_style","decoration_style"] )}
+{:widget('Easyui/showAll', ["decoration_type","decoration_type"] )}
+{:widget('Easyui/showAll', ["color_orientation","color_orientation"] )}
+{:widget('Easyui/showAll', ["customer_source","customer_source"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if(field=='design_schedule'){
+return '<a href="javascript:showBudget(&apos;'+row.project_id+'&apos;);">设计进度</a>'
+
+}else if(field=='budget'){
+return '<a href="javascript:showHtmlBudget(&apos;'+row.project_id+'&apos;);">浏览预算</a>'
+}else if (field == 'operate') {
+var str="";
+str+='<a href="javascript:;" onclick="look(&apos;'+row.project_id+'&apos;)">查看</a>&nbsp;&nbsp;&nbsp;';
+str+='<a href="javascript:;" onclick="collectionPlan(&apos;'+row.guid+'&apos;)">收付款</a>&nbsp;&nbsp;&nbsp;';
+str+='<a href="javascript:;" onclick="showLog(&apos;'+row.project_id+'&apos;)">项目日志</a>';
+
+return str;
+}else if (eval("value_" + field)[value]){
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+<script>
+    function showHtmlBudget(a) {
+        window.parent.addTab('报价表','{:url("design/showbudgetbook")}/guid/'+a,'close');
+    }
+    function showBudget(a) {
+        window.parent.addTab('设计进度','/erp/design/showbudgethtml/guid/' + a,'close')
+    }
+
+    function look(t){
+        window.parent.addTab('项目明细','{:url("Project/showProjectOfCompany")}/guid/'+t,'close');
+    };
+
+
+
+
+    function showLog(id){
+        $(mikkleClass.dialog).dialog({
+            title: "操作记录",
+            iconCls: 'icon-save',
+            width: 740,
+            height: 600,
+            cache: false,
+            href: "{:url('Project/showProjectAuditLog')}/guid/"+id,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+
+    function showBudgetHtml() {
+        var id=getSelectRows('预算');
+        if(!id){
+            return false;
+        }
+//        window.parent.addTab('预算报价',"{:url('Design/addBudget')}/id/"+id,'close')
+        window.parent.addTab('报价表','{:url("Design/showbudgetbook")}/guid/'+id,'close');
+
+    }
+
+    function getSelectRows(name){
+        var rows = $("#list").datagrid('getSelections');
+        if (rows.length > 0) {
+            if (rows.length == 1){
+                return  $("#list").datagrid('getSelected').guid; //获取选中的数据
+            } else {
+                layer.msg(''+name+'操作只能选择一个项目！', {icon: 2});
+                return false;
+            }
+        } else {
+            layer.msg('请选择要'+name+'的项目！', {icon: 2});
+            return false;
+        }
+    }
+
+
+    function collectionPlan(a) {
+        if(a){
+            window.parent.addTab('收款','{:url("Finance/collectionPlan")}/guid/'+a,'close');
+        }else{
+            var id=getSelectRows('收款');
+            if(!id){
+                return false
+            }else{
+                window.parent.addTab('收款','{:url("Finance/collectionPlan")}/guid/'+id,'close');
+            }
+        }
+
+    }
+</script>
+
+{/block}
+{block name="my_db"}
+{/block};
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'收款', iconCls: 'icon-add', handler:function(){ collectionPlan() } },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-',
+
+]{/block}

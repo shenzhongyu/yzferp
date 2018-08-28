@@ -1,0 +1,113 @@
+
+
+<a style="float: right;margin-right: 15px;" href="javascript:uploadPictures();" class="easyui-linkbutton" >上传图片</a>
+
+<div style="float:left;width: 65%">
+    <div id="photo_list"></div>
+</div>
+<div style="float:right;width: 35%">
+    <img  src="" id="img_view">
+</div>
+<div id="pictures"></div>
+<script>
+    $(function () {
+        $("#photo_list").datagrid({
+            url:'{$url}',
+            rownumbers:false,
+            singleSelect:false,
+            pagination:true, //底部
+            method:'post',
+            pageSize:20,
+            columns:[[
+                {field:'photo_name',title:'图片名称',width:'20%',align:'center'},
+                {field:'uuid_name',title:'上传图片的人',width:'20%',align:'center'},
+                {field:'create_time',title:'上传日期',width:'20%',align:'center'},
+                {field:'opera',title:'操作',width:'40%',align:'center',
+                    formatter:function(value,row){
+                        console.log(row);
+                        var str="<a href='javascript:lookPictures(&apos;"+row.photo_address+"&apos;);'>浏览</a>";
+                        str+="&nbsp;&nbsp;<a href='javascript:lookPicturesM(&apos;"+row.photo_m+"&apos;);'>下载</a>";
+                        str+="&nbsp;&nbsp;<a href='javascript:delPictures(&apos;"+row.guid+"&apos;);'>删除</a>";
+                        return str;
+                    }
+                }
+            ]],
+            nowrap:false, //超出部分自动换行
+        });
+    });
+    function lookPictures(a) {
+        $("#img_view").attr("src",a)
+    }
+    function lookPicturesM(a) {
+        window.open('{:url("Project/showHtml")}/m/'+a+"/type/photo");
+    }
+    function uploadPictures() {
+        var href='{:url("showAddPhotoHtml")}';
+        var url='{$save_url}'; //单独的设计进度id,
+        $('#pictures').dialog({
+            title: '图片上传',
+            iconCls: 'icon-save',
+            width: 400,
+            height:300,
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#pictures").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            if(!$("#photo_address").textbox("getValue")){
+                                layer.msg('图片还没有上传',{icon:2});
+                                return false;
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg('图片上传成功', {icon: 1});
+                                    $("#pictures").dialog('close');
+                                    $('#photo_list').datagrid('reload');
+                                }
+                            }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#pictures").dialog('close');
+                }
+            }]
+        });
+    }
+    function delPictures(a) { //删除图片
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("delPictures")}', {id: a}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    $("#photo_list").datagrid('reload');
+                }
+            }, 'json');
+        });
+
+    }
+</script>

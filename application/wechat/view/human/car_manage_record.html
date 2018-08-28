@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>申请记录</title>
+    {include file="wechat@base_mui/weui_wechat_swiper"/}
+    <script type="text/javascript" src="__MUI__/js/mui.picker.min.js"></script>
+    <link href="__MUI__/css/mui.picker.min.css" rel="stylesheet"/>
+
+    <style type="text/css">
+        .detail_table {
+            width: 100%;
+            font-size: 0.26rem;
+        }
+
+        .detail_li {
+            padding: 0.1rem 0.2rem;
+        }
+
+        .picker_a {
+            margin: 0.1rem 0.3rem !important;
+        }
+
+        .detail_table p {
+            font-size: 0.26rem;
+            line-height: 0.34rem;
+        }
+    </style>
+</head>
+</head>
+<body>
+<div id="index">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+
+        <h1 class="mui-title">申请记录</h1>
+    </header>
+
+    <div class="swiper-container" id="swiper_container" style="margin-top: 50px">
+        <div class="swiper-wrapper" id="swiper_list">
+
+
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var number = 145;
+    $(document).ready(function () {
+        $("#listBoth").hover(function () {
+            $("#listBoth").css(background, "yellow")
+        });
+        initVueLoad();
+        myMuiLoad(1, 10);
+    });
+    function initVueLoad() {
+        var vue = new Vue({
+            el: '#index',
+            methods: {
+
+
+            },
+            deletespace: function () {
+            }
+        })
+    }
+    function myMuiLoad(page, rows) {
+
+        var ajax_data = {};
+        if (search_data) {
+            ajax_data = Object.assign(search_data, {"page": page, "rows": rows});
+        }
+        mui.ajax(url, {
+                data: ajax_data,
+                dataType: 'json',//服务器返回json格式数据
+                type: 'post',//HTTP请求类型
+                success: function (response) {
+
+                    var index = [];
+                    for (var a = 0; a <= response.rows.total; a++) {
+                        index.push(a * 10);
+                        console.log(response)
+                    }
+                    response.aa = index;
+                    buildSwiper(rows, response.total);
+                    loadVue(response, page);
+                    console.log(response.total)
+
+                },
+            }
+        );
+    }
+    function loadVue(data, page) {
+        var load = new Vue({
+            el: '#swiper_' + page,
+            data: data,
+            methods: {
+
+            },
+            mounted: function () {
+                if (isEmptyObject(my_swiper)) {
+                    my_swiper = new Swiper('#swiper_container', {
+                        setWrapperSize: true,
+                        observer: true,
+                        observeParents: true,
+                        onSlideChangeStart: function (swiper) {
+                            //要翻转的页数
+                            var page_i = swiper.activeIndex + 1;
+                            if (!page_finished[page_i]) {
+                                if (page_all > 0 && page_i <= page_all) {
+                                    myMuiLoad(swiper.activeIndex + 1, 10);
+
+                                }
+                            }
+                        }
+                    });
+                }
+                //设置page页已更新
+                page_finished[page] = true;
+            }
+        })
+    }
+    function serach() {
+        reload();
+        var data_value = $(".mui-popup-input input").val()
+        search_data.filterRules = [{
+            "field": "material_name",
+            "op": "contains",
+            "value": data_value
+        }];
+        myMuiLoad(1, 10);
+    }
+    function buildSwiper(rows, all) {
+        $("#div").css("display", "none");
+        if (all == 0) {
+            $("#div").html("暂无数据")
+            $("#div").css("display", "block");
+        }
+        if (page_all == 0) {
+            page_all = Math.ceil(all / rows);
+            page_all = page_all == 0 ? 1 : page_all;
+            for (var i = 1; i <= page_all; i++) {
+                $("#swiper_list").append(div_str.replace("{{id}}", "swiper_" + i));
+//                $("#span").append(div_str.replace("{{number}}", number));
+            }
+        } else {
+            my_swiper.updateSlidesSize();
+        }
+        return true;
+    }
+    function reload() {
+        $("#swiper_list").empty();
+        $("#swiper_list").css("transform", "translate3d(0px, 0px, 0px)");
+        page_all = 0;
+        page_finished = {};
+        search_data = {};
+    }
+    function isEmptyObject(obj) {
+        for (var key in obj) {
+            return false;
+        }
+        return true;
+    }
+    var url = "{:url('erp/office_vehicle/showapplycarlog',['guid'=>$guid])}";
+    var page_all = 0;
+    var page_finished = {};
+    var div_str = ' <div class="mui-table-view detail_table mui-content swiper-slide" id="{{id}}"  >' +
+        ' <li class="mui-table-view-cell mui-collapse detail_li" v-for ="(a,index) in rows" >' +
+        '<a class="mui-navigate-right picker_a" href="#">{{a.name}}</a>' +
+        ' <div class="mui-collapse-content" style="line-height: 0.40rem">' +
+        ' <div style=""><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">姓名</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.name}}&nbsp;</div></div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">部门</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.department_name}}&nbsp;</div></div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">职位</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.jobs_name}}&nbsp;</div> </div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">随车人数</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.amount}}</div> </div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">用车理由</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.reason}}&nbsp;</div></div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">审核状态</span><div style="width: 76%;box-sizing: border-box;float: left"><span v-if="a.examine_status==0">审核中</span><span v-if="a.examine_status==1">审核通过</span><span v-if="a.examine_status==-1" style="color: red">审核未通过</span></div></div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">审核人</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.examine_uuid_name}}&nbsp;</div></div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">审核备注</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.examine_desc}}&nbsp;</div></div>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">申请时间</span><div style="width: 76%;box-sizing: border-box;float: left">{{a.create_time}}&nbsp;</div></div>' +
+
+        ' </div>' +
+        ' </li>' +
+        ' </div>';
+
+    var search_data = {};
+    var my_swiper = {};
+</script>
+
+</body>
+</html>

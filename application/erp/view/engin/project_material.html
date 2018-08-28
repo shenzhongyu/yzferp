@@ -1,0 +1,130 @@
+
+<div id="tb" style="height:auto;">
+    <a style="margin-left: 10px;">搜索条件:</a>
+    <a style="margin-left: 15px;">材料名称：<input type="text" id="ma_name"></a>
+    <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="searMaterial()">
+        <span class="l-btn-icon icon-search"></span>
+        <span class="l-btn-text l-btn-icon-left">搜索</span>
+    </a>
+</div>
+
+<table id="pro_material"></table>
+<script>
+    {:widget('Easyui/showValueByUrl',["category_id","category_json",$map])}
+    {:widget('Easyui/showArrayByUrl',["category_id","category_json",$map])}
+    {:widget('Easyui/showValueByUrl',["supplier_id","supplier_json",$map])}
+    {:widget('Easyui/showArrayByUrl',["supplier_id","supplier_json",$map])}
+    function searMaterial() {
+        var tex=$("#ma_name").val();
+        if(tex){
+            var str='[{"field":"material_name","op":"equal","value":"'+tex+'","type":"text"}';
+            str+=']';
+            $('#pro_material').datagrid({
+                queryParams: {
+                    filterRules:str,
+                }
+            });
+        }else{
+            $('#pro_material').datagrid('load',{});
+        }
+    }
+
+    $(function(){
+        $('#pro_material').datagrid({
+            url:'{:url("lookMaterialByData",["guid"=>$guid,"pro_id"=>$pro_id])}',
+            columns:[[
+                { field: 'material_name', title: '材料名称', width: '10%', align: 'center', sortable: true}
+                , { field: 'specifications', title: '规格', width: '7%',align: 'center', sortable: true}
+                , { field: 'material_pin', title: '品牌', width: '7%',align: 'center', sortable: true}
+                , { field: 'material_version', title: '型号', width:'7%',align: 'center', sortable: true}
+                ,{ field: 'number', title: '需求量', width: "5%", align: 'center',
+                    formatter:function(value,row,index){
+                        if (value){
+                            return value;
+                        }else{
+                            return 0;
+                        }
+                    }
+                }
+                , { field: 'supplier_id', title: '供应商', width: '10%',align: 'center', sortable: true,
+                    formatter:function(value,row,index){
+                        if(eval("value_supplier_id")[value]) {
+                            return eval("value_supplier_id")[value];
+                        }else if (('array_supplier_id')[value]){
+                            return ('array_supplier_id')[value];
+                        } else{
+                            return value;
+                        }
+                    }}
+                , { field: 'category_id', title:'材料类别', width: '10%',align: 'center', sortable: true,
+                    formatter:function(value,row,index){
+                        if(eval("value_category_id")[value]) {
+                            return eval("value_category_id")[value];
+                        }else if (('array_category_id')[value]){
+                            return ('array_category_id')[value];
+                        } else{
+                            return value;
+                        }
+                    }}
+                , { field: 'unit_name', title: '单位',width: '5%', align: 'center', sortable: true,
+                    formatter:function(value,row,index){
+                        if(eval("value_unit_name")[value]) {
+                            return eval("value_unit_name")[value];
+                        }else if (('array_unit_name')[value]){
+                            return ('array_unit_name')[value];
+                        } else{
+                            return value;
+                        }
+                    }}
+                , { field: 'material_price', title: '售价(元)', width: '5%', align: 'center', sortable: true}
+                , { field: 'inside_price', title: '内部价(元)',width:'5%', align: 'center', sortable: true}
+                , { field: 'floor_price', title: '成本价(元)',width: '5%', align: 'center', sortable: true}
+                , { field: 'material_desc', title: '说明',width: '10%', align: 'center', sortable: true},
+                    {field:'op',title:'操作',width:'15%',align:'center',
+                    formatter:function(value,row,index){
+                        var str='';
+                        str+='<a href="javascript:;" onclick="replaceMaterial(&apos;'+row.guid+'&apos;)">更换主材</a>&nbsp;&nbsp;';
+                        str+='<a href="javascript:;" onclick="editMaterialNumber(&apos;'+row.guid+'&apos;)">更改数量</a>&nbsp;&nbsp;';
+                        str+='<a href="javascript:;" onclick="delMaterial(&apos;'+row.guid+'&apos;)">删除</a>';
+                        return str;
+                    }
+                },
+            ]],
+            singleSelect: true,
+            toolbar: '#tc',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+    function replaceMaterial(a) {
+        window.parent.addTab("材料更换",'{:url("replaceMaterial")}/guid/'+a+'/pro_id/{$pro_id}','close')
+    }
+    function editMaterialNumber(a) {
+        layer.open({
+            type: 2,
+            title: '修改需求量',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['380px', '180px'],
+            content: '{:url("editMaterialNumber")}/guid/'+a//iframe的url
+        })    
+    }
+    function resh() {
+        $('#pro_material').datagrid('reload');
+        $('#dg').datagrid('reload');
+    }
+    function delMaterial(a) {
+        $.post("{:url('delMaterial')}",{guid:a},function (data) {
+            if (data.code=="1001"){
+                layer.msg(data.msg, {icon: 1});
+                resh();
+                return false;
+            }else{
+                layer.msg(data.msg, {icon: 2});
+                return false;
+            }
+        },'json');
+    }
+</script>

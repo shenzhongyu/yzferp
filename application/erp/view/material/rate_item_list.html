@@ -1,0 +1,63 @@
+rateItem_list.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false}
+, { field: 'rate_name', title: '费率项名称', width: '10%', align: 'center', sortable: true}
+, { field: 'rate_value', title: '费率值', width: '10%', align: 'center', sortable: true}
+, { field: 'rate_ratio', title: '费率比', width: '10%', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'type', title: '固定费率', width: '12%', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'rate_desc', title: '备注',width:'40%' , align: 'center', sortable: true}
+]]{/block}
+
+{block name="filter"}[
+
+]{/block}
+
+{block name="value"}
+
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if(field=="rate_ratio"){
+    return  row.rate_value*100+'%';
+}else if(field=="type"){
+    if(value=="1"){
+        return '<a>固定费率</a>'
+    }else{
+        return '<a>可选费率</a>';
+    }
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+}else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+{block name="my_js"}
+<script>
+
+</script>
+{/block}
+
+{block name="toolbar"}[
+{ text:'添加', iconCls: 'icon-add', handler:function(){mikkleClass.addForm(450,250) } },'-',
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm(450,250);} },'-',
+{ text:'删除', iconCls: 'icon-cancel', handler: function(){ mikkleClass.delForm();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

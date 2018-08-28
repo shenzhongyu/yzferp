@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>工作计划明细</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">计划内容</h1>
+</header>
+<div class="addBoss" v-cloak>
+    <div class="addFirst" v-for="item in res ">
+        <div class="addPro ">计划内容</div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">计划名称：</div>
+            <div class="detailRightOnly">
+                {{item.plan_name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">内容：</div>
+            <div class="detailRightOnly">
+                {{item.plan_content}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+            <div class="detailLeftOnly">执行者：</div>
+            <div class="detailRightOnly">
+                {{item.name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">完成时间：</div>
+            <div class="detailRightOnly">
+            {{item.end_time}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">重要进度：</div>
+            <div class="detailRightOnly">
+                <span v-if="item.plan_grade==1">一般</span>
+                <span v-if="item.plan_grade==2">普通</span>
+                <span v-if="item.plan_grade==3">重要</span>
+                <span v-if="item.plan_grade==4" class="red">很重要</span>
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">计划进度：</div>
+            <div class="detailRightOnly">
+                <span v-if="item.work_schedule==0">执行中</span>
+                <span v-if="item.work_schedule==1">已完成</span>
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">计划审批：</div>
+            <div class="detailRightOnly">
+              <span v-if="item.dep_manager==0">未审核</span>
+                <span v-if="item.dep_manager==1">审核通过</span>
+                <span v-if="item.dep_manager==-1" class="red">审核未通过</span>
+            </div>
+        </div>
+        <div class="detailBoss">
+
+            <div class="detailLeftOnly">计划备注：</div>
+            <div class="detailRightOnly">
+                {{item.plan_desc}}
+            </div>
+        </div>
+    </div>
+<div v-if="res==''" class="text-center" style="font-size: 0.32rem !important;">暂无信息</div>
+</div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('{:url("",["guid"=>$guid])}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                dataA.res = response.rows;
+                var vue = new Vue({
+                    el: '#details',
+                    data: dataA,
+                    methods: {
+                    }
+                })
+            }
+        })
+    }
+</script>

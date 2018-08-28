@@ -1,0 +1,28 @@
+
+<table id="dg">
+</table>
+
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $("#dg").datagrid({
+            width:720,
+            height:560,
+            url:'/erp/project/showLog/project_guid/'+'{$guid}',
+            columns:[[
+                {field:'username',title:'姓名',width:100,align:'center'},
+                {field:'department_name',title:'部门',width:100,align:'center'},
+                {field:'jobs_name',title:'职位',width:100,align:'center'},
+                {field:'log_content',title:'跟踪内容',width:160,align:'center'},
+//                {field:'log_type',title:'操作类型',width:80,align:'center',formatter:function(value,row,index){
+//                    return eval("value_" +  this.field)[value] ? eval("value_" +  this.field)[value] : '-';
+//                }},
+                {field:'create_time',title:'时间',width:140,align:'center'}
+            ]],
+            rownumbers:true,
+            pagination: true,
+            pageSize:20,
+        });
+    })
+</script>

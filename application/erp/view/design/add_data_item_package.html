@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+    {include file="base/js" /}
+</head>
+<body>
+<p>
+    <button style="margin-left: 10px;cursor: pointer" onclick="addData()">批量移入</button>
+    <a style="margin-left: 10px;margin-right: 15px;">搜索条件:</a>
+    套餐种类：<input  id="package_type" class="easyui-combobox"  name="package_type" value=""
+                 data-options="valueField: 'guid',textField: 'type_name',url:'{:url('Material/showPackageTypeJson')}',method:'get',
+            onChange:function(n,o){
+
+               addFiled();
+               $('#package_id').combobox('reload','{:url('Material/showPackageStyleJson')}/package_id/'+n);
+        }
+    ">
+    套餐定额类型：<input  id="package_id" class="easyui-combobox"  name="package_id" value=""
+                 data-options="valueField: 'guid',textField: 'package_name',url:'{:url('Material/showPackageStyleJson')}',method:'get',
+onChange:function(n,o){
+               addFiled();
+        }
+        ">
+    工程类别：<input id="dataId" class="easyui-combobox"  name="datastyle" value=""
+                 data-options="valueField: 'guid',textField: 'categories_name',url:'{:url('Material/showdatastylejson')}',method:'get',
+       onChange:function(n,o){
+               addFiled();
+        }
+">
+    项目名称：<input class="easyui-textbox" id="name_data">
+    <button style="margin-left: 10px;cursor: pointer;" onclick="searchName()">搜索</button>
+    <button style="margin-left: 10px;cursor: pointer;" onclick="showAll()">显示全部</button>
+</p>
+<table id="ag">
+</table>
+
+<script type="text/javascript">
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    $(function(){
+        $('#ag').datagrid({
+            url:'{$url}',
+            height:600,
+            rownumbers:true,
+            singleSelect:false,
+            pagination:true,
+            method:'get',
+            pageSize:20,
+            columns:[[{ field: "chk", "checkbox": true},
+                {field:'name',title:'项目名称',width:'20%',align:'center'},
+//                {field:'specifications',title:'规格',width:120,align:'center'},
+                {field:'unit',title:'单位',width:'10%',align:'center',
+                    formatter:function(value,row,index){
+                        if (eval("value_unit_name")[value]) {
+                            return eval("value_unit_name" )[value];
+                        }else{
+                            return value;
+                        }
+                    }
+                },
+                {field:'price',title:'单价(元)',width:'10%',align:'center',formatter:function(value,row){
+                    return value.toFixed(2);
+
+                }},
+                {field:'desc',title:'工艺说明',width:'45%',align:'center'},
+                {field:'item_status',title:'项目状态',width:"10%",align:'center',
+                    formatter:function(value,row,index){
+                        if(value>="1"){
+                            return '<a style="color: #0c9d72">已移入</a>'
+                        }else{
+                            return '<a>未移入</a>';
+                        }
+                    }
+                }
+            ]],
+            nowrap:false,
+        });
+    });
+    function showAll() {
+        $("#package_id").combobox('setValue','');
+        $("#package_type").combobox('setValue','');
+        $("#dataId").combobox('setValue','');
+        $('#ag').datagrid('load',{});
+    }
+    function searchName(){
+      addFiled();
+
+    }
+    function addFiled(){
+        var str="[";
+        if($("#package_type").combobox("getValue")){
+            var package_type=$("#package_type").combobox("getValue");
+            if(str!="["){
+                str+=",";
+            }
+            str+='{"field":"package_type","op":"contains","value":"'+package_type+'"}';
+        }
+
+        if($("#package_id").combobox("getValue")){
+            var package_id=$("#package_id").combobox("getValue");
+            if(str!="["){
+                str+=",";
+            }
+            str+='{"field":"package_id","op":"contains","value":"'+package_id+'"}';
+        }
+        if($("#dataId").combobox("getValue")){
+            var dataId=$("#dataId").combobox("getValue");
+            if(str!="["){
+                str+=",";
+            }
+            str+='{"field":"category_id","op":"contains","value":"'+dataId+'"}';
+        }
+        if($("#name_data").textbox("getValue")){
+            var name_data=$("#name_data").textbox("getValue");
+            if(str!="["){
+                str+=",";
+            }
+            str+='{"field":"name","op":"contains","value":"'+name_data+'"}';
+        }
+
+        str+=']';
+        $('#ag').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+//    function FieldName(value,name){
+//        var str="";
+//        str+='[{"field":"'+name+'","op":"contains","value":"'+value+'"}';
+//        str+=']';
+//        $('#ag').datagrid({
+//            queryParams: {
+//                filterRules:str,
+//            }
+//        });
+//    }
+    function addData(){
+        var rows = $('#ag').datagrid('getSelections');
+        if(rows.length==0){
+            layer.msg('请选择要移入的数据！', {icon: 2});
+            return false;
+        }
+        var arr=[];
+        $.each(rows,function (i,t) {
+            arr.push(t.guid);
+        });
+        var url='{:url("saveSpaceMaterial")}';
+        $.post(url,{project_id:'{$project_id}',pid:'{$guid}',chi_id:arr,type:'{$type}'},function(obj){
+            if(obj.code=="1001"){
+                layer.msg('添加成功', {icon: 1});
+                $('#space').datagrid('reload');
+                $('#rate').datagrid('reload');
+                $('#ag').datagrid('reload');
+
+                setTimeout(function(){
+                    $('#dg').treegrid('reload');
+                },1);
+            }else{
+                layer.msg(obj.msg, {icon: 3});
+            }
+        },"json")
+    }
+</script>
+</body>
+</html>

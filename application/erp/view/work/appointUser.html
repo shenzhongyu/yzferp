@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+
+
+</head>
+<body>
+<table id="dg">
+       <!--data-options="rownumbers:true,singleSelect:true,pagination:true,url:'{$url}',method:'get'">-->
+    <!--<thead>-->
+    <!--<tr>-->
+        <!--<th data-options="field:'department_name',width:120,align:'center'">部门</th>-->
+        <!--<th data-options="field:'name',width:120,align:'center'">姓名</th>-->
+        <!--<th data-options="field:'jobs_name',width:120,align:'center'">职务</th>-->
+        <!--<th data-options="field:'operate',width:125,align:'center',formatter:function(value,row,index){   return '<a href=&apos;'&apos;'>指定</a>' }">操作</th>-->
+    <!--</tr>-->
+    <!--</thead>-->
+</table>
+<script type="text/javascript" src="__STATIC__/easyui_151/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/easyui_151/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__STATIC__/easyui_151/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $('#dg').datagrid({
+            url:'{$url}',
+            height:305,
+            rownumbers:true,
+            singleSelect:true,
+            pagination:true,
+            method:'get',
+            columns:[[
+                {field:'department_name',title:'部门',width:120,align:'center'},
+                {field:'name',title:'姓名',width:120,align:'center'},
+                {field:'jobs_name',title:'职务',width:120,align:'center'},
+                {field:'operate',title:'操作',width:125,align:'center',formatter:function(value,row,index){   return '<a href="javascript:;" onclick="appointUser(&apos;'+row.uuid+'&apos;)">指定</a>'}}
+            ]]
+        });
+    })
+    function appointUser(a){
+        $.ajax({
+            url: "{:url('addComplaintUuid')}",
+            type: "post",
+            data: {guid:'{$guid}',complaint_uuid:a},
+            dataType: "json",
+            success: function(obj) {
+                if(obj.code=="1001"){
+                    $(mikkleClass.dialog).dialog('close');
+                    mikkleClass.refresh();
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            },
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>单据详情</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+        ul li:hover{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">单据详情</h1>
+    <!--<a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right mui-btn-primary mui-btn-block" id="openPopover" style="font-size: 24px;"></a>-->
+</header>
+
+<div class="addBoss" id="app">
+    <div class="addFirst">
+        <div class="addPro">单据详情</div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">项目名称：</div>
+            <div class="detailRightOnly">
+                {$project_name}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">单据号：</div>
+            <div class="detailRightOnly">
+                {$obj.dj_number}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">款项名称：</div>
+            <div class="detailRightOnly">
+                {$obj.collect_name}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">发货日期：</div>
+            <div class="detailRightOnly">
+                {$obj.collect_date}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">实付金额：</div>
+            <div class="detailRightOnly">
+                {$obj.price}
+            </div>
+
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">申请人：</div>
+            <div class="detailRightOnly">
+                {$obj.apply_name}
+            </div>
+
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">申请时间：</div>
+            <div class="detailRightOnly">
+                {$obj.create_time}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">开发票：</div>
+            <div class="detailRightOnly">
+                {$obj.invoice_value=="0"?"否":"是"}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">发票金额：</div>
+            <div class="detailRightOnly">
+                {$obj.invoice_price}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">收货人：</div>
+            <div class="detailRightOnly">
+                {$obj.consignee_name}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">联系电话：</div>
+            <div class="detailRightOnly">
+                {$obj.contact_number}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">审核人：</div>
+            <div class="detailRightOnly">
+                {$obj.examine_uuid_name}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">审核说明：</div>
+            <div class="detailRightOnly">
+                {$obj.examine_desc}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">验收人：</div>
+            <div class="detailRightOnly">
+                {$obj.accepatance_uuid_name}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">验收说明：</div>
+            <div class="detailRightOnly">
+                {$obj.accepatance_desc}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">收货地址：</div>
+            <div class="detailRightOnly">
+                {$obj.address}
+            </div>
+        </div>
+        <div class="detailBoss ">
+
+            <div class="detailLeftOnly">款项说明：</div>
+            <div class="detailRightOnly">
+                {$obj.desc}
+            </div>
+        </div>
+    </div>
+    </div>
+
+</div>
+
+</div>
+</body>
+</html>

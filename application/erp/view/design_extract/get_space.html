@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<p style="padding-left: 15px;">
+
+</p>
+
+<div style="width: 92%;float: left">
+    <table id="dg" class="easyui-datagrid" title="{$title}" style="width:100%;height:auto"
+           data-options="
+                nowrap:false,
+				iconCls: 'icon-edit',
+				singleSelect: true,
+				toolbar: '#tb',
+				url: '{$data_url}',
+				method: 'post',
+				nowrap:false,
+				pageSize:20,
+				pagination:true,
+			">
+        <thead>
+        <tr>
+            <th data-options="field:'name',width:180,align:'center'">空间名字</th>
+            <th data-options="field:'desc',width:300,align:'center'">空间备注</th>
+            <th data-options="field:'op',width:280,align:'center',
+                formatter:function(value,row){
+							return  crt(row.guid);
+                },
+            ">操作</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div id="tb" style="height:auto;">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="removeit()">刷新</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-back',plain:true" onclick="returnTo()">返回预算报价</a>
+        <a style="margin-left: 15px;">模板名称：<input type="text" id="name"></a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="sear()">
+            <span class="l-btn-icon icon-search"></span>
+            <span class="l-btn-text l-btn-icon-left">搜索</span>
+        </a>
+    </div>
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+
+    function returnTo() {
+        window.parent.closeTab('空间提取');
+        window.parent.addTab('预算报价',"{:url('addBudget',['id'=>$pro_id])}",'close');
+    }
+    function removeit() {
+        $('#dg').datagrid('load',{});
+    }
+    function sear() {
+        var tex=$("#name").val();
+        console.log(tex);
+        if(tex){
+            var str='[{"field":"name","op":"equal","value":"'+tex+'","type":"text"}';
+            str+=']';
+            $('#dg').datagrid({
+                queryParams: {
+                    filterRules:str,
+                }
+            });
+        }else{
+            $('#dg').datagrid('load',{});
+        }
+    }
+    function crt(a) {
+        return '<a style="margin-right: 15px;" href="javascript:getSpaceData(&apos;'+a+'&apos;);">提取内容</a><a style="margin-right: 15px;" href="javascript:lookSpace(&apos;'+a+'&apos;);">查看内容</a><a href="javascript:delSpace(&apos;'+a+'&apos;);">删除空间</a>';
+    }
+    function lookSpace(a) {
+        window.parent.addTab('模板空间内容',"{:url('lookSpace')}/guid/"+a+"/pro_id/{$pro_id}","close");
+    }
+    function delSpace(a) {
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("delSpace")}', {id: a}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    $("#dg").datagrid('reload');
+                }
+            }, 'json');
+        });
+    }
+    function getSpaceData(a){
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("getSpaceData")}', {id: a,pro_id:'{$pro_id}'}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    window.parent.closeTab('空间提取');
+//                    window.parent.addTab('预算报价',"{:url('addBudget',['id'=>$pro_id])}",'close');
+                }
+            }, 'json');
+    }
+</script>
+</body>
+</html>

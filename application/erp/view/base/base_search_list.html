@@ -1,0 +1,241 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{block name="title"}{$title}{/block}</title>
+    <link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+    <link rel="stylesheet" href="__ERP__/css/submit.css">
+    {block name="my_css"}{/block}
+
+    <script type="text/javascript" src="__EASYUI151__/jquery.min.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="__LAYER__/layer.js"></script>
+    <script type="text/javascript" src="__STATIC__/daterangepicker/require.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/datagrid-filter.js"></script>
+
+    <script type="text/javascript">
+       //** EasyUI mikkleClass 转载请勿删除注释
+       //** power by Mikkle
+       //** QQ 776329498
+       {block name="value"}{/block}
+        var mikkleClass={
+           {block name="url"}
+            datagrid:'#list',
+            dialog:'#dialog_div',
+            datagrid_url:'{$data_url??url()}',
+            dialog_url:'{$dialog_url??str_replace("List","Edit",url()) }'{/block},
+            datagrid_columns:{block name="columns"} {/block},
+            datagrid_toolbar:{block name="toolbar"}[
+                { text:'添加', iconCls: 'icon-add', handler:function(){ mikkleClass.addForm();} },'-',
+                { text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm();} },'-',
+                { text:'删除', iconCls: 'icon-cancel', handler: function(){ mikkleClass.delForm();} },'-',
+                { text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+                { text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+                { text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+                { text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+            ]{/block},
+            remote_filter_field:{block name="filter"}{/block}
+        ,
+
+        formatter:{block name="formatter"}function(value,row,index,field) {
+            if (field == 'status') {
+                return eval("value_" + field)[key] ? eval("value_" + field)[key] : '-';
+            } else if (eval("value_" + field)[value]) {
+                return eval("value_" + field)[value];
+            } else if (field[value]) {
+                return field[value];
+            } else {
+                return value;
+            }
+        }{/block},
+        //刷新
+        refresh: function(){
+            $(this.datagrid).datagrid('reload');
+        },
+        datagridRemoteFilter:function(){
+            $(this.datagrid).datagrid('enableFilter', mikkleClass.remote_filter_field);
+        },
+        button_submit: function ( url, name) {
+            return {
+                text: name ? name : ' 确 定 ',
+                iconCls: 'icon-save',
+                handler: function () {
+                    $(mikkleClass.dialog).find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg, {icon: 3});
+                                } else {
+                                    layer.msg(data.msg, {icon: 1});
+                                    $(mikkleClass.dialog).dialog('close');
+                                    mikkleClass.refresh();
+                                }
+                            }, 'json');
+                            return false;
+                        }
+                    });
+                }
+            };
+        },
+        button_close:function(){
+            return {
+                text:' 关 闭  ',
+                iconCls:'icon-clear',
+                handler: function(){
+                    $(mikkleClass.dialog).dialog('close');
+                }
+            }
+        },
+        button_add:function(url,name){
+            return [this.button_submit(url,name),this.button_close()];
+        }
+        ,
+        //添加
+        addForm: function(width,height){
+            this.dialogForm('add',"","",width,height);
+        },
+        editForm:function(width,height){
+            this.dialogForm('edit',this.getSelectRows('修改'),"",width,height);
+        },
+        delForm:function(){
+            this.delete(this.getSelectRows('修改'));
+        },
+        getSelectRows:function(name){
+            var rows = $(this.datagrid).datagrid('getSelections');
+            if (rows.length > 0) {
+                if (rows.length == 1) {
+                    //console.log($(this.datagrid).datagrid('getSelected').guid);
+                    return  $(this.datagrid).datagrid('getSelected').guid
+                            ?$(this.datagrid).datagrid('getSelected').guid
+                            :$(this.datagrid).datagrid('getSelected').uuid; //获取选中的数据
+                } else {
+                    layer.msg(''+name+'操作只能选择一条数据！', {icon: 2});
+                    return false;
+                }
+            } else {
+                layer.msg('请选择要'+name+'的数据！', {icon: 2});
+                return false;
+            }
+        },
+        dialogFormLoad:function(id){
+            if ($('#fm').length==0){
+                setTimeout(function(){mikkleClass.dialogFormLoad(id);},500);
+            }else{
+                $('#fm').form('load',mikkleClass.dialog_url+'?action=loadData&id='+id)
+            }
+        },
+        dialogForm:function(type,id,title,width,height){
+            width = width ? width:420;
+            height = height ? height:480;
+            if (type=='add'){
+                title=title?title:' 添 加 数 据 ';
+                $(mikkleClass.dialog).dialog({
+                    title: title,
+                    iconCls: 'icon-save',
+                    width: width,
+                    height: height,
+                    cache: false,
+                    href: mikkleClass.dialog_url+'?action=add',
+                    modal: true,
+                    collapsible: false,
+                    minimizable: false,
+                    resizable: false,
+                    maximizable: false,
+                    buttons:mikkleClass.button_add(mikkleClass.dialog_url+'?action=saveAdd','  添 加  ')
+                });
+            }else if(type=='edit' && id.length> 0){
+                title=title?title:' 修 改 数 据 ';
+                $(mikkleClass.dialog).dialog({
+                    title: title,
+                    iconCls: 'icon-save',
+                    width: width,
+                    height: height,
+                    cache: false,
+                    href: mikkleClass.dialog_url+'?action=edit&id='+id ,
+                    modal: true,
+                    collapsible: false,
+                    minimizable: false,
+                    resizable: false,
+                    maximizable: false,
+                    buttons:mikkleClass.button_add(mikkleClass.dialog_url+'?action=saveEdit&id='+id,'  修 改  ')
+                });
+                this.dialogFormLoad(id);
+            }
+        },
+        //删除
+        delete: function(id){
+            if(id== ''){
+                layer.msg('未选择会员', {icon: 2});
+                return false;
+            }
+            $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+                if(!result) return false;
+                $.messager.progress({text:'处理中，请稍候...'});
+                $.post(mikkleClass.dialog_url, {id: id,action:'del'}, function(data){
+                    $.messager.progress('close');
+                    if (data.code != 1001) {
+                        layer.msg(data.msg, {icon: 2});
+                    } else {
+                        layer.msg(data.msg, {icon: 1});
+                        mikkleClass.refresh();
+                    }
+                }, 'json');
+            });
+        },
+        recycle:function(){
+            $(this.datagrid).datagrid('addFilterRule', {
+                field: 'status',
+                op: 'equal',
+                value: -1,
+                type: 'int'
+            });
+            $(this.datagrid).datagrid('doFilter');
+        },
+        showAll:function(){
+            $(this.datagrid).datagrid('removeFilterRule', 'status');
+            $(this.datagrid).datagrid('doFilter');}
+        }
+        $(function () {
+            $('#list').datagrid({
+                singleSelect: false,
+                rownumbers: true,
+                resizeHandle: 'both',
+                ctrlSelect: true,
+                collapsible: false,
+                method: 'post',
+                url:mikkleClass.datagrid_url,
+				striped: true,
+                _customTitle: true,//开启自定义表头
+                _customWidth: false,//自定义列宽
+                pagination: true,
+                showFooter: false,//是否显示合计行
+                initalFilter: function(){mikkleClass.datagridRemoteFilter()},
+                filterBtnIconCls: 'icon-filter',
+				multiSort: true,
+                remoteFilter:true,
+				pageSize:20,
+                onDblClickRow:function(index, row){
+                    {block name="my_db"}{/block};
+                },
+                columns:mikkleClass.datagrid_columns,
+                toolbar:mikkleClass.datagrid_toolbar,
+                nowrap:false, //超出部分自动换行
+            });
+                mikkleClass.datagridRemoteFilter();
+         });
+        
+    </script>
+    {block name="my_js"}{/block}
+</head>
+<body>
+    <table id="list" class="easyui-datagrid" title="{block name='title'}{/block}" ></table>
+    <div id="dialog_div" ></div>
+</body>
+</html>

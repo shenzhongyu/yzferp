@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>优秀团队</title>
+    <meta name="keywords" content="">
+    <meta name="renderer" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/erp/css/com.css" />
+    {include file="base/css" /}
+
+
+    <!--[if IE 6]>
+    <script type="text/javascript" src="__STATIC__/erp/js/Png.js"></script>
+    <script type="text/javascript">
+        EvPNG.fix('div, ul, img, li, input, a, p, span, em');
+    </script>
+    <![endif]-->
+</head>
+<body>
+<div class="box">
+    <div class="room_com">
+
+        <div class="zt_list">
+            <ul id="team_ul">
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="javascript:;" class="img"><img src="/static/erp/images/team_user.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>设计师 123</h3>-->
+                            <!--<p><span>说明</span> 国内优秀室内设计师</p>-->
+                        <!--</div>-->
+                        <!--<a href="javascript:;" class="btn">查看作品</a>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="javascript:;" class="img"><img src="/static/erp/images/team_user.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>设计师 123</h3>-->
+                            <!--<p><span>说明</span> 国内优秀室内设计师</p>-->
+                        <!--</div>-->
+                        <!--<a href="javascript:;" class="btn">查看作品</a>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="javascript:;" class="img"><img src="/static/erp/images/team_user.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>设计师 123</h3>-->
+                            <!--<p><span>说明</span> 国内优秀室内设计师</p>-->
+                        <!--</div>-->
+                        <!--<a href="javascript:;" class="btn">查看作品</a>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="javascript:;" class="img"><img src="/static/erp/images/team_user.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>设计师 123</h3>-->
+                            <!--<p><span>说明</span> 国内优秀室内设计师</p>-->
+                        <!--</div>-->
+                        <!--<a href="javascript:;" class="btn">查看作品</a>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="javascript:;" class="img"><img src="/static/erp/images/team_user.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>设计师 123</h3>-->
+                            <!--<p><span>说明</span> 国内优秀室内设计师</p>-->
+                        <!--</div>-->
+                        <!--<a href="javascript:;" class="btn">查看作品</a>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="javascript:;" class="img"><img src="/static/erp/images/team_user.jpg" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>设计师 123</h3>-->
+                            <!--<p><span>说明</span> 国内优秀室内设计师</p>-->
+                        <!--</div>-->
+                        <!--<a href="javascript:;" class="btn">查看作品</a>-->
+                    <!--</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="img_txt">-->
+                        <!--<a href="javascript:;" class="img"><img src="/upload/show_images/22fe69037eb0d200481483ce56987798/480_600" alt=""></a>-->
+                        <!--<div class="txt">-->
+                            <!--<h3>设计师 123</h3>-->
+                            <!--<p><span>说明</span> 国内优秀室内设计师</p>-->
+                        <!--</div>-->
+                        <!--<a href="javascript:;" class="btn">查看作品</a>-->
+                    <!--</div>-->
+                <!--</li>-->
+            </ul>
+            <div class="pages" id="pages">
+                <a href="javascript:void(0);">下一页</a>
+                <a href="javascript:void(0);">5</a>
+                <a href="javascript:void(0);" class="more">...</a>
+                <a href="javascript:void(0);">4</a>
+                <a href="javascript:void(0);">3</a>
+                <a href="javascript:;">2</a>
+                <a href="javascript:void(0);" class="current">1</a>
+                <a href="javascript:void(0);">上一页</a>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="base/js" /}
+<script type="text/javascript" >
+    $(function () {
+       getTeamData(1,8);
+    });
+    function getTeamData(page,rows) {
+        var index=page ? page: '1';
+        var number=rows ? rows:'8';
+        var url='{:url("getTeamData")}';
+        $.post(url,{page:index,rows:number},function (data) {
+            if(data.code=="1001"){
+               var obj=data.data;
+               var str='';
+               if(obj.total!=0){
+                   var p='';
+                   $.each(obj.rows,function (i,t) {
+                       str+='<li><div class="img_txt"><a  href="javascript:;" class="img">';
+                       str+='<img src="'+t.photo+'" alt=""></a>';
+                       str+='<div class="txt"><h3>设计师 '+t.name+'</h3>';
+                       if(t.desc){
+                           str+='<p title="'+t.desc+'"><span>座右铭</span>'+t.desc+'</p>';
+                       }else{
+                           str+='<p><span>座右铭</span>暂无</p>';
+                       }
+                       str+='</div><a href="javascript:lookTeamOpus(&apos;'+t.uuid+'&apos;);" class="btn">查看作品</a> </div></li>';
+                   });
+                   createButton(obj.total,index,number);
+               }else{
+                   str+='<li><div class="img_txt"><a href="javascript:;" class="img">';
+                   str+='<img src="__STATIC__/erp/images/team_user.jpg" alt=""></a>';
+                   str+='<div class="txt"><h3>设计师 123</h3>';
+                   str+='<p><span>说明</span> 国内优秀室内设计师</p>';
+                   str+='</div><a href="javascript:;" class="btn">查看作品</a> </div></li>';
+               };
+               $("#team_ul").html('');
+               $("#team_ul").append(str);
+            }else{
+
+            }
+        },'json')
+    }
+    function createButton(total,page,rows) {
+       var str='';
+       var total=total-0;
+       var page=page-0;
+       var rows=rows-0;
+       if(total>rows){
+           var index=Math.ceil(total/rows);
+           if(page+1>index){
+               str+='<a href="javascript:small();">下一页</a>';
+           }else{
+               str+='<a href="javascript:getTeamData('+(page+1)+','+rows+');">下一页</a>';
+           }
+           var number=index>5 ? '5':index;
+           for(var i=number;i>=1;i--){
+               if(i==number-1&&index>5){
+                   str+='<a href="javascript:void(0);" class="more">...</a>';
+               }
+               if(i==page){
+                   str+='<a href="javascript:void(0);" class="current">'+i+'</a>';
+               }else{
+                   str+='<a href="javascript:getTeamData('+i+','+rows+');">'+i+'</a>';
+               }
+           }
+           if(page-1==0){
+               str+='<a href="javascript:small();">上一页</a>';
+           }else{
+               str+='<a href="javascript:getTeamData('+(page-1)+','+rows+');">上一页</a>';
+           }
+
+       }else{
+            str+='<a href="javascript:small();">下一页</a>';
+            str+='<a href="javascript:void(0);" class="current">1</a>';
+            str+='<a href="javascript:small();">上一页</a>';
+       }
+
+       $("#pages").html('');
+       $("#pages").append(str);
+    }
+    function small() {
+        layer.msg('没有过多数据了',{icon:6});
+    }
+    function lookTeamOpus(a) {
+        window.parent.addTab('优秀作品','{:url("index/team_opus")}/guid/'+a,'close');
+    }
+</script>
+</body>
+</html>

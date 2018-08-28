@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>员工信息录入</title>
+    {include file="base_mui/weui_wechat"/}
+</head>
+<body>
+<!--<header class="mui-bar mui-bar-nav ">-->
+    <!--<a class=" mui-icon mui-icon-left-nav mui-pull-left" id="workerInfo"></a>-->
+    <!--<h1 class="mui-title">员工信息录入</h1>-->
+<!--</header>-->
+    <div id="workerInfo" class="mt50">
+        <header class="mui-bar mui-bar-nav ">
+            <a class=" mui-icon mui-icon-left-nav mui-pull-left" id="leftbacka"></a>
+            <h1 class="mui-title">员工信息录入</h1>
+        </header>
+    </div>
+
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var a = ["深圳云紫峰","深圳云紫峰","深圳云紫峰","深圳云紫峰","深圳云紫峰","深圳云紫峰","深圳云紫峰"];
+        var  b = ["客服一部","客服二部","销售部","工程部","开发部"];
+        var c = ["人事部","总经办","工程部"];
+        var d = ["管理员","设计师","销售员","设计助理"];
+        var e = ["男","女"];
+        creatediv("workerInfo","登录账号：","text");
+        creatediv("workerInfo","员工姓名：","text");
+        creatediv("workerInfo","手机号：","text");
+        createselecta("workerInfo","所属公司：",a,"e");
+        createselecta("workerInfo","所属部门：",b,"c");
+        createselecta("workerInfo","部门信息：",c,"f");
+        createselecta("workerInfo","所属职位：",d,"g");
+        createselecta("workerInfo","性别：",e,"h");
+        createbtnTwo("workerInfo","提交","重置");
+//        createheader("员工信息录入");
+        $("#leftbacka").on('tap',function () {
+            window.location.href ="{:url('index')}";
+//            mui.openWindow({
+//                url: "{:url('index')}"
+//            })
+        })
+    }
+
+</script>

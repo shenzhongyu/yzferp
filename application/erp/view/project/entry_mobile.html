@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>项目录入表</title>
+    <link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+    <!--<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/erp/css/icon.css">-->
+</head>
+<style type="text/css">
+    * {margin: 0;font-family: "微软雅黑";}
+    a span{width: 100%;display: inline-block;line-height:2rem !important; }
+    #header {width: 100%;height: 5rem;background-color: #197cb9;}
+    .header-center {font-size: 4rem;color: white;line-height: 5rem;text-align: center;margin-left: 0rem;}
+    .form-main {width: 100%;margin-top: 1.5rem;padding-bottom: 3rem;box-sizing: border-box;height: 1300px;overflow: hidden;}
+    h3{text-align: left;font-size: 3rem;margin-bottom: 1.5rem;font-weight: 200;padding-left: 3rem;background-color: #EEEEEE;}
+    .textbox .textbox-text,.l-btn-text {font-size: 2rem;}
+    .textbox{border-color: initial;border-radius:8px 8px 8px 8px;}
+    .combobox-item,.combobox-group,.combobox-stick {font-size: 2rem;}
+    .textbox-addon{width:78px;height: 80px;background-color: #E0ECFF;}
+    .combo-arrow{background-color: #E0ECFF;background-size: 30px 30px;margin-left: 30px;}
+    .textbox-addon a{width:48px;height: 48px;display: inline-block;}
+    .combobox-item-selected{background-color: #E0ECFF;color: black;}
+    .easyui-textbox,.easyui-combobox{width: 65%;height: 80px;border-radius:8px 8px 8px 8px;}
+    .go,.next{padding: 2rem 3rem;margin-right: 2.8rem;}
+    .new{padding: 2rem 3rem;}
+    .td-size{font-size: 2rem;width: 20%;}
+    .tooltip-content {font-size: 1.5rem}
+    table{width:100%;height: 100%;margin-left: 2rem;}
+    .l-btn-text{font-size: 2rem;}
+    label{display: inline-block;width: 15%;text-align: right;font-size: 2rem;margin-right: 4rem;margin-left: 2.2rem;}
+    #form1{height: 1300px;}
+    #form2,#form3{height: 900px;}
+    #form1 input,#form2 input,#form3 input,#form4 input{padding-left: 2rem;font-size: 2rem;}
+
+
+</style>
+
+<body>
+<header id="header">
+    <div class="header-center">云紫峰项目录入</div>
+</header>
+<main class="form-main">
+    <h3 id="xmlr">项目基本信息</h3>
+    <!--项目名称表-->
+    <form id="form1" method='post' name="form">
+            <div style="margin-bottom:20px">
+                <label>项目名称:</label>
+                <input class="easyui-textbox " style="height:80px;" name="project_name" data-options="required:true,validType:'length[1,10]'" placeholder="请填写项目名称">
+            </div>
+            <div style="margin-bottom:20px">
+                <label>装修面积:</label>
+                <input class="easyui-textbox " style="height: 80px;" name="decoration_area" data-options="required:true,validType:'length[1,15]'" placeholder="请填写装修面积">
+            </div>
+            <div style="margin-bottom:20px">
+                <label>工程预算:</label>
+                <input class="easyui-textbox " style="height: 80px;" name="project_budget" data-options="required:true,validType:'length[1,15]'" placeholder="请填写工程预算">
+            </div>
+            <div style="margin-bottom:20px">
+                <label>装修类型:</label>
+                <input class="easyui-combobox" style="height: 80px;" name="decoration_type" data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/decoration_type')}',method:'get',">
+            </div>
+            <div style="margin-bottom:20px">
+                <label>装修风格:</label>
+                <input class="easyui-combobox" style="height: 80px;" name="decoration_style" data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/decoration_style')}',method:'get',">
+            </div>
+            <div style="margin-bottom:20px">
+                <label>装修档次:</label>
+                <input class="easyui-combobox" style="height: 80px;" name="decoration_grade" data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/decoration_grade')}',method:'get',">
+            </div>
+            <div style="margin-bottom:20px">
+                <label>色彩取向:</label>
+                <input class="easyui-combobox" style="height: 80px;" name="color_orientation" data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/color_orientation')}',method:'get',">
+            </div>
+            <div style="margin-bottom:20px">
+                <label>客户来源:</label>
+                <input class="easyui-combobox" style="height: 80px;" name="customer_source" data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/customer_source')}',method:'get',">
+            </div>
+
+            <div style="margin-bottom:20px">
+                <label>总工期:</label>
+                <input class="easyui-textbox " style="height: 80px;" name="expected_duration" data-options="validType:'length[1,20]'" >
+            </div>
+            <div style="margin-bottom:20px">
+                <label>项目要求:</label>
+                <input class="easyui-textbox " style="height: 100px;" name="project_description" data-options="validType:'length[1,70]'" placeholder="请填写项目要求">
+            </div>
+        <div style="text-align:center;">
+            <a href="javascript:void(0)" class="easyui-linkbutton next" onclick='project(this)'>下一步</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton new" onclick="clearForm1()">重置</a>
+        </div>
+    </form>
+    <!--联系人表单-->
+    <form id="form2" method="post" name="form">
+        <div style="margin-bottom:20px">
+            <label>姓名:</label>
+            <input class="easyui-textbox " style="height: 80px;" type="text" name="contact_name" data-options="required:true,validType:'length[1,10]'" placeholder="请填写联系人姓名">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>性别:</label>
+            <input class="easyui-combobox" style="height: 80px;" type="text" id="sex"  name="sex" data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/sex_value')}',method:'get',">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>电话:</label>
+            <input class="easyui-textbox " style="height: 80px;" type="text" name="contact_number" data-options="required:true,invalidMessage:'长度为11位',missingMessage:'长度为11位',validType:'length[11,11]'">
+        </div>
+        <div style="margin-bottom:20px">
+            <label style="width: 18%;margin-right: 2rem;">与房产关系:</label>
+            <input class="easyui-combobox" style="height: 80px;" name="householder_relation"   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/householder_relation')}',method:'get',">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>QQ:</label>
+            <input class="easyui-textbox " style="height: 80px;" type="text" name="customer_qq" data-options="invalidMessage:'长度为5-12位',missingMessage:'长度为5-11位',validType:'length[5,11]'">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>邮箱:</label>
+            <input class="easyui-textbox " style="height: 80px;" type="email" data-options="invalidMessage:'格式为邮箱',missingMessage:'格式为邮箱',validType:'email'" name="customer_email">
+        </div>
+        <div style="text-align:center;">
+            <a href="javascript:void(0)" class="easyui-linkbutton go" onclick="goForm2()" >返回</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton next" onclick="submitForm2()" >下一步</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton new" onclick="clearForm2()">重置</a>
+        </div>
+    </form>
+    <!--房屋结构表单-->
+    <form id="form3" method="post" name="form">
+        <div style="margin-bottom:20px">
+            <label>房屋类型:</label>
+            <input class="easyui-combobox" style="height: 80px;" name="house_type" type="text" data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/house_type')}',method:'get',">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>居屋结构:</label>
+            <input class="easyui-combobox" style="height: 80px;" name="living_room_structure" type="text" data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/living_room_structure')}',method:'get',">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>房屋用途:</label>
+            <input class="easyui-combobox" style="height: 80px;" name="housing_use" type="text" data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/housing_use')}',method:'get',">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>房屋朝向:</label>
+            <input class="easyui-combobox" style="height: 80px;" name=" house_orientation" type="text" data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/ house_orientation')}',method:'get',">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>采光:</label>
+            <input class="easyui-combobox" style="height: 80px;" name="lighting" type="text" data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/lighting')}',method:'get',">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>楼层:</label>
+            <input class="easyui-textbox" style="height: 80px;" name="floor" type="text" data-options="validType:'length[1,10]'" placeholder="请填写楼层">
+        </div>
+        <div style="text-align:center;">
+            <a href="javascript:void(0)" class="easyui-linkbutton go" onclick="goForm3()">返回</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton next" onclick="submitForm3()">下一步</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton new" onclick="clearForm3()">重置</a>
+        </div>
+    </form>
+    <!--楼盘信息表-->
+    <form id="form4" method="post" name="form">
+        <div style="margin-bottom:20px">
+            <label>楼盘名称:</label>
+            <input class="easyui-textbox " style="height: 80px;"type="text" name="real_estate_name" data-options="validType:'length[1,10]'" placeholder="请填写楼盘名称">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>楼盘地址:</label>
+            <input class="easyui-textbox " style="height: 80px;" type="text" name="real_estate_address" data-options="validType:'length[1,10]'" placeholder="请填写楼盘地址">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>房产信息:</label>
+            <input class="easyui-textbox " style="height: 80px;" type="text" name="real_estate_message" data-options="validType:'length[1,10]'" placeholder="请填写具体的房间号">
+        </div>
+        <div style="margin-bottom:20px">
+            <label>楼盘均价:</label>
+            <input class="easyui-combobox" style="height: 80px;" name="real_estate_price"  data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/real_estate_price')}',method:'get',">
+        </div>
+        <div style="text-align:center;">
+            <a href="javascript:void(0)" class="easyui-linkbutton go" onclick="goForm4()" >返回</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton next" onclick="submitForm4()">提交</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton new" onclick="clearForm4()">重置</a>
+        </div>
+    </form>
+</main>
+</body>
+<script src="__STATIC__/weui/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/erp/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__STATIC__/easyui_151/easyui-lang-zh_CN.js"></script>
+<script>
+    //表单提交(下一步)
+    function project(t){
+        var id=$(t).parent().parent().attr("id");
+        var url='{:url("/erp/project/saveProject")}';
+        var title="主要联系人";
+        $(t).attr("disabled","disabled");
+        submitData(id,url,title,t);
+
+    }
+
+    function contacts(t){
+        var id=$(t).parent().parent().attr("id");
+        var url='{:url("/erp/project/saveContacts")}';
+        var title="房屋结构";
+        $(t).attr("disabled","disabled");
+        submitData(id,url,title,t);
+    }
+    function structure(t){
+        var id=$(t).parent().parent().attr("id");
+        var url='{:url("/erp/project/saveStructure")}';
+        var title="楼盘信息";
+        $(t).attr("disabled","disabled");
+        submitData(id,url,title,t);
+    }
+    function building(){
+
+    }
+
+
+
+    function submitData(id,url,title,t){
+        $("#"+id).form('submit',{
+            url:url,
+            onSubmit:function(){
+                return $(this).form('enableValidation').form('validate');
+            },
+            success:function(obj){
+                var data=$.parseJSON( obj );
+                if(data.code=="1001"){
+                    $("#xmlr").html(title);
+                    $("#"+id).css('display', 'none');
+                    $("#"+id).next().css('display', 'block');
+                    $(t).removeAttr("disabled");
+                    var h = parseInt($("#"+id).next().height());
+                    $('.form-main').css('height', h + 'px')
+                }else{
+                    alert(data.msg);
+                    $(t).removeAttr("disabled");
+                }
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+    function submitForm1() {
+        $("#form1").form('submit',{
+            url:'{:url("/erp/project/saveProject")}',
+            onSubmit:function(){
+                return $(this).form('enableValidation').form('validate');
+            },
+            success:function(obj){
+                var data=$.parseJSON( obj );
+                if(data.code=="1001"){
+                    $("#xmlr").html("主要联系人");
+                    $('#form1').css('display', 'none');
+                    $('#form2').css('display', 'block');
+                    var h = parseInt($('#form2').height());
+                    $('.form-main').css('height', h + 'px')
+                }else{
+
+                }
+            }
+        });
+
+    }
+
+    function submitForm2() {
+        $('#form1').css('display', 'none');
+        $('#form2').css('display', 'none');
+        $('#form3').css('display', 'block');
+        var h = parseInt($('#form3').height());
+        $('.form-main').css('height', h + 'px')
+    }
+
+    function submitForm3() {
+        $('#form3').submit();
+        $('#form1').css('display', 'none');
+        $('#form2').css('display', 'none');
+        $('#form3').css('display', 'none');
+        $('#form4').css('display', 'block');
+        $('.form-main').css('height', 787 + 'px')
+    }
+
+    function submitForm4() {
+        $('#form4').submit()
+    }
+    //清楚表单内容
+    function clearForm1() {
+        $('#form1').form('clear');
+    }
+    //联系人表单
+    function clearForm2() {
+        $('#form2').form('clear');
+    }
+    //房屋结构表单
+    function clearForm3() {
+        $('#form3').form('clear');
+    }
+    //楼盘信息表单
+    function clearForm4() {
+        $('#form4').form('clear');
+    }
+    //上一步
+    function goForm2() {
+        $('#form2').css('display', 'none');
+        $('#form1').css('display', 'block');
+        $('.form-main').css('height', 1300 + 'px')
+    }
+
+    function goForm3() {
+        $('#form3').css('display', 'none');
+        $('#form2').css('display', 'block');
+        var h = parseInt($('#form2').height());
+        $('.form-main').css('height', h + 'px')
+    }
+
+    function goForm4() {
+        $('#form4').css('display', 'none');
+        $('#form3').css('display', 'block');
+        var h = parseInt($('#form3').height());
+        $('.form-main').css('height', h + 'px');
+    }
+
+</script>
+</html>

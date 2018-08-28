@@ -1,0 +1,68 @@
+node_list.html{extend name="base/base_search_list" /}
+{block name="title"}{$title}{/block}
+{block name="my_css"}
+<link rel="stylesheet"href="__ERP__/css/node.css">
+{/block}
+这个是字段设置 加上{:widget('base/Easyui/formatter')}表示开启格式化
+{block name="columns"}[[{ field: "chk", "checkbox": true, movable: false }
+,{ field: 'id', title: '编号', width: '60', align: 'center', sortable: true,}
+, { field: 'pid', title: '父节点', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'node_name', title: '节点名称', align: 'center', sortable: true }
+, { field: 'node_desc', title: '节点备注', align: 'center', sortable: true }
+, { field: 'module_name', title: '模块名称', width: 100,align: 'center', sortable: true }
+, { field: 'control_name', title: '控制器名称',width: 100, align: 'center', sortable: true }
+, { field: 'action_name', title: '方法名称', width: 100, align: 'center', sortable: true }
+, { field: 'icon', title: '图标icon', width: 100, align: 'center', sortable: true }
+, { field: 'auth_grade', title: '浏览权限', width: 80, align: 'center',sortable: true,{:widget('Easyui/formatter')} }
+, { field: 'is_menu', title: '是否菜单', width: 80, align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+, { field: 'group', title: '分组', width: 80, align: 'center', sortable: true }
+, { field: 'sort', title: '排序', width: 60,align: 'center', sortable: true }
+, { field: 'status', title: '状态', width: 60,align: 'center', sortable: true ,{:widget('Easyui/formatter')}}
+, { field: 'create_time', title: '创建时间', width: 100,align: 'center', sortable: true }
+]]{/block}
+这个是设定筛选器
+{block name="filter"}[{field: 'create_time', type: 'datebox', options: { precision: 1 }, op: ['betweendate'] }
+,{ field: 'update_time', type: 'datebox', options: { precision: 1 }, op: ['betweendate'] }
+,{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber'] }
+,{:widget('Easyui/showFilter', ["is_menu","combobox"])}
+{:widget('Easyui/showFilter', ["status","combobox"])}
+{:widget('Easyui/showFilter', ["auth_grade","combobox"])}
+{:widget('Easyui/showFilter', ["pid","combobox"])}
+]{/block}
+这个设定筛选器和格式化时候操作 showAll表示格式化内容和小拉列表都有 ,ShowArray只用于下来列表 ShowValue只用于下来列表
+{block name="value"}
+{:widget('Easyui/ShowArray',["status",'status'] )}
+{:widget('Easyui/ShowValue',["status",'status_value'] )}
+{:widget('Easyui/showAll', ["is_menu","is_menu"] )}
+{:widget('Easyui/showAll', ["auth_grade","auth_grade"] )}
+{:widget('Easyui/showValueByUrl',["pid","pid_json",["is_mobile"=>1]])}
+{:widget('Easyui/showArrayByUrl',["pid","pid_json",["is_mobile"=>1]])}
+
+{/block}
+这个是格式化字段的方法 [value字段的值 row所有值 index标识  field字段名]//这个不懂就不要改
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+} else if (eval("value_" + field)[value]){
+return eval("value_" + field)[value];
+} else if (field[value]) {
+return field[value];
+} else {
+return value;
+}
+}{/block}
+这个是设定链接 这个一般情况 不用改
+{block name="url"}
+datagrid:'#list',dialog:'#dialog_div',datagrid_url:'{$data_url??url()}'
+,dialog_url:'{$dialog_url??str_replace("List","Edit",url()) }'
+{/block}
+这个根据需求修改
+{block name="toolbar"}[{ text:'添加', iconCls: 'icon-add', handler:function(){ mikkleClass.addForm();} },'-'
+,{ text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm();} },'-'
+,{ text:'删除', iconCls: 'icon-cancel', handler: function(){ mikkleClass.delForm();} },'-'
+,{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-'
+,{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-'
+,{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-'
+,{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-']
+{/block}
+{block name="my_js"}{/block}

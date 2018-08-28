@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    {include file="base/css" /}
+</head>
+<body>
+<div id="tt" class="easyui-tabs" style="width:100%;height:600px;">
+    <div title="未读消息" style="padding: 10px;">
+        <table id="unread_list" style="height: 530px;" class="easyui-datagrid"></table>
+    </div>
+</div>
+<div id="collect_dlog" ></div>
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function () {
+        $('#unread_list').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:'project_name',title:'项目名称',width:'25%',align:'center'},
+                {field:'collect_price',title:'计划付款金额',width:"35%",align:'center'},
+                {field:'collect_date',title:'付款时间',width:"20%",align:'center'},
+                {field:'op',title:'操作',width:"18%",align:'center',
+                    formatter:function(value,row,index){
+                        return '<a href="javascript:collectPrice(&apos;'+row.guid+'&apos;);">收款</a>'
+                    }
+                }
+            ]],
+            rownumbers:true,
+            pageSize:20,
+            pagination:true,
+            nowrap:false, //超出部分自动换行
+        });
+    });
+    function collectPrice(id) {  //收款
+        var url='/erp/project_deposit/addcollectprice/guid/'+id;
+        $("#collect_dlog").dialog({
+            title:'收款',
+            iconCls: 'icon-save',
+            width: 500,
+            height: 600,
+            cache: false,
+            href: url,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text:' 确 认  ',
+                    iconCls:'icon-save',
+                    handler: function(){
+                        $("#collect_dlog").find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post(url, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else {
+                                        layer.msg('收款成功', {icon: 1});
+                                        $("#collect_dlog").dialog('close');
+                                        $('#unread_list').datagrid("reload");
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },
+                {
+                    text:' 打 回 修 改  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $.post('/erp/project_deposit/back',{id:id}, function (data) {
+                            $.messager.progress('close');
+                            if (data.code != 1001) {
+                                layer.msg(data.msg, {icon: 3});
+                            } else {
+                                layer.msg(data.msg, {icon: 1});
+                                $('#unread_list').datagrid("reload");
+                                $("#collect_dlog").dialog('close');
+                            }
+                        }, 'json');
+                        return false;
+                    }
+                },
+                {
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $("#collect_dlog").dialog('close');
+                    }
+                }],
+        });
+    }
+
+</script>
+</body>
+</html>

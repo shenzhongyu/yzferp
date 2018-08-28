@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>收款计划</title>
+    {include file="base/css" /}
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    <style>
+        .coll_li{width: 33%;height: 25px;line-height: 25px;float: left;list-style: none}
+    </style>
+</head>
+<body>
+<div class="easyui-panel" title="{$title}" id="coll_div" style="width:97%;padding:1%;height: auto">
+    <div style="width: 50%">
+        <li class="coll_li">合同编号：{$number}</li>
+        <li class="coll_li">项目名称：{$name}</li>
+        <li class="coll_li">合同金额：{$price} 元</li>
+        <li class="coll_li">已付定金：{$plan_price} 元</li>
+        <li class="coll_li">实际收入：{$actual_price} 元</li>
+        <li class="coll_li">未收金额：{$surplus_price} 元</li>
+    </div>
+    <div style="clear:both;height: 10px"></div>
+    <div style="margin:20px 0 10px 0;">
+        <!--<a href="#" class="easyui-linkbutton" onclick="javascript:bangCollectPlan();">绑 定 收 款 计 划</a>&nbsp;&nbsp;-->
+        <!--<a href="#" class="easyui-linkbutton" onclick="javascript:addCollectPlan();">浏 览 收 款 计 划</a>&nbsp;&nbsp;-->
+        <a href="#" class="easyui-linkbutton" onclick="addCollect();">新 增 收 款</a>&nbsp;&nbsp;
+        <a href="#" class="easyui-linkbutton" onclick="according();">按 计 划 收 款</a>&nbsp;&nbsp;
+        <a href="#" class="easyui-linkbutton" onclick="refundPrice()"> 退 款 </a>&nbsp;&nbsp;
+        <a href="#" class="easyui-linkbutton" onclick="resh()"> 刷 新 </a>
+    </div>
+    <div id="collection" title="收款申请">
+    </div>
+    <div id="refund_price" title="退款申请"></div>
+    <div id="collection_to" title="实际收款">
+    </div>
+    <div id="refund_price_to" title="实际退款"></div>
+</div>
+<div id="collect_dlog">
+
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script>
+    $(function(){
+        $("#collection").datagrid({
+            url:'{$data_url}',
+            width:"98%",
+            height:"auto",
+            columns:[[
+                {field:'number',title:'凭证号',width:"10%",align:'center'},
+                {field:'collect_price',title:'付款金额(元)',width:"6%",align:'center'},
+                {field:'price',title:'剩余金额(元)',width:"6%",align:'center'},
+                {field:'collect_name',title:'款项名称',width:"12%",align:'center',},
+                {field:'collect_date',title:'计划收款时间',width:"8%",align:'center',},
+                {field:'collect_uuid_name',title:'申请人',width:"6%",align:'center',},
+                {field:'examine_uuid_name',title:'审核人',width:"6%",align:'center',},
+                {field:'examine_desc',title:'审核说明',width:"22%",align:'center',},
+                {field:'op',title:'操作',width:"22%",align:'center',formatter:function(value,row,index){
+                    var str='';
+                    if(row.examine_status==0&& row.collect_status==0){
+                        str+='<a style="margin-right: 13px" href="javascript:editContent(&apos;'+row.guid+'&apos;);">修改</a>';
+                        str+='<a style="margin-right: 13px" href="javascript:delContent(&apos;'+row.guid+'&apos;);">删除</a>';
+                    }else if(row.examine_status=="-1"||row.collect_status==0){
+                        str+='<a style="margin-right: 13px" href="javascript:editContent(&apos;'+row.guid+'&apos;);">修改</a>';
+                        str+='<a style="margin-right: 13px" href="javascript:delContent(&apos;'+row.guid+'&apos;);">删除</a>';
+                    }else{
+                        str+='<a style="margin-right: 13px">修改</a>';
+                    }
+                    if(row.examine_status==0){
+                        str+='<a style="margin-right: 13px" href="javascript:editExamine(&apos;'+row.guid+'&apos;);">审核</a>';
+                    }else if(row.examine_status==1){
+                        str+='<a style="margin-right: 13px">审核通过</a>';
+                    }else if(row.examine_status=='-1'){
+                        str+='<a style="margin-right: 13px">未通过审核</a>';
+                    }
+//                    if(row.approval_status==0){
+//                        str+='<a style="margin-right: 13px" href="javascript:;">审批</a>';
+//                    }else{
+//                        str+='<a style="margin-right: 13px">审批</a>';
+//                    }
+//                    if(row.collect_status==0){
+//                        str+='<a style="margin-right: 13px" href="javascript:collectPrice(&apos;'+row.guid+'&apos;);">收款</a>';
+//                    }
+                    str+='<a style="margin-right: 13px" href="javascript:showDetailed(&apos;'+row.guid+'&apos;);">详细</a>';
+                    str+='<a href="javascript:showPhotoList(&apos;'+row.guid+'&apos;,&apos;'+row.project_id+'&apos;);">附件</a>';
+                    return str;
+                }},
+            ]]
+        })
+        $("#refund_price").datagrid({
+            url:'{:url("ProjectDeposit/showRefundPrice",["pro_id"=>$pro_id])}/type/0',
+            width:"98%",
+            height:"auto",
+            columns:[[
+                {field:'number',title:'凭证号',width:"10%",align:'center'},
+                {field:'collect_price',title:'付款金额(元)',width:"6%",align:'center'},
+                {field:'price',title:'剩余金额(元)',width:"6%",align:'center'},
+                {field:'collect_name',title:'款项名称',width:"12%",align:'center',},
+                {field:'collect_date',title:'计划收款时间',width:"8%",align:'center',},
+                {field:'collect_uuid_name',title:'申请人',width:"6%",align:'center',},
+                {field:'examine_uuid_name',title:'审核人',width:"6%",align:'center',},
+                {field:'examine_desc',title:'审核说明',width:"22%",align:'center',},
+                {field:'op',title:'操作',width:"22%",align:'center',formatter:function(value,row,index){
+                    var str='';
+                    if(row.examine_status=='-1'){
+                        str+='<a style="margin-right: 13px">未通过审核</a>&nbsp;';
+                        str+='<a style="margin-right: 13px" href="javascript:editRefunPrice(&apos;'+row.guid+'&apos;);">修改</a>';
+                    }
+                    if(row.examine_status==1){
+                        str+='<a style="margin-right: 13px">审核通过</a>';
+                    }
+                    str+='<a style="margin-right: 13px" href="javascript:showRefundDetailed(&apos;'+row.guid+'&apos;);">详细</a>';
+                    str+='<a href="javascript:showPhotoList(&apos;'+row.guid+'&apos;,&apos;'+row.project_id+'&apos;);">附件</a>';
+
+                    return str;
+                }},
+            ]]
+        })
+        $("#collection_to").datagrid({
+            url:'{$url}',
+            width:"98%",
+            height:"auto",
+            columns:[[
+                {field:'number',title:'凭证号',width:"10%",align:'center'},
+                {field:'collect_price',title:'收款金额(元)',width:"8%",align:'center'},
+                {field:'collect_name',title:'款项名称',width:"15%",align:'center',},
+                {field:'collect_uuid_name',title:'申请人',width:"7%",align:'center',},
+                {field:'examine_uuid_name',title:'审核人',width:"7%",align:'center',},
+                {field:'examine_desc',title:'审核说明',width:"18%",align:'center',},
+                {field:'collected_uuid_name',title:'收款人',width:"7%",align:'center',},
+                {field:'collect_desc',title:'收款说明',width:"18%",align:'center',},
+                {field:'op',title:'操作',width:"10%",align:'center',formatter:function(value,row,index){
+                    var str='';
+                    str+='<a style="margin-right: 13px" href="javascript:showDetailed(&apos;'+row.guid+'&apos;);">详细</a>';
+//                    str+='<a href="javascript:;">附件</a>';
+                    return str;
+                }},
+            ]]
+        })
+        $("#refund_price_to").datagrid({
+            url:'{:url("ProjectDeposit/showRefundPrice",["pro_id"=>$pro_id])}/type/1',
+            width:"98%",
+            height:"auto",
+            columns:[[
+                {field:'number',title:'凭证号',width:"10%",align:'center'},
+                {field:'collect_price',title:'收款金额(元)',width:"8%",align:'center'},
+                {field:'collect_name',title:'款项名称',width:"15%",align:'center',},
+                {field:'collect_uuid_name',title:'申请人',width:"7%",align:'center',},
+                {field:'examine_uuid_name',title:'审核人',width:"7%",align:'center',},
+                {field:'examine_desc',title:'审核说明',width:"18%",align:'center',},
+                {field:'collected_uuid_name',title:'收款人',width:"7%",align:'center',},
+                {field:'collect_desc',title:'收款说明',width:"18%",align:'center',},
+                {field:'op',title:'操作',width:"10%",align:'center',formatter:function(value,row,index){
+                    var str='';
+                    str+='<a style="margin-right: 13px" href="javascript:showRefundDetailed(&apos;'+row.guid+'&apos;);">详细</a>';
+//                    str+='<a href="javascript:;">附件</a>';
+                    return str;
+                }},
+            ]]
+        })
+    });
+    function resh() { //刷新
+        $('#collection').datagrid('reload');
+        $('#refund_price').datagrid('reload');
+        $('#collection_to').datagrid('reload');
+    }
+    function addCollect() {  //新增收款
+        var href='{:url("addCollect",["guid"=>$guid])}';
+        var url='{:url("addCollect")}/guid/{$pro_id}';
+        var title='新增收款';
+        var msg='新增收款成功';
+        collectDlog(title,href,url,msg);
+    }
+    function refundPrice() {  //退款
+        var href='{:url("refundPrice",["guid"=>$guid])}';
+        var url='{:url("refundPrice")}/guid/{$pro_id}';
+        var title='退款申请';
+        var msg='退款申请';
+        collectDlog(title,href,url,msg);
+    }
+    function showDetailed(a) { //显示详细
+        $("#collect_dlog").dialog({
+            title:'详细',
+            iconCls: 'icon-save',
+            width: '80%',
+            height:'400',
+            cache: false,
+            href: '{:url("showDetailed")}/guid/'+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        });
+    }
+    function showRefundDetailed(a) {
+        $("#collect_dlog").dialog({
+            title:'详细',
+            iconCls: 'icon-save',
+            width: '80%',
+            height:'400',
+            cache: false,
+            href: '{:url("showRefundDetailed")}/guid/'+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        });
+    }
+    function bangCollectPlan() {
+        window.parent.addTab('收款模板','{:url("Finance/showCollPanList",["guid"=>$guid])}');
+    }
+//    //查看已绑定的收款计划
+//    function addCollectPlan(){
+//        $("#collect_dlog").dialog({
+//            title:'收款计划',
+//            iconCls: 'icon-save',
+//            width: '60%',
+//            height:'400',
+//            cache: false,
+//            href: '{:url("Finance/binDingCollectPlan",["guid"=>$guid])}',
+//            modal: true,
+//            collapsible: false,
+//            minimizable: false,
+//            resizable: false,
+//            maximizable: false,
+//        });
+//    }
+
+
+    function editExamine(id) {
+        var href='{:url("editExamine")}/guid/'+id;
+        var url='{:url("editExamine")}/guid/'+id;
+        var title='审核收款申请';
+        var msg='审核成功';
+        collectDlog(title,href,url,msg);
+        FormLoad(id,url);
+    }
+    function delContent(id) {
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result) {
+            if (!result) return false;
+            $.messager.progress({text: '处理中，请稍候...'});
+            $.post('{:url("delContent")}', {id: id}, function (data) {
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    $('#collection').datagrid('reload');
+                }
+            }, 'json');
+        })
+    };
+    function editContent(id) {
+        var href='{:url("editCollect")}/guid/'+id;
+        var url='{:url("editCollect")}/guid/'+id;
+        var title='修改收款申请';
+        var msg='修改成功';
+        collectDlog(title,href,url,msg);
+        FormLoad(id);
+        
+    }
+
+    function editRefunPrice(id) {
+        var href='{:url("refundPriceEdit")}/guid/'+id;
+        var url='{:url("refundPriceEdit")}/guid/'+id;
+        var title='修改退款申请';
+        var msg='修改成功';
+        collectDlog(title,href,url,msg);
+        FormLoad(id,'{:url("loadFormRefund")}/guid/'+id);
+
+    }
+    function according() { //按计划收款
+        var href='{:url("according",["guid"=>$guid])}';
+        var url='{:url("according")}/guid/{$pro_id}';
+        var title='新增收款';
+        var msg='新增收款成功';
+        collectDlog(title,href,url,msg);
+    }
+    function collectDlog(title,href,url,msg) {
+        $("#collect_dlog").dialog({
+            title:title,
+            iconCls: 'icon-save',
+            width: 500,
+            height: 600,
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text:' 确 认  ',
+                    iconCls:'icon-save',
+                    handler: function(){
+                        $("#collect_dlog").find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post(url, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else {
+                                        layer.msg(msg, {icon: 1});
+                                        $("#collect_dlog").dialog('close');
+                                        $('#collection').datagrid('reload');
+                                        window.parent.addTab('收款计划','{:url("ProjectDeposit/collectionPlan",["guid"=>$guid])}','close');
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                }
+                ,{
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $("#collect_dlog").dialog('close');
+                    }
+                }],
+        });
+    }
+    function FormLoad(id,url) {
+        if ($('#fm').length==0){
+            setTimeout(function(){FormLoad(id,url);},500);
+        }else{
+            var href=url ? url :'{:url("formLoad")}/guid/'+id;
+            $('#fm').form('load',href);
+        }
+    }
+    function showPhotoList(id,p) {
+        $("#collect_dlog").dialog({
+            title:'附件',
+            iconCls: 'icon-save',
+            width: '80%',
+            height: 600,
+            cache: false,
+            href: '{:url("Finance/showPhotoList")}/guid/'+id+'/pro_id/'+p,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+//
+//    function collectPrice(id) {  //收款
+//        var url='{:url("addCollectPrice")}/guid/'+id;
+//        $("#collect_dlog").dialog({
+//            title:'收款',
+//            iconCls: 'icon-save',
+//            width: 500,
+//            height: 600,
+//            cache: false,
+//            href: url,
+//            modal: true,
+//            collapsible: false,
+//            minimizable: false,
+//            resizable: false,
+//            maximizable: false,
+//            buttons:[
+//                {
+//                    text:' 确 认  ',
+//                    iconCls:'icon-save',
+//                    handler: function(){
+//                        $("#collect_dlog").find('form').eq(0).form('submit', {
+//                            onSubmit: function () {
+//                                var isValid = $(this).form('validate');
+//                                if (!isValid) return false;
+//                                $.messager.progress({text: '处理中，请稍候...'});
+//                                $.post(url, $(this).serialize(), function (data) {
+//                                    $.messager.progress('close');
+//                                    if (data.code != 1001) {
+//                                        layer.msg(data.msg, {icon: 3});
+//                                    } else {
+//                                        layer.msg('收款成功', {icon: 1});
+//                                        $("#collect_dlog").dialog('close');
+//                                        resh();
+//                                    }
+//                                }, 'json');
+//                                return false;
+//                            }
+//                        });
+//                    }
+//                },
+//                {
+//                    text:' 打 回 修 改  ',
+//                    iconCls:'icon-clear',
+//                    handler: function(){
+//                        $.post('{:url("back")}',{id:id}, function (data) {
+//                            $.messager.progress('close');
+//                            if (data.code != 1001) {
+//                                layer.msg(data.msg, {icon: 3});
+//                            } else {
+//                                layer.msg('收款成功', {icon: 1});
+//                                $("#collect_dlog").dialog('close');
+//                                resh();
+//                            }
+//                        }, 'json');
+//                        return false;
+//                    }
+//                },
+//                {
+//                    text:' 关 闭  ',
+//                    iconCls:'icon-clear',
+//                    handler: function(){
+//                        $("#collect_dlog").dialog('close');
+//                    }
+//                }],
+//        });
+//    }
+
+</script>
+</body>
+</html>
+

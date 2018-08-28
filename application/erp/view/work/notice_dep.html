@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {include file="base/css" /}
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    <link href="__STATIC__/umeditor/themes/default/_css/umeditor.css" type="text/css" rel="stylesheet">
+    <style>
+        .edui-container{width: 780px !important;border: 1px solid #95B8E7;}
+        #container{height: 280px;width: 760px !important;}
+        #fm{font-size: 16px;}
+        #fm section{margin-bottom: 18px;}
+        #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+        #button a{width: 100px !important;margin: 0 0 0 10px}
+        .myPanelHead .panel-title{font-size: 15px;padding-left: 43%;height: 25px;line-height: 25px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="p" class="easyui-panel" title="公告通知"   style="width:100%;padding:25px 10px;margin-bottom: 20px;"  data-options="headerCls:'myPanelHead'">
+        <form id="fm" style="padding:0 0px;width:100%;" method="post" name="fm">
+            <div style="width: 50%;">
+                <section>
+                    <label class="label_1"  style="font-size:14px; ">标题:</label>
+                    <label class="label_2"  style="">
+                        <input class="easyui-validatebox" type="text" name="notice_title" id="notice_title"
+                               placeholder="请填写标题"
+                               style="width:80%;border: 1px solid #95B8E7;height: 20px;">
+                    </label>
+                </section>
+                <section style="height: 330px;">
+                    <label  class="label_1"  style="font-size:14px; ">内容:</label>
+                    <label  class="label_2">
+                        <script id="container" name="content" type="text/plain"></script>
+                    </label>
+                </section>
+                <section style="margin-bottom: 10px">
+                    <label class="label_1">类型:</label>
+                    <label  class="label_2">
+                        <input type="radio" checked="checked"  name="notice_type" value="2" onclick="showDiv()" />部门
+                    </label>
+                </section>
+                <div id="dep" style="width: 80%;margin-left:22%;border: 1px solid #95B8E7;">
+                    <span style="margin-left: 10px;">部门选择</span>
+                    <p style="height: 25px;line-height: 25px;padding-left: 10px;margin:3px 0;">
+                        <input name="Fruit" type="checkbox" checked="checked" disabled="disabled" value="" />{$dep_type}
+                    </p>
+                    <div style="margin-left:4%;margin-bottom: 5px;" >
+                        <label><input name="depart" checked="checked" disabled="disabled" type="checkbox" value="{$data.guid}" />{$data.department_name} </label>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="button">
+        <a style="margin-left: 37%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">公 告 发 布</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重 置</a>
+    </div>
+
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<script src="__STATIC__/umeditor/third-party/jquery.min.js"></script>
+<script src="__STATIC__/umeditor/third-party/template.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="__STATIC__/umeditor/umeditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__STATIC__/umeditor/umeditor.min.js"></script>
+<script type="text/javascript" src="__STATIC__/umeditor/lang/zh-cn/zh-cn.js"></script>
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script>
+    var editor = UM.getEditor('container',{
+        autoFloatEnabled:false
+    });
+    function hideDiv(){
+        $("#dep").css("display","none");
+        $("#dep input").removeAttr("checked","false");
+    }
+    function showDiv(){
+        $("#dep").css("display","block");
+    }
+    function smallChange(obj){
+        if (obj.checked == true){
+            $(obj).parent().next().find("input").prop("checked","false");
+//            $("#a input[name='Fruit']"). prop("checked","false");
+        }else {
+            $(obj).parent().next().find("input").removeAttr("checked","false");
+//            $("input[name='Fruit']").removeAttr("checked","false");
+        }
+    }
+    //表单提交(下一步)
+    function submitForm(){
+        var  url='{:url("/erp/system/addLeaveData")}';
+        var title=$("#notice_title").val();
+        var content=editor.getContent();
+        var type=$('input:radio[name="notice_type"]:checked').val();
+        var arry=[];
+        $.each($("#dep input[name='depart']"),function(i,n){
+            if ($(n).prop("checked")==true){
+                arry.push($(n).val());
+            }
+        });
+        if(!title){
+            layer.msg("请填写标题", {icon: 2});
+            return false;
+        }
+        if(!content){
+            layer.msg("请填写内容", {icon: 2});
+            return false;
+        }
+        if( type=="2" && arry.length=="0" ){
+            layer.msg("请选择部门", {icon: 2});
+            return false;
+        }
+        if(arry.length=="0" || type=="1"){
+            var data={title:title,content:content,type:type}
+        }else{
+            var data={title:title,content:content,type:type,info:arry}
+        }
+        $.ajax({
+            url: "{:url('addNoticeAndDepartment')}",
+            type: "post",
+            data: data,
+            dataType: "json",
+            success: function(obj) {
+                if(obj.code=="1001"){
+                    layer.msg(obj.msg, {icon: 1});
+                    clearForm();
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            },
+        })
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        $('#fm')[0].reset();
+        editor.setContent('');
+    }
+</script>
+</body>
+</html>

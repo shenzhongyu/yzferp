@@ -1,0 +1,40 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">供应商名称:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="supplier_name" id="supplier_name"
+                   data-options="required:true,validType:'length[1,35]'" style="width:80%">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >品牌:</label>
+        <label class="label_2" >
+            <input class="easyui-validatebox"  name="supplier_brand"
+                   data-options="validType:'length[1,30]'"
+                   style="width:80%">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >折扣:</label>
+        <label class="label_2" >
+            <input class="easyui-validatebox"  name="supplier_discount" id="supplier_discount"
+                   data-options="validType:'length[1,20]'"
+                   style="width:80%">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >利润率(%):</label>
+        <label class="label_2" >
+            <input class="easyui-validatebox"  name="profit_margin" id="profit_margin"
+                   data-options="validType:'length[1,4]'"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">供应商描述:</label>
+        <label class="label_2">
+            <textarea placeholder="请填写供应商描述" name="supplier_desc" style="width:80%;height: 60px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+
+</form>

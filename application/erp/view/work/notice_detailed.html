@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {include file="base/css" /}
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    <link href="__STATIC__/umeditor/themes/default/_css/umeditor.css" type="text/css" rel="stylesheet">
+    <style>
+        #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+        #button a{width: 100px !important;margin: 0 0 0 10px}
+        #cont{font-size:16px;width: 48%;margin-left: 25%;padding: 0 10px;text-align: left;min-height: 300px;}
+        #cont p{word-break:break-all;line-height: 25px;}
+        #cont li{word-break:break-all;line-height: 25px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="p" class="easyui-panel" title=""   style="width:100%;padding:25px 10px;margin-bottom: 20px;"  >
+        <div style="width: 88%;text-align: center; font-size: 14px;">
+            <h2>{$data.title  }</h2>
+            <hr style="background: #d1d1d5;width: 50%;opacity: 0.5" />
+            <div id="cont">
+                {$data.content ? $data.content : "该公告已删除"}
+            </div>
+            <div style="width: 48%;margin-left: 25%;padding: 0 10px;text-align: right;line-height: 25px;">
+                <a style="margin-right: 10px;">{$data.company_name}</a> <a>{$data.department_name}</a>
+            </div>
+            <div style="width: 48%;margin-left: 25%;padding: 0 10px;text-align: right;line-height: 25px;">
+                <a style="margin-right: 10px;">{$data.jobs_name}</a><a>{$data.name}</a>
+            </div>
+            <div style="width: 48%;margin-left: 25%;padding: 0 10px;text-align: right;line-height: 25px;">
+                <a >{$data.create_time}</a>
+            </div>
+        </div>
+    </div>
+    <div id="button">
+        <a style="margin-left: 41%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="closeThis()"> 关 闭 </a>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="__STATIC__/easyui_151/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/easyui_151/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__STATIC__/easyui_151/easyui-lang-zh_CN.js"></script>
+<script>
+    function closeThis(){
+        window.parent.closeTab("通知公告");
+        window.addTab("首页");
+    }
+</script>
+</body>
+</html>

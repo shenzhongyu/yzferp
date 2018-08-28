@@ -1,0 +1,48 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section >
+        <label class="label_1" >材料名:</label>
+        <label class="label_2" >
+            <input class="easyui-validatebox" type="text" name="material_name"
+                   data-options="required:true,validType:'length[1,25]'"
+                   style="width:80%">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >规格:</label>
+        <label class="label_2" >
+            <input class="easyui-validatebox"  name="specifications"
+                   data-options="validType:'length[1,15]'"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">单位:</label>
+        <label class="label_2">
+            <input class="easyui-combobox"  name="unit_name" style="width:80%;" value="1"
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/unit_name')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">单价(元):</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="material_price"
+                   data-options="required:true,validType:'length[1,10]'"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">底价(元):</label>
+        <label class="label_2">
+            <input class="easyui-validatebox" type="text" name="floor_price"
+                   data-options="validType:'length[1,10]'"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">说明:</label>
+        <label class="label_2">
+            <textarea placeholder="请填写材料说明" name="explain" style="width:80%;height: 60px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+    
+</form>

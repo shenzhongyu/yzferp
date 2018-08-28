@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>转部工程部审核</title>
+    {include file="wechat@base_mui/weui_wechat"/}
+    <style>
+        .pendingName {
+            float: left;
+            width: 60%;
+            display: inline-block;
+
+        }
+
+        .pendingLink {
+            float: left;
+            width: 28%;
+            display: inline-block;
+
+        }
+
+        .pendingContent {
+            display: inline-block;
+        }
+
+    </style>
+</head>
+</head>
+<body>
+<div id="app" v-cloak>
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <h1 class="mui-title">转部工程部审核</h1>
+    </header>
+    <div class="mui-content" id="pullrefresh">
+        <div class="listBoth" v-for="a in res" @click="toTails(a.project_id,a.id)">
+            <nobr class="pendingName ml25 intercept">{{a.project_name}}</nobr>
+            <nobr class="pendingLink intercept">{{a.name}}</nobr>
+            <nobr class="pendingContent intercept"><i class="mui-icon mui-icon-forward"></i></nobr>
+        </div>
+        <div v-if="total == 0" class="text-center">暂无审核信息</div>
+
+        <div class="dasd"></div>
+
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        $("#listBoth").hover(function () {
+            $("#listBoth").css(background, "yellow")
+        })
+        var dataA = {};
+        mui.ajax('/erp/design/showProjectTransfer', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+
+            success: function (response) {
+                console.log(response)
+                dataA.total = response.total;
+                dataA.res = response.rows;
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {
+                        toTails: function (guid, id) {
+                            mui.openWindow({
+                                url: "{:url('designer/pendingDetailsD')}?guid=" + guid + "&id=" + id,
+                            })
+                        },
+//                        listBack: function () {
+//                            mui.openWindow({
+//                                url: "{:url('index/index')}"
+//                            })
+//                        }
+                    }
+                })
+            }
+        })
+
+
+    }
+
+</script>
+</body>
+</html>

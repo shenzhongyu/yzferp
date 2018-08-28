@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+    <!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+    <!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+    {include file="base/js" /}
+</head>
+<body>
+<p>
+    <button style="margin-left: 10px;cursor: pointer" onclick="addData()">批量移入</button>
+    <a style="margin-left: 10px;margin-right: 15px;">搜索条件:</a>
+    基装定额类型：<input id="baseId" class="easyui-combobox"  name="basestyle" value="1"
+                  data-options="valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/budget_type')}',method:'get',
+        onSelect:function(a){
+
+                addFiled(a.guid,'category_id','baseId','base_id');
+
+
+
+        }">
+    装饰项类别：<input id="dataId" class="easyui-combobox"  name="datastyle" value=""
+                data-options="valueField: 'guid',textField: 'categories_name',url:'{:url('showdatastylejson')}',method:'get',
+        onSelect:function(a){
+            if(a.guid){
+                addFiled(a.guid,'category_id','baseId','base_id');
+            }else{
+                var id=$('#baseId').combobox('getValue');
+
+                if(id){
+                    remData(id,'base_id');
+                }else{
+
+                }
+            }
+
+
+        }">
+    <button style="margin-left: 10px;cursor: pointer;" onclick="showAll()">显示全部</button>
+</p>
+<table id="dg">
+</table>
+
+<script type="text/javascript">
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    $(function(){
+        $('#dg').datagrid({
+            url:'{$url}',
+            height:600,
+            rownumbers:true,
+            singleSelect:false,
+            pagination:true,
+            method:'get',
+            pageSize:20,
+            columns:[[{ field: "chk", "checkbox": true},
+                {field:'name',title:'项目名称',width:120,align:'center'},
+//                {field:'specifications',title:'规格',width:120,align:'center'},
+                {field:'unit',title:'单位',width:120,align:'center',
+                    formatter:function(value,row,index){
+                        if (eval("value_unit_name")[value]) {
+                            return eval("value_unit_name" )[value];
+                        }
+                    }
+                },
+                {field:'price',title:'单价(元)',width:120,align:'center',formatter:function(value,row){
+                   var str=sumPrice(row);
+                   if(str.toString().length>3){
+                       str+=0.01;
+                   }
+                    return str.toFixed(2);
+                }},
+                {field:'item_status',title:'项目状态',width:120,align:'center',
+                    formatter:function(value,row,index){
+                        if(value=="1"){
+                            return '<a style="color: #0c9d72">已移入</a>'
+                        }else{
+                            return '<a>未移入</a>';
+                        }
+                    }
+                }
+            ]]
+        });
+    });
+    function sumPrice(obj) {
+        //算法1
+        var u_value=Number(obj.unit_price)*(1+Number(obj.unit_profit)); //主材报价
+        var a_value=Number(obj.auxiliary_unit)*(1+Number(obj.auxiliary_profit)); //辅材报价
+        var p_value=Number(obj.artificial_price)*(1+Number(obj.artificial_profit)); //人工报价
+        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //损耗报价
+        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //机械费报价
+        //算法2
+//        var u_value=Number(obj.unit_price)/(1-Number(obj.unit_profit)); //主材报价
+//        var a_value=Number(obj.auxiliary_unit)/(1-Number(obj.auxiliary_profit)); //辅材报价
+//        var p_value=Number(obj.artificial_price)/(1-Number(obj.auxiliary_profit)); //人工报价
+//        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //损耗报价
+//        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //机械费报价
+        return u_value+a_value+p_value+l_value+m_value;
+    }
+    function showAll() {
+        $("#dataId").combobox('setValue','');
+        $('#dg').datagrid('load',{});
+    }
+
+
+    function addFiled(a,txt,id,t){
+        var str="";
+        var value=$("#baseId").combobox('getValue');
+        if(a){
+            str+='[{"field":"'+txt+'","op":"equal","value":"'+a+'","type":"text"},';
+        }
+        str+='{"field":"type","op":"equal","value":"'+value+'","type":"text"}';
+        str+=']';
+        $('#dg').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+//    function remData(id,txt){
+//        $('#dg').datagrid({
+//            queryParams: {
+//                filterRules:'[{"field":"'+txt+'","op":"equal","value":"'+id+'","type":"text"}]',
+//            }
+//        });
+//    }
+    function addData(){
+        var rows = $('#dg').datagrid('getSelections');
+        if(rows.length==0){
+            layer.msg('请选择要移入的数据！', {icon: 2});
+            return false;
+        }
+        var arr=[];
+        $.each(rows,function (i,t) {
+            arr.push(t.guid);
+        });
+        var url='{:url("savaData")}';
+        $.post(url,{budget_id:'{$guid}',material_id:arr},function(obj){
+            if(obj.code=="1001"){
+                layer.msg('添加成功', {icon: 1});
+                $('#dg').datagrid('reload');
+                mikkleClass.refresh();
+            }else{
+                layer.msg('添加失败，请联系管理员', {icon: 3});
+            }
+        },"json")
+    }
+</script>
+</body>
+</html>

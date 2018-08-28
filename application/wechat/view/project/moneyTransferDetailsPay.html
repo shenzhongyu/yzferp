@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>已签合同付款审核</title>
+    {include file="base_mui/weui_wechat"/}
+    <style type="text/css">
+
+
+    </style>
+    <script type="text/javascript" src="/static/mui/js/mui.picker.min.js"></script>
+    <link href="/static/mui/css/mui.picker.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="app">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back"></a>
+        <h1 class="mui-title">已签合同({$data.project_name})付款审核</h1>
+    </header>
+    <div v-if="res.total == 0" style="margin-top: 50px;font-size: 14px;text-align: center">暂无付款申请</div>
+    <div class="addBoss" v-for="item in res.rows" v-cloak>
+        <!--<div class="addPro">已签合同收款审核</div>-->
+
+        <div class="addFirst">
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly width27">付款类型：</div>
+                <div class="detailRightOnly">
+                    <div>{{item.collect_type_name}}</div>
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly width27">合同编号：</div>
+                <div class="detailRightOnly">
+                    <div>{{item.book_number}}</div>
+                </div>
+            </div>
+
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly width27">自然单据号：</div>
+                <div class="detailRightOnly">
+                    <div>{{item.number}}</div>
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly width27">款项名称：</div>
+                <div class="detailRightOnly">
+                    {{item.collect_name}}
+                </div>
+            </div>
+
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly width27">计划付款：</div>
+                <div class="detailRightOnly">
+                    <div>{{item.collect_price}}</div>
+                </div>
+            </div>
+            <div class="detailBoss ">
+                <div class="detailLeftOnly width27">未付款金额：</div>
+                <div class="detailRightOnly">
+                    <div>{{item.price}}</div>
+                </div>
+            </div>
+
+
+        </div>
+        <form method="post" id="add_pending" name="form">
+            <div class="addFirst">
+
+                <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;border-bottom: 1px solid #b0aeae">
+                    <div style="display: inline-block;width: 23%;float: left;line-height: 40px">付款方式：</div>
+                    <div style="display: inline-block;width: 77%;">
+                        <select name="payment_id" style="margin-bottom: 0px">
+                            <option v-for="item in re" :value="item.guid">{{item.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;border-bottom: 1px solid #b0aeae">
+                    <div style="display: inline-block;width: 23%;float: left;line-height: 40px">收款账号：</div>
+                    <div style="display: inline-block;width: 77%;">
+                        <select name="bank_id" style="margin-bottom: 0px">
+                            <option v-for="item in r" :value="item.guid">{{item.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;border-bottom: 1px solid #b0aeae">
+                    <div style="display: inline-block;width: 23%;float: left;line-height: 40px">实付金额：</div>
+                    <div style="display: inline-block;width: 77%;">
+                        <input type="number" name="collect_price" :value="item.price"
+                               style="font-size: 13px;margin-bottom: 0px">
+                    </div>
+                </div>
+                <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem">
+                    <div style="display: inline-block;width: 23%;float: left;line-height: 40px">支出说明：</div>
+                    <div style="display: inline-block;width: 77%;">
+                        <textarea name="collect_desc" style="margin-bottom: 0px"></textarea>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="mui-button-row  " style="margin-top: 0.2rem;margin-bottom: 0.2rem">
+                <button type="button" class="mui-btn mui-btn-primary w80 h50 fz15" id="leave_add"
+                        @click="pending(item.guid,$event)">确定
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var datab = {};
+        var dataA = {};
+        var id = "";
+        mui.ajax('{:url("wechat/project/moneyTransferDetailsPay")}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            data: {
+                project_id: '{$data.project_id}',
+                book_number: '{$data.book_number}'
+            },
+            success: function (response) {
+                mui.ajax('{:url("erp/project_deposit/showpaystylejson")}', {
+                    dataType: 'json',//服务器返回json格式数据
+                    type: 'post',//HTTP请求类型
+                    success: function (data) {
+                        mui.ajax('{:url("erp/project_deposit/showbankjson")}', {
+                            dataType: 'json',//服务器返回json格式数据
+                            type: 'post',//HTTP请求类型
+                            success: function (datab) {
+                                dataA.re = data;
+                                dataA.res = response;
+                                dataA.r = datab;
+
+                                var vue = new Vue({
+                                    el: '#app',
+                                    data: dataA,
+                                    methods: {
+//                                        leftBack: function () {
+//                                            mui.openWindow({
+//                                                url: "{:url('project/moneytransfer')}"
+//                                            })
+//                                        },
+                                        pending: function (id,t) {
+
+                                            var text =($(t.currentTarget).parent().parent()).serialize();
+                                            console.log(text)
+                                            console.log($(t.currentTarget).parent().parent())
+                                            $("#leave_add").attr("disabled","true");
+                                            var url = "{:url('//erp/project_deposit/paycollectprice')}/guid/" + id;
+                                            mui.ajax(url, {
+                                                data: text,
+                                                dataType: 'json',//服务器返回json格式数据
+                                                type: 'post',//HTTP请求类型
+                                                success: function (response) {
+                                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                                    if (response.code == 1001) {
+                                                        setTimeout(function () {
+                                                            history.back()
+                                                        }, 2000)
+
+                                                    }else{
+                                                        $("#leave_add").removeAttr("disabled");
+                                                    }
+
+                                                },
+                                                error: function () {
+                                                    mui.toast("请求失败", {duration: 'short', type: 'div'});
+                                                }
+                                            })
+                                        }
+                                    },
+                                    mounted: function () {
+                                        (function (rr) {
+                                            var result1 = document.getElementById("remind_time");
+                                            var btn1 = $('#remind_time');
+                                            btn1.each(function (i, btn) {
+                                                btn.addEventListener('tap', function () {
+                                                    var optionsJson = this.getAttribute('data-options') || '{}';
+                                                    var options = JSON.parse(optionsJson);
+                                                    var id = this.getAttribute('id');
+                                                    var picker = new rr.DtPicker(options);
+                                                    picker.show(function (rs) {
+                                                        result1.value = rs.text;
+                                                        picker.dispose();
+                                                        content = rs.text;
+                                                    });
+                                                }, false);
+                                            });
+                                        })(mui, document);
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }
+</script>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>项目施工计划</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">项目施工计划</h1>
+    <!--<a id="menu" class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>-->
+    <!--<a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right mui-btn-primary mui-btn-block" id="openPopover" style="font-size: 24px;"></a>-->
+</header>
+
+
+<div class="addBoss" v-cloak>
+    <div v-if="res==''" class="text-center">暂无信息</div>
+    <div class="addFirst" v-for="item in res">
+        <div class="addPro">施工详情</div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">项目名称：</div>
+            <div class="detailRightOnly">
+                {$project_name}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">施工名称：</div>
+            <div class="detailRightOnly">
+          {$day_name}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">工艺名称：</div>
+            <div class="detailRightOnly">
+                {{item.data_name}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">施工人数：</div>
+            <div class="detailRightOnly">
+                {{item.data_user_num}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">工艺说明：</div>
+            <div class="detailRightOnly">
+                {{item.data_desc}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">施工备注：</div>
+            <div class="detailRightOnly">
+                {{item.desc}}
+            </div>
+        </div>
+        <div class="detailBoss ">
+
+            <div class="detailLeftOnly">操作：</div>
+            <div class="detailRightOnly">
+             <a @click="workingPhoto(item.guid)">施工图片</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('{$url}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                dataA.res = response.rows;
+                var vue = new Vue({
+                    el: '#details',
+                    data: dataA,
+                    methods: {
+                        workingPhoto:function (guid) {
+                            mui.openWindow({
+
+                                url: "{:url('project/workingPhoto')}/guid/"+guid
+                            })
+                        }
+
+
+                    }
+                })
+            }
+        })
+    }
+</script>

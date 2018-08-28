@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+    <link rel="stylesheet" href="__STATIC__/erp/css/submit.css">
+
+</head>
+<body>
+<div id="pro_dlog">
+    <div id="pro_tb" style="height:auto;">
+        <a style="margin-left: 10px;" href="javascript:addUserOpus()"  class="easyui-linkbutton"
+           data-options="iconCls:'icon-add'">添加作品
+        </a>
+        <a style="margin-left: 10px;" href="javascript:editUserOpus()"  class="easyui-linkbutton"
+           data-options="iconCls:'icon-add'">修改作品
+        </a>
+        <a style="margin-left: 10px;" href="javascript:delUserOpus()"  class="easyui-linkbutton"
+           data-options="iconCls:'icon-cancel'">刪除作品
+        </a>
+    </div>
+</div>
+<div style="width: 58%;float: left">
+    <table id="opus_list" title="{$title}"></table>
+</div>
+<div id="show" style="width: 40%;float: right;height: 600px">
+
+</div>
+<div id="userOpus"></div>
+
+
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function(){
+        $('#opus_list').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:'chk','checkbox':true},
+                {field:'photo_name',title:'作品名称',width:'30%',align:'center'},
+                {field:'create_time',title:'添加时间',width:'20%',align:'center'},
+                {field:'desc',title:'备注',width:"30%",align:'center',},
+                {field:'op',title:'作品',width:"15%",align:'center',
+                    formatter:function(value,row,index){
+                        if(row.photo_address){
+                            return '<a href="javascript:lookOpusPhoto(&apos;'+row.photo_address+'&apos;);">浏览</a>'
+                        }
+                    }
+                },
+            ]],
+            singleSelect: true,
+            toolbar: '#pro_tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+    });
+    function addUserOpus() { //添加个人优秀作品
+        var href='{:url("addUserOpus")}';
+         $("#userOpus").dialog({
+             title: '添加作品',
+             iconCls: 'icon-save',
+             width: 500,
+             height:400,
+             cache: false,
+             href: href,
+             modal: true,
+             collapsible: false,
+             minimizable: false,
+             resizable: false,
+             maximizable: false,
+             buttons:[{
+                 text:' 确 定 ',
+                 iconCls: 'icon-save',
+                 handler:function(){
+                     $("#userOpus").find('form').eq(0).form('submit', {
+                         onSubmit: function () {
+                             var isValid = $(this).form('validate');
+                             if (!isValid) return false;
+                             $.messager.progress({text: '处理中，请稍候...'});
+                             $.post(href, $(this).serialize(), function (data) {
+                                 $.messager.progress('close');
+                                 if (data.code != 1001) {
+                                     layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                 } else {
+                                     layer.msg(data.msg,{icon: 1});
+                                     $("#userOpus").dialog('close');
+                                     $("#opus_list").datagrid('reload');
+                                 }
+                             }, 'json');
+                             return false;
+
+
+                         }
+                     });
+                 }
+             },{
+                 text:' 关 闭 ',
+                 iconCls:'icon-clear',
+                 handler:function(){
+                     $("#userOpus").dialog('close');
+                 }
+             }]
+         });
+    }
+    function editUserOpus() {
+        var arr=$("#opus_list").datagrid('getSelections');
+        if (arr.length>0){
+            if(arr.length==1){
+                var id=arr[0].guid;
+            }else{
+                layer.msg('请选择单条数据',{icon:2});
+                return false;
+            }
+        }else{
+            layer.msg('未选择需要修改的数据',{icon:2});
+            return false;
+        }
+        var href='{:url("editUserOpus")}/guid/'+id;
+        $("#userOpus").dialog({
+            title: '修改作品',
+            iconCls: 'icon-save',
+            width: 500,
+            height:400,
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#userOpus").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(href, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg,{icon: 1});
+                                    $("#userOpus").dialog('close');
+                                    $("#opus_list").datagrid('reload');
+                                }
+                            }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#userOpus").dialog('close');
+                }
+            }]
+
+        });
+        formLoad(id);
+    }
+    function formLoad(id) {
+        if ($('#fmq').length==0){
+            setTimeout(function(){formLoad(id);},500);
+        }else{
+            $('#fmq').form('load','{:url("showEditUserOpus")}/guid/'+id);
+        }
+    }
+    function lookOpusPhoto(a) {
+        var img='<img src="'+a+'">';
+        $("#show").html('');
+        $("#show").append(img);
+    }
+    function delUserOpus() {
+        var rows = $('#opus_list').datagrid('getSelections');
+        if(rows.length==0){
+            layer.msg('请选择要提取的空间！', {icon: 2});
+            return false;
+        }else{
+            var arr=[];
+            $.each(rows,function (i,t) {
+                arr.push(t.guid);
+            });
+            var url="{:url('delUserOpus')}";
+            $.post(url,{arr:arr},function (data) {
+                if(data.code=="1001"){
+                    layer.msg(data.msg, {icon: 1});
+                    return false;
+                }else{
+                    layer.msg(data.msg, {icon: 2});
+                    return false;
+                }
+            })
+        }
+    }
+</script>
+</body>
+</html>

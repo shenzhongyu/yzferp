@@ -1,0 +1,32 @@
+
+<table id="dg">
+</table>
+
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $("#dg").datagrid({
+            width:'100%',
+            height:410,
+            method: 'post',
+            url:'{$data_url}',
+            columns:[[
+                {field:'payment_name',title:'付款方式',width:'12%',align:'center'},
+                {field:'payment_uuid_name',title:'定金单申请人',width:'12%',align:'center'},
+                {field:'payment_price',title:'付款金额',width:'12%',align:'center'},
+                {field:'payment_date',title:'付款时间',width:'12%',align:'center'},
+                {field:'collected_price',title:'实收金额',width:'12%',align:'center'},
+                {field:'collected_uuid_name',title:'收款审核人',width:'12%',align:'center'},
+                {field:'collected_date',title:'收款时间',width:'12%',align:'center'},
+                {field:'op',title:'操作',width:'12%',align:'center',formatter:function(value,row,index){
+                    if(row.status==1){
+                        return ;
+                    }
+                }},
+            ]],
+            rownumbers:true,
+            nowrap:false, //超出部分自动换行
+        });
+    })
+</script>

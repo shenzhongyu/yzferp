@@ -1,0 +1,140 @@
+material_list.html{extend name="base/tree" /}
+
+{block name="tree_title"}{$tree_title}{/block}
+{block name="list_title"}{$list_title}{/block}
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false}
+, { field: 'material_name', title: '材料名称', width: '100', align: 'center', sortable: true}
+, { field: 'specifications', title: '规格', width: 100,align: 'center', sortable: true}
+, { field: 'material_pin', title: '品牌', width: 100,align: 'center', sortable: true}
+, { field: 'material_version', title: '型号', width: 100,align: 'center', sortable: true}
+, { field: 'material_stock', title: '库存', width: 100,align: 'center', sortable: true}
+, { field: 'supplier_id', title: '供应商', width: 100,align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+<!--, { field: 'category_id', title: '材料类别', width: 100,align: 'center', sortable: true,{:widget('Easyui/formatter')}}-->
+, { field: 'unit_name', title: '单位',width: 100, align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'material_price', title: '售价(元)', width: 100, align: 'center', sortable: true}
+, { field: 'floor_price', title: '发包价(元)',width:100, align: 'center', sortable: true}
+, { field: 'floor_price', title: '成本价(元)',width: 100, align: 'center', sortable: true}
+, { field: 'material_desc', title: '说明',width: 300, align: 'center', sortable: true}
+]]{/block}
+
+{block name="filter"}[
+{:widget('Easyui/showFilter', ["unit_name","combobox"])}
+{:widget('Easyui/showFilter', ["supplier_id","combobox"])}
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+{:widget('Easyui/showValueByUrl',["category_id","category_json",$map])}
+{:widget('Easyui/showArrayByUrl',["category_id","category_json",$map])}
+{:widget('Easyui/showValueByUrl',["supplier_id","supplier_json",$map])}
+{:widget('Easyui/showArrayByUrl',["supplier_id","supplier_json",$map])}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+}else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+{block name="tree_url"}{$tree_url}
+{/block}
+{block name="tree_columns"}
+[[
+{field:'name',title:'材料类别',width:'100%'}
+]]
+{/block}
+
+{block name="tree_db"}
+var arr;
+if(row.children){
+arr=[];
+arr.push(row.id);
+getArr(row.children,arr);
+}else{
+arr=row.id;
+}
+console.log(arr);
+
+$('#list').datagrid('addFilterRule', {
+field: 'category_id',
+op: 'in',
+value: arr,
+type: 'text'
+});
+$('#list').datagrid('doFilter');
+
+<!--$.ajax({-->
+<!--type: "POST",-->
+<!--url: "{$load_url}",-->
+<!--data: {id:arr},-->
+<!--dataType: "json",-->
+<!--success: function(data){-->
+<!--if(data.code=="1001"){-->
+<!--$('#list').datagrid('loadData',data.obj);-->
+<!--}-->
+<!--}-->
+<!--});-->
+{/block};
+
+{block name="my_js"}
+<script>
+    function replace(){
+        var rows = $('#list').datagrid('getSelections');
+        if (rows.length>0){
+            if (rows.length>1){
+                layer.msg('更换主材只能单选！', {icon: 2});
+                return false;
+            }
+            $.post('{$add_url}',{guid:'{$guid}',material_id:rows[0].guid},function (obj) {
+                if(obj.code!="1001"){
+                    layer.msg(data.msg, {icon: 2});
+                    return false;
+                }else{
+                    layer.msg('材料更换成功', {icon: 1});
+                    setTimeout(function () {
+                        window.parent.closeTab('材料更换');
+                        window.parent.addTab('预算选材','{:url("addMaterial",["pro_id"=>$pro_id])}','close');
+                    },500)
+                }
+            },'json');
+        }else{
+            layer.msg('请选取需要的主材！', {icon: 2});
+            return false;
+        }
+
+    }
+    function getArr(obj,arr){
+        $.each(obj,function(i,t){
+            if(t.children){
+                arr.push(t.id);
+                getArr(t.children,arr);
+            }else{
+                arr.push(t.id);
+            }
+        })
+    }
+</script>
+{/block}
+
+{block name="toolbar"}[
+{ text:'更换', iconCls: 'icon-add', handler:function(){ replace() } },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

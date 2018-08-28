@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>项目明细</title>
+    <link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link href="__STATIC__/erp/css/base.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+    <link rel="stylesheet" href="__ERP__/css/submit.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/erp/css/main.css"/>
+    <link rel="shortcut icon" type="image/x-icon" href="__STATIC__/erp/images/favicon.ico" media="screen" />
+    <style>
+        .container{padding: 0px 0px 0px 15px;width: 99% }
+        #p div{width: 33%;float: left;height: 35px;}
+        #p div span{font-size: 15px;padding: 0 5px;}
+        .jg{width: 33%;float: left;height: 35px;}
+        .jg span{font-size: 15px;padding: 0 5px;}
+        .p_panel div{height: 20px;font-size: 14px;line-height:20px;padding-left:25px;}
+        #tt{position: relative;bottom:-27px;left: 5px;;z-index: 2;width: 20px;height: 20px;color: #95b8e7;}
+    </style>
+
+</head>
+
+<body>
+<div id="dialog_div" ></div>
+<div class="container">
+    <div id="tt" class="iconfont">&#xe668;</div>
+    <div id="p" style="width:99%;height:auto;padding:10px;" class="easyui-panel" title="项目详情" data-options="tools:'#tt',headerCls:'p_panel'">
+        <div>
+            <span>项目名称：</span>
+            <span>{$project.project_name ?? "--"}</span>
+        </div>
+        <div>
+            <span>客户来源：</span>
+            <span>{$value.customer_source[$project.customer_source] ?? "--"}</span>
+        </div>
+        <div>
+            <span>装修类型：</span>
+            <span>{$value.decoration_type[$project.decoration_type] ?? "--"}</span>
+        </div>
+        <div>
+            <span>装修档次：</span>
+            <span>{$value.decoration_grade[$project.decoration_grade] ?? "--"}</span>
+        </div>
+        <div>
+            <span>色彩取向：</span>
+            <span>{$value.color_orientation[$project.color_orientation] ?? "--"}</span>
+        </div>
+        <div>
+            <span>装修风格：</span>
+            <span>{$value.decoration_style[$project.decoration_style] ?? "--"}</span>
+        </div>
+        <div>
+            <span>装修面积：</span>
+            <span>{$project.decoration_area ?? "--"}</span>
+        </div>
+        <div>
+            <span>预计总工期：</span>
+            <span>{$project.expected_duration ?? "--"}</span>
+        </div>
+        <div>
+            <span>工程地址：</span>
+            <span>{$project.project_address ?? "--"}</span>
+        </div>
+        <div>
+            <span>工程预算：</span>
+            <span>{$project.project_budget ?? "--"}</span>
+        </div>
+        <div style="width: 100%" >
+            <span>项目要求：</span>
+            <span>{$project.project_description ?? "--"}</span>
+        </div>
+    </div>
+
+    <div id="hd"></div>
+    <div id="tabs" class="easyui-tabs" data-options="tabWidth:112" style=" width:99%; height:400px;margin-top:20px;">
+        <div title="联系人" style="padding:15px">
+            <table id="cont" style="width:923px;">
+            </table>
+        </div>
+        <div  title="房屋结构" style="padding:15px" id="fanwu">
+            <div class="jg" id="{$structure.guid ?? ''}">
+                <span>居室结构：</span>
+                <span>{$value.living_room_structure[$structure.living_room_structure] ?? "--"}</span>
+            </div>
+            <div class="jg">
+                <span>房屋用途：</span>
+                <span>{$value.housing_use[$structure.housing_use] ?? "--"}</span>
+            </div>
+            <div class="jg">
+                <span>房屋朝向：</span>
+                <span>{$value.house_orientation[$structure.house_orientation] ?? "--"}</span>
+            </div>
+            <div class="jg">
+                <span>采光：</span>
+                <span>{$value.lighting[$structure.lighting] ?? "--"}</span>
+            </div>
+            <div class="jg">
+                <span>房屋类型：</span>
+                <span>{$value.house_type[$structure.house_type] ?? "--"}</span>
+            </div>
+            <div class="jg">
+                <span>楼层：</span>
+                <span>{$structure.floor ?? "--"}</span>
+            </div>
+        </div>
+        <div title="楼盘信息" style="padding:15px" id="loupan">
+            <div class="jg" id="{$building.guid ?? ''}">
+                <span>楼盘名称：</span>
+                <span>{$building.building_name ?? "--"}</span>
+            </div>
+            <div class="jg">
+                <span>楼盘地址：</span>
+                <span>{$building.building_adress ?? "--"}</span>
+            </div>
+            <div class="jg">
+                <span>楼盘均价：</span>
+                <span>{$value.building_price[$building.building_price] ?? "--"}</span>
+            </div>
+            <div class="jg">
+                <span>房产信息：</span>
+                <span>{$building.room_number ?? "--"}</span>
+            </div>
+        </div>
+        <div title="跟踪日志" style="padding:15px">
+            <table id="dg" style="width:900px;height:330px" >
+            </table>
+        </div>
+        <div title="提醒信息" style="padding:15px">
+            <table id="dg1" style="width:600px;height:250px" >
+            </table>
+        </div>
+        <div title="项目图片" style="padding:15px">
+            <div style="width: 60%;float: left">
+                <table id="ph" style="width:100%;height:300px">
+                </table>
+            </div>
+
+            <div style="width:38%;float: right">
+                <img src="" id="img_pro">
+            </div>
+        </div>
+        <div title="项目文件" style="padding:15px">
+            <div style="width: 60%;float: left">
+                <table id="pf" style="width:100%;height:300px">
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="dd" class="easyui-dialog" title="添加日志" style="width:420px;height:300px;"
+     data-options="iconCls:'icon-save',resizable:true,modal:false,closed:true">
+    <form style="padding:0 30px;" method="post" name="form" id="form">
+        <section>
+            <label class="label_1" style="">项目名称:</label>
+            <label class="label_2" style="">
+                {$project.project_name}
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">操作人:</label>
+            <label class="label_2" id="op_name">
+
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">跟踪内容:</label>
+            <label class="label_2" style="">
+                <textarea name="log_content" rows="5" cols="30" style="resize: none;" id="textara"></textarea>
+            </label>
+        </section>
+    </form>
+</div>
+<div id="dd1" class="easyui-dialog" title="设置提醒" style="width:420px;height:350px;"
+     data-options="iconCls:'icon-save',resizable:true,modal:false,closed:true">
+    <form style="padding:0 30px;" method="post" name="form">
+        <section>
+            <label class="label_1" style="">项目名称:</label>
+            <label class="label_2" style="">
+                {$project.project_name}
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">操作人:</label>
+            <label class="label_2" id="op_name1">
+
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">提醒时间:</label>
+            <label class="label_2" style="">
+                <input class= "easyui-datetimebox" name="remind_time" data-options="showSeconds:false,editable:false,"  style="width:80%" id="datetime">
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">提醒内容:</label>
+            <label class="label_2" style="">
+                <textarea name="remind_content" rows="5" cols="30" style="resize: none;" id="textara1"></textarea>
+            </label>
+        </section>
+    </form>
+</div>
+{include file="base/js" /}
+<script>
+    {:widget('Easyui/showValue', ["sex","sex"] )};
+    {:widget('Easyui/showValue', ["householder_relation","householder_relation"] )};
+    $(function(){
+        $("#dg").datagrid({
+            url:'{:url("project/showLog",['project_guid'=>$project['guid']])}',
+            columns:[[
+                {field:'username',title:'姓名',width:120,align:'center'},
+                {field:'department_name',title:'部门',width:120,align:'center'},
+                {field:'jobs_name',title:'职位',width:120,align:'center'},
+                {field:'log_content',title:'跟踪内容',width:200,align:'center'},
+                {field:'create_time',title:'时间',width:180,align:'center'}
+            ]],
+            rownumbers:true,
+            pageSize:20,
+            pagination:true,
+            nowrap:false, //超出部分自动换行
+        });
+        $("#dg1").datagrid({
+            url:'{:url("project/showRemindTime",['project_guid'=>$project['guid']])}',
+            columns:[[
+                {field:'remind_time',title:'提醒时间',width:150,align:'center'},
+                {field:'remind_content',title:'提醒内容',width:200,align:'center'}
+            ]],
+            rownumbers:true,
+            pageSize:20,
+            pagination:true,
+        });
+        $("#cont").datagrid({
+            url:'{:url("project/showContacts",['project_guid'=>$project['guid']])}',
+            columns:[[
+                {field:'contact_name',width:120,title:'姓名',align:'center'},
+                {field:'sex',width:100,title:'性别',align:'center',formatter:function(value,row,index){
+                    return eval("value_" +  this.field)[value] ? eval("value_" +  this.field)[value] : value;
+                }},
+                {field:'contact_number',width:140,title:'联系电话',align:'center'},
+                {field:'customer_qq',width:130,title:'QQ',align:'center'},
+                {field:'customer_email',width:140,title:'Email',align:'center'},
+                {field:'householder_relation',width:100,title:'与户主关系',align:'center',formatter:function(value,row,index){
+                    return eval("value_" +  this.field)[value] ? eval("value_" +  this.field)[value] : value;
+                }},
+//							{field:'op',width:120,title:'操作',align:'center',formatter: function(value,row,index){
+//								return '<a href="javascript:;" onclick="change(&apos;'+row.guid+'&apos;,\'change\',reshContacts)">修改</a>'}
+//							}
+            ]],
+            rownumbers:true
+        });
+        //项目图片
+        $("#ph").datagrid({
+            url:'{:url("Project/showPhotoList",['project_id'=>$project['guid']])}',
+            columns:[[
+                {field:'photo_name',width:'15%',title:'图片名称',align:'center'},
+                {field:'uuid_name',width:'15%',title:'上传者',align:'center'},
+                {field:'photo_desc',width:'40%',title:'图片描述',align:'center'},
+                {field:'op',width:'20%',title:'操作',align:'center',formatter: function(value,row,index){
+                    var str='<a href="javascript:;" onclick="lookProPhoto(&apos;'+row.photo_address+'&apos;)">预览</a>&nbsp;&nbsp;';
+                    str+= '<a href="javascript:;" onclick="downLoadPhoto(&apos;'+row.field_m+'&apos;,1)">下载</a>&nbsp;&nbsp;';
+                    str+= '<a href="javascript:;" onclick="delProPhoto(&apos;'+row.guid+'&apos;,1)">删除</a>';
+                    return str;
+                }
+                }
+            ]],
+            rownumbers:true,
+            nowrap:false, //超出部分自动换行
+            pageSize:20,
+            pagination:true,
+        });
+        //项目文件
+        $("#pf").datagrid({
+            url:'{:url("Project/showFieldList",['project_id'=>$project['guid']])}',
+            columns:[[
+                {field:'field_name',width:'15%',title:'文件名称',align:'center'},
+                {field:'uuid_name',width:'15%',title:'上传者',align:'center'},
+                {field:'field_desc',width:'40%',title:'文件描述',align:'center'},
+                {field:'op',width:'20%',title:'操作',align:'center',formatter: function(value,row,index){
+                    return '<a href="javascript:;" onclick="downLoadPhoto(&apos;'+row.field_m+'&apos;,2)">下载&nbsp;&nbsp;</a><a href="javascript:;" onclick="delProField(&apos;'+row.guid+'&apos;,1)">删除</a>'
+                }
+                }
+            ]],
+            rownumbers:true,
+            nowrap:false, //超出部分自动换行
+            pageSize:20,
+            pagination:true,
+        });
+
+    });
+
+    function lookProPhoto(a) {
+        $("#img_pro").attr("src",a);
+    }
+    function reshContacts(){
+        $('#cont').datagrid('reload');
+        $("#tabs").tabs("select", 0);
+    }
+    function downLoadPhoto(id,type){
+        var a="";
+        if (type=="1"){
+            a="photo" ;
+        }else if(type=="2"){
+            a="field" ;
+        }
+        window.open('{:url("Project/showHtml")}/m/'+id+"/type/"+a);
+    }
+
+
+
+
+</script>
+</body>
+
+</html>

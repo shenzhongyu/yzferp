@@ -1,0 +1,103 @@
+listEdit_BudgetStyle.html{extend name="base/base_search_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true,  movable: false }
+, { field: 'style', title: '预算书名称', width: '100', align: 'center', sortable: true}
+, { field: 'com_name', title: '公司名字', width: '180', align: 'center', sortable: true}
+, { field: 'telephone', title: '公司电话', width: '100', align: 'center', sortable: true}
+, { field: 'logo', title: '公司logo', width: '160', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'address', title: '公司地址', width: '240', align: 'center', sortable: true}
+, { field: 'desc', title: '预算协议', width: '600', align: 'center', sortable: true}
+, { field: 'opera', title: '操作', width: '120', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+]]{/block}
+
+{block name="filter"}[
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber']},
+
+{:widget('Easyui/showFilter', ["decoration_grade","combobox"])}
+{:widget('Easyui/showFilter', ["decoration_style","combobox"])}
+{:widget('Easyui/showFilter', ["decoration_type","combobox"])}
+{:widget('Easyui/showFilter', ["color_orientation","combobox"])}
+{:widget('Easyui/showFilter', ["customer_source","combobox"])}
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["decoration_grade","decoration_grade"] )}
+{:widget('Easyui/showAll', ["decoration_style","decoration_style"] )}
+{:widget('Easyui/showAll', ["decoration_type","decoration_type"] )}
+{:widget('Easyui/showAll', ["color_orientation","color_orientation"] )}
+{:widget('Easyui/showAll', ["customer_source","customer_source"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'logo'){
+    if(value){
+        return '<img style="margin: 10px " width="100" height="40" src="'+value+'" />';
+    }else{
+        return '<a>无</a>';
+    }
+}else if(field=="opera"){
+    return '<a href="javascript:edit();">修改</a> <a href="javascript:del();">删除</a>';
+}else if (eval("value_" + field)[value]){
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+<script>
+function addT(){
+    window.parent.addTab('预算书模板','{:url("showAddBudgetBook")}','close');
+}
+function edit(){
+    var a=mikkleClass.getSelectRows('修改');
+    if(a){
+        window.parent.addTab('预算书模板','{:url("showAddBudgetBook")}/id/'+a,'close');
+    }
+}
+function del() {
+    var a=mikkleClass.getSelectRows('删除');
+    if(a){
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("Material/delDataWithBudgetStyle")}', {id: a}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    mikkleClass.refresh();
+                }
+            }, 'json');
+        });
+    }
+}
+</script>
+
+{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'添加', iconCls: 'icon-add', handler:function(){addT()} },'-',
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ edit();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

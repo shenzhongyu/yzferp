@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>预算空间装饰项列表</title>
+    {include file="wechat@base_mui/weui_wechat_swiper"/}
+    <script type="text/javascript" src="__MUI__/js/mui.picker.min.js"></script>
+    <link href="__MUI__/css/mui.picker.min.css" rel="stylesheet"/>
+
+    <style type="text/css">
+        .detail_table {
+            width: 100%;
+            font-size: 0.26rem;
+        }
+
+        .detail_li {
+            padding: 0.1rem 0.2rem;
+        }
+
+        .picker_a {
+            margin: 0.1rem 0.3rem !important;
+        }
+
+        .detail_table p {
+            font-size: 0.26rem;
+            line-height: 0.34rem;
+        }
+    </style>
+</head>
+</head>
+<body>
+<div id="index">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+        <!--<a class=" mui-icon mui-icon-plusempty mui-pull-right" style="font-size:30px;"-->
+        <!--@click="add()"></a>-->
+        <h1 class="mui-title">预算空间装饰项列表</h1>
+    </header>
+    <div style="margin-top: 50px;text-align: center;width:100% !important;" id="div"></div>
+    <div class="swiper-container" id="swiper_container" style="margin-top: 50px">
+        <div class="swiper-wrapper" id="swiper_list">
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var number = 145;
+    $(document).ready(function () {
+        $("#listBoth").hover(function () {
+            $("#listBoth").css(background, "yellow")
+        });
+        initVueLoad();
+        myMuiLoad(1, 15);
+    });
+    function initVueLoad() {
+        var vue = new Vue({
+            el: '#index',
+            methods: {
+
+                add: function () {
+                    mui.openWindow({
+                        url: "{:url('budget/addDecorate',['id'=>$id,'guid'=>$guid])}"
+                    })
+                }
+
+            },
+            deletespace: function () {
+
+
+            }
+        })
+    }
+
+    function myMuiLoad(page, rows) {
+
+        var ajax_data = {};
+        if (search_data) {
+            ajax_data = Object.assign(search_data, {"page": page, "rows": rows});
+        }
+        mui.ajax(url, {
+                data: ajax_data,
+                dataType: 'json',//服务器返回json格式数据
+                type: 'post',//HTTP请求类型
+                success: function (response) {
+                    var index = [];
+                    for (var a = 0; a <= response.total; a++) {
+                        index.push(a * 15);
+
+                        console.log(response)
+                    }
+
+                    response.aa = index;
+
+                    buildSwiper(rows, response.total);
+                    loadVue(response, page);
+                    console.log(response.total)
+
+                },
+
+            }
+        );
+    }
+    function loadVue(data, page) {
+        var load = new Vue({
+            el: '#swiper_' + page,
+            data: data,
+            methods: {
+                add: function (id) {
+
+                    mui.confirm("确定添加此类容吗？", "提示");
+                    $(".mui-popup-button-bold").on('tap', function () {
+                        mui.ajax('{:url("erp/design/savespacematerial")}', {
+                            data: {
+                                "project_id": "{$id}",
+                                "pid": "{$guid}",
+                                "type": "1",
+                                "chi_id": [id]
+                            },
+                            dataType: 'json',//服务器返回json格式数据
+                            type: 'post',//HTTP请求类型
+                            success: function (response) {
+                                mui.toast(response.msg, {duration: 'short', type: 'div'});
+                            }
+                        })
+                    })
+                }
+            },
+            mounted: function () {
+                if (isEmptyObject(my_swiper)) {
+                    my_swiper = new Swiper('#swiper_container', {
+                        setWrapperSize: true,
+                        observer: true,
+                        observeParents: true,
+                        onSlideChangeStart: function (swiper) {
+                            //要翻转的页数
+                            var page_i = swiper.activeIndex + 1;
+                            if (!page_finished[page_i]) {
+                                if (page_all > 0 && page_i <= page_all) {
+                                    myMuiLoad(swiper.activeIndex + 1, 15);
+
+                                }
+                            }
+                        }
+                    });
+
+                }
+                //设置page页已更新
+                page_finished[page] = true;
+            }
+        })
+    }
+    function serach() {
+        reload();
+        var data_value = $(".mui-popup-input input").val()
+
+        search_data.filterRules = [{
+            "field": "day_name",
+            "op": "contains",
+            "value": data_value
+        }];
+        myMuiLoad(1, 15);
+    }
+    function buildSwiper(rows, all) {
+        $("#div").css("display", "none");
+        if (all == 0) {
+
+            $("#div").html("暂无数据")
+            $("#div").css("display", "block");
+        }
+        if (page_all == 0) {
+            page_all = Math.ceil(all / rows);
+            page_all = page_all == 0 ? 1 : page_all;
+            for (var i = 1; i <= page_all; i++) {
+                $("#swiper_list").append(div_str.replace("{{id}}", "swiper_" + i));
+
+//                $("#span").append(div_str.replace("{{number}}", number));
+
+
+            }
+
+        } else {
+            my_swiper.updateSlidesSize();
+        }
+
+        return true;
+    }
+
+    function reload() {
+        $("#swiper_list").empty();
+        $("#swiper_list").css("transform", "translate3d(0px, 0px, 0px)");
+        page_all = 0;
+        page_finished = {};
+        search_data = {};
+    }
+
+    function isEmptyObject(obj) {
+        for (var key in obj) {
+            return false;
+        }
+        return true;
+    }
+
+    var url = "{:url('erp/design/showdatalist',['project_id'=>$id,'guid'=>$guid])}";
+
+
+    var page_all = 0;
+    var page_finished = {};
+    var div_str = ' <ul class="mui-table-view detail_table mui-content swiper-slide"id="{{id}}"  >' +
+        ' <li class="mui-table-view-cell mui-collapse detail_li" v-for ="(a,index) in rows" >' +
+        '<a class="mui-navigate-right picker_a" href="#">{{a.name}}</a>' +
+        ' <div class="mui-collapse-content" style="line-height: 0.40rem">' +
+        ' <div><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">单位</span><span style="width: 76%;box-sizing: border-box;float: left">{{a.unit}}</span></div>' +
+//        ' <p><span style="margin-right: 1rem">数量</span>{{a.number}}</p>' +
+        ' <div><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">单价</span><span style="width: 76%;box-sizing: border-box;float: left">{{a.price}}元</span> </div>' +
+//        ' <p><span style="margin-right: 1rem">金额</span>{{a.number*a.price}}</p>' +
+        ' <div ><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">说明</span><span style="width: 76%;box-sizing: border-box;float: left">{{a.desc}}&nbsp;</span></div>' +
+        ' <div><span style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">状态</span><span v-if="a.item_status==1" style="color: red;width: 76%;box-sizing: border-box;float: left">已移入</span><span v-if="a.item_status!==1" style="width: 76%;box-sizing: border-box;float: left">未移入</span></div>' +
+        ' <div><div style="width: 20%;display:inline-block;box-sizing: border-box;float: left;">操作</div><a class=" mui-icon mui-icon-plusempty " @click="add(a.guid)"></a> &nbsp;&nbsp;</div>' +
+        ' </div>' +
+        ' </li>' +
+        ' </ul>';
+    var search_data = {};
+    var my_swiper = {};
+</script>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+showPaymentList.html{extend name="base/edit" /}
+{block name="columns"}
+<th data-options="field:'name',align:'center',width:'20%' ,editor:'textbox',">付款方式</th>
+<th data-options="field:'desc',align:'center',width:'40%' ,editor:'textbox',">备注说明</th>
+<th data-options="field:'op',align:'center',width:'10%' ,
+                formatter:function(value,row,index){
+                    if(row.guid){
+                        return del(row.guid);
+                    }else{
+                        return ;
+                    }
+                }
+            ">操作</th>
+{/block}

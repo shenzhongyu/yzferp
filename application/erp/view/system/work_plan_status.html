@@ -1,0 +1,10 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section style="margin-top: 10px;">
+        <label class="label_1" style="">工作进度:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="work_schedule" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/work_schedule')}',method:'get',"
+                   style="width:100%">
+        </label>
+    </section>
+</form>

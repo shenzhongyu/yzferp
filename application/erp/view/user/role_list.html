@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    {include file="base/css" /}
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+</head>
+<body>
+<div id="role_dlog"></div>
+<div style="width: 92%;float: left">
+    {block name="label"}
+
+    {/block}
+    <table id="role" class="easyui-datagrid" title="{$title}" style="width:100%;height:auto"
+           data-options="
+                nowrap:false,
+				iconCls: 'icon-edit',
+				singleSelect: true,
+				toolbar: '#tb',
+				url: '{$data_url}',
+				method: 'post',
+				nowrap:false,
+				onDblClickCell: onDbClickForPay,
+				onEndEdit:editRowForPay,
+				pageSize:20,
+				pagination:true,
+				rownumbers: true,
+			">
+        <thead>
+        <tr>
+            <th data-options="field:'role_name',align:'center',width:'20%' ,editor:{type:'textbox',
+							options:{required:true,}},">角色名称</th>
+            <th data-options="field:'role_desc',align:'center',width:'20%' ,editor:{type:'textbox'},">角色备注</th>
+            <th data-options="field:'op',align:'center',width:'35%' ,
+                formatter:function(value,row,index){
+                    return delData(row.guid);
+                }
+            ">操作</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div id="tb" style="height:auto;">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="addRow()">新增</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeit()">取消当前编辑</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-reload',plain:true" onclick="removeit()">刷新</a>
+
+    </div>
+</div>
+<div style="clear: both">
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    var clickIndex; //点击的下标
+    var flag;  //判断提交的数据是否成功
+    function defaultValue() {
+        var g = $('#cc').combogrid('grid');
+        var r = g.datagrid('getSelected');
+    }
+    function editRowForPay(index, row, changes) {
+        if(!$.isEmptyObject(changes)){
+            flag=index;
+        }
+    }
+    function  onDbClickForPay(index){
+        if(clickIndex===0||clickIndex){
+            $('#role').datagrid('endEdit', clickIndex);
+            var  rows= $('#role').datagrid('getChanges');
+            var obj_new=$('#role').datagrid('getRows')[clickIndex];
+            var url='{$add_url}';
+            if(flag==clickIndex){
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data:obj_new ,
+                    dataType: "json",
+                    success: function(data){
+                        if (data.code=="1001"){
+                            $('#role').datagrid('endEdit', clickIndex);
+                            $('#role').datagrid('selectRow', index)
+                                .datagrid('beginEdit', index);
+                            clickIndex=index;
+                        }else{
+                            layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                        }
+                    }
+                });
+            }else{
+                $('#role').datagrid('endEdit', clickIndex);
+                $('#role').datagrid('selectRow', index)
+                    .datagrid('beginEdit', index);
+                clickIndex=index;
+            }
+        }else{
+            $('#role').datagrid('selectRow', index).datagrid('beginEdit', index);
+            clickIndex=index;
+        }
+
+    }
+    function addRow(){
+        if(clickIndex!==undefined){
+            if($('#role').datagrid('validateRow', clickIndex)){
+                $('#role').datagrid('endEdit', clickIndex);
+                var obj_new=$('#role').datagrid('getRows')[clickIndex];
+                var url='{$add_url}';
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data:obj_new ,
+                    dataType: "json",
+                    success: function(data){
+                        if (data.code=="1001"){
+                            $('#role').datagrid('insertRow',{index: 0
+                                ,row:{
+
+                        }
+                        });
+                            clickIndex=0,
+                                $('#role').datagrid('selectRow', clickIndex)
+                                    .datagrid('beginEdit', clickIndex);
+                        }else{
+                            $('#role').datagrid('selectRow', clickIndex)
+                                .datagrid('beginEdit', clickIndex);
+                            layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                        }
+                    }
+                });
+            }else{
+                return false;
+            }
+
+        }else{
+            $('#role').datagrid('insertRow',{index: 0
+                ,row:{
+
+        }
+        });
+            clickIndex=0;
+            $('#role').datagrid('selectRow', clickIndex)
+                .datagrid('beginEdit', clickIndex);
+        }
+
+
+    }
+    function removeit(){
+        clickIndex=undefined;
+        $("#role").datagrid('reload');
+    }
+    function accept(){
+        $('#role').datagrid('endEdit', clickIndex);
+        var obj_new=$('#role').datagrid('getRows')[clickIndex];
+        ajax('{$add_url}',obj_new);
+
+    }
+    function ajax(url,obj){
+        $.ajax({
+            type: "POST",
+            url: url,
+            data:obj ,
+            dataType: "json",
+            success: function(data){
+                if (data.code=="1001"){
+                    layer.msg('数据保存成功',{icon:1});
+                    removeit();
+                }else{
+                    $('#role').datagrid('selectRow', clickIndex)
+                        .datagrid('beginEdit', clickIndex);
+                    layer.msg(data.msg,{icon:2});
+                }
+            }
+        });
+    }
+    function delData(a) {
+        var str='<a href="javascript:delRole(&apos;'+a+'&apos;);">删除</a>  | ';
+        str+='<a href="javascript:;" onclick="editPower(&apos;'+a+'&apos;)" style="margin-right: 10px">查看</a> | ';
+        str+='<a href="javascript:;" onclick="editPower(&apos;'+a+'&apos;)">编辑PC</a>  | ';
+        str+='<a href="javascript:;" onclick="editMobilePower(&apos;'+a+'&apos;)">编辑手机</a>';
+        return str;
+    }
+    function delRole(a){
+        if (typeof (a)=="undefined"){
+            return false;
+        }
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{$del_url}', {id: a}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    $("#role").datagrid('reload');
+                }
+            }, 'json');
+        });
+
+    }
+    function editPower(o){
+        window.parent.addTab('权限编辑','{:url("editUserNodeRole")}/rid/'+o,'close');
+    }
+    function editMobilePower(o){
+        window.parent.addTab('手机端权限编辑','{:url("editUserNodeRole",["is_mobile"=>1])}/rid/'+o,'close');
+    }
+</script>
+</body>
+</html>

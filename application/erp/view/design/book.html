@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>预算报价表</title>
+    <script type="text/javascript" src="__STATIC__/easyui_151/jquery.min.js"></script>
+    <style>@media print{body{display:none}}</style>
+</head>
+<body style=" font-size: 14px; font-family: '微软雅黑';color:#474747" oncontextmenu="doNothing()"  onselectstart = "return false" oncopy = "return false">
+<div>
+    <li style="list-style: none;height: 55px;margin-bottom: 5px;">
+        <div style="width: 20%;height: 50px;float: left">
+            <img width="100%" height="100%"  src="http://www.yzferp.com{$book.logo}">
+        </div>
+        <div style="width: 50%;height: 50px;float: left;text-align: center">
+            <span style="font-weight: bold;font-size: 24px;">{$book.name}預算書</span>
+        </div>
+        <div style="width: 24%;height: 50px;float: left;text-align: right">
+            <a style="list-style: none;height: 35px;display: inline-block;width: 100%"></a>
+            <span style="">编号：{$book_number}</span>
+        </div>
+    </li>
+    <table style="border-bottom:none;text-align: center;width:100%;" border="1" cellspacing="0" cellpadding="0">
+        <tr style="height: 25px;">
+            <th style="padding-left: 10px;width:20%"    align="left">业主姓名：{$book.cont_name ? $book.cont_name :  $cont['cont_name']}</th>
+            <th style="padding-left: 10px;width:20%"    align="left">业主电话：{$book.cont_pone ? $book.cont_pone :  $cont['cont_p']}</th>
+            <th style="padding-left: 10px;width:20%"   align="left">面积：{$book.area ? $book.area : $project.pro_area}</th>
+            <th style="padding-left: 10px;width:30%"   align="left">工程地址：{$book.cont_pone ? $book.cont_pone :  $project.pro_address}</th>
+        </tr>
+        <tr style="height: 25px;">
+            <th style="padding-left: 10px;"   align="left">设计师姓名：{$user.name}</th>
+            <th style="padding-left: 10px;"   align="left">设计师电话：{$user.tel}</th>
+            <th style="padding-left: 10px;"   align="left">设计风格：{$book.budget_style ? $book.budget_style : $project.pro_style_name}</th>
+            <th style="padding-left: 10px;"   align="left">公司地址：{$book.address}</th>
+        </tr>
+    </table>
+    <table style="border-bottom:none;text-align: center;width:100%;" border="1" cellspacing="0" cellpadding="0">
+        <tr bgcolor="#d3d3d3" style="height: 25px;">
+            <th  rowspan="2" style="width: 4%;">编号</th>
+            <th  rowspan="2" style="width: 10%;">工程项目</th>
+            <th  rowspan="2" style="width:3%">单位</th>
+            <th  colspan="3" style="width:18%">工程造价</th>
+            <th  colspan="5" style="width: 25%">其中</th>
+            <th  rowspan="2" style="width: 41%">备注</th>
+        </tr>
+        <tr bgcolor="#d3d3d3" style="height: 25px;">
+            <th >数量</th>
+            <th >单价</th>
+            <th>金额</th>
+            <th>主材</th>
+            <th>辅材</th>
+            <th>人工</th>
+            <th>损耗</th>
+            <th >机械</th>
+        </tr>
+    </table>
+    {volist name="body" id="vo" empty="暂时没有数据"}
+    <table style="border-bottom:none;text-align: center;width:100%;" border="1" cellspacing="0" cellpadding="0">
+        <tr style="height: 25px;">
+            <th style="width:100px" colspan="12">{$vo.name}</th>
+        </tr>
+    </table>
+    <table  style="border-bottom:none;text-align: center;width:100%;" border="1" cellspacing="0" cellpadding="0">
+        {volist name="vo.child" id="f" empty="暂时没有数据" }
+        <tr style="height: 25px;">
+            <td style="word-wrap:break-word;width: 4%;">{$f.xuhao}</td>
+            <td style="word-wrap:break-word;width: 10%;text-align: left;padding-left: 10px;">{$f.name}</td>
+            <td style="word-wrap:break-word;width: 3%">{$f.unit}</td>
+            <td style="word-wrap:break-word;width: 6%;">{$f.number}</td>
+            <td style="word-wrap:break-word;width: 6%;">{$f.price|sprintf="%.2f",###}</td>
+            <td style="word-wrap:break-word;width: 6%;">{$f.price_sum|sprintf="%.2f",###}</td>
+            <td style="word-wrap:break-word;width: 5%;">{$f.zc_price|sprintf="%.2f",###}</td>
+            <td style="word-wrap:break-word;width: 5%;">{$f.fc_price|sprintf="%.2f",###}</td>
+            <td style="word-wrap:break-word;width: 5%;">{$f.rg_price|sprintf="%.2f",###}</td>
+            <td style="word-wrap:break-word;width: 5%;">{$f.sh_price|sprintf="%.2f",###}</td>
+            <td style="word-wrap:break-word;width: 5%;">{$f.jx_price|sprintf="%.2f",###}</td>
+            <td style="word-wrap:break-word;width:41%;text-align: left;padding-left: 10px">{$f.desc}</td>
+        </tr>
+        {/volist}
+        <tr style="height: 25px;">
+            <th colspan="12" style="text-align: left;padding-left: 10px;">小计：{$vo.xj_price|sprintf="%.2f",###} 元</th>
+        </tr>
+        <tr style="height: 25px;">
+            <th colspan="12" style="text-align: left;padding-left: 10px;">备注：{$vo.desc}</th>
+        </tr>
+        {/volist}
+        <tfoot>
+        {volist name="foot" id="g" empty="暂时没有数据" }
+        <tr style="height: 25px;">
+            <td style="word-wrap:break-word;width: 4%;"></td>
+            <td style="word-wrap:break-word;width: 10%;text-align: left;padding-left: 10px;">{$g.name}</td>
+            <td style="word-wrap:break-word;">{$g.unit}</td>
+            <td style="word-wrap:break-word;"></td>
+            <td style="word-wrap:break-word;">{$g.rate_value}</td>
+            <td colspan="2" style="word-wrap:break-word;text-align: left;padding-left: 10px;" >{$g.value|sprintf="%.2f",###}</td>
+            <td style="word-wrap:break-word;"></td>
+            <td style="word-wrap:break-word;"></td>
+            <td style="word-wrap:break-word;"></td>
+            <td style="word-wrap:break-word;"></td>
+            <td style="word-wrap:break-word;text-align: left;padding-left: 10px;">{$g.desc}</td>
+        </tr>
+        {/volist}
+        <tr>
+           <th colspan="12">备注:</th>
+        </tr>
+        <tr>
+            <td align="left" style="padding: 10px;" colspan="12">
+               {$book.desc}
+                <li style="list-style:none;line-height: 30px;">
+                    <span style="font-size: 17px;font-weight: bold;margin: 0 20%">甲方（签字）：</span>
+                    <span style="font-size: 17px;font-weight: bold">乙方（盖章）：</span>
+                </li>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+//    window.print();
+    function doNothing(){
+        window.event.returnValue=false;
+        return false;
+    }
+document.onselectstart = function(){
+    event.returnValue = false;
+}
+</script>
+</body>
+</html>

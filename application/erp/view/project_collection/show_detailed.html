@@ -1,0 +1,73 @@
+<a style="margin-left: 10px;" href="javascript:preview()" class="easyui-linkbutton" >打 印</a>
+<p style="padding-left:10px">
+    <span>收款类型：</span>
+    <span>{$obj['collect_type_name']}</span>
+    <span style="margin-left: 5%">合同编号：</span>
+    <span>{$obj['book_number']}</span>
+    <span style="margin-left: 5%">项目名称：</span>
+    <span>{$name}</span>
+</p>
+<!--startprint-->
+<h2 id="p1" style="display: none;text-align: center;font-size: 18px;">{$company}</h2>
+<p id="p2" style="display: none;text-align: center">收款凭证</p>
+<table border="1" cellspacing="0" cellpadding="0" width="98%" style="margin-left:1%;text-align: center">
+    <tr style="height: 30px;">
+        <th style="width: 20%">单据号：</th>
+        <td style="width: 30%">{$obj['number']}</td>
+        <th style="width: 20%">款项名称：</th>
+        <td style="width: 30%">{$obj['collect_name']}</td>
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%">计划收款日期：</th>
+        <td style="width: 30%">{$obj['collect_date']}</td>
+        <th style="width: 20%">金额(元)：</th>
+        <td style="width: 30%">{$obj['collect_price']}</td>
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%">审核人：</th>
+        <td style="width: 30%">{$obj['examine_uuid_name']}</td>
+        <th style="width: 20%">审核说明：</th>
+        <td style="width: 30%">{$obj['examine_desc']}</td>
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%">款项状态：</th>
+        <td style="width: 30%">{$ex}</td>
+        <th style="width: 20%">收款说明：</th>
+        <td style="width: 30%">{$obj['collect_desc']}</td>
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%">是否开发票：</th>
+        <td style="width: 30%">{$invoice}</td>
+        <th style="width: 20%">发票金额(元)：</th>
+        <td style="width: 30%">{$obj['invoice_price']}</td>
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%">支付方式：</th>
+        <td style="width: 30%">{$payment}</td>
+        <th style="width: 20%">收款人：</th>
+        <td style="width: 30%">{$obj['collected_uuid_name']}</td>
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%">款项说明：</th>
+        <td style="" colspan="3">{$obj['desc']}</td>
+    </tr>
+</table>
+<!--endprint-->
+<script>
+    function preview()
+    {
+        $("#p1").show();
+        $("#p2").show();
+        bdhtml=window.document.body.innerHTML;
+        sprnstr="<!--startprint-->";
+        eprnstr="<!--endprint-->";
+        prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+17);
+        prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));
+        window.document.body.innerHTML=prnhtml;
+        window.parent.parent.addTab("打印",prnhtml,'close');
+        window.print();
+        setTimeout(function () {
+            window.parent.parent.closeTab("打印",prnhtml,'close');
+        },100)
+    }
+</script>

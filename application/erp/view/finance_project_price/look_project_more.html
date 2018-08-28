@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>项目收支明细</title>
+    {include file="base/css" /}
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+    <style>
+        .coll_li{width: 33%;height: 25px;line-height: 25px;float: left;list-style: none}
+    </style>
+</head>
+<body>
+<div class="easyui-panel" title="{$title}" id="coll_div" style="width:97%;padding:1%;height: auto">
+    <div style="width: 50%">
+        <li class="coll_li">合同编号：{$obj?$obj['book_number']:''}</li>
+        <li class="coll_li">项目名称：{$obj?$obj['project_name']:''}</li>
+        <li class="coll_li">合同金额：{$obj?$obj['contract_amount']:''} 元</li>
+        <li class="coll_li">总收入：{$obj?$obj['price']?$obj['price']:'0':''} 元</li>
+        <li class="coll_li">总支出：{$obj?$obj['pay_price']?$obj['pay_price']:'0':''} 元</li>
+        <li class="coll_li">{$loss} 元</li>
+    </div>
+    <div style="clear:both;height: 10px"></div>
+    <div class="easyui-tabs" style="width:100%;height:450px">
+         <div title="其中款项" style="padding: 10px;">
+             <div style="width: 50%">
+                 <p>收入部分：</p>
+                 {volist name="add" id="v" empty="暂时没有数据" }
+                 <li class="coll_li">{$v.collect_type_name}：{$v.price}元</li>
+                 {/volist}
+             </div>
+             <div style="clear:both;height: 10px"></div>
+             <div style="width: 50%">
+                 <p>支出部分：</p>
+                 {volist name="pay" id="vo" empty="暂时没有数据" }
+                 <li class="coll_li">{$vo.collect_type_name}：{$vo.price}元</li>
+                 {/volist}
+
+             </div>
+             <div style="clear:both;height: 10px"></div>
+         </div>
+        <div title="收入明细" style="padding: 10px;" >
+
+            <div id="add" style="width: 98%"></div>
+        </div>
+        <div title="支出明细"  style="padding: 10px;">
+            <div id="pay" style="width: 98%"></div>
+        </div>
+    </div>
+</div>
+<div id="tb" style="height:auto;">
+    <a style="margin-left: 10px;">搜索条件:</a>
+    <a style="margin-left: 15px;">交易时间：
+        <input type="text" class= "easyui-datebox" id="time_start_add" data-options=" editable:false,showSeconds:false">--
+        <input type="text" class= "easyui-datebox" id="time_end_add" data-options=" editable:false,showSeconds:false">
+    </a>
+    <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="searTimeAdd()">
+        <span class="l-btn-icon icon-search"></span>
+        <span class="l-btn-text l-btn-icon-left">搜索</span>
+    </a>
+    <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="showAllDataAdd()">
+        <span class="l-btn-icon icon-filter"></span>
+        <span class="l-btn-text l-btn-icon-left">显示全部</span>
+    </a>
+</div>
+<div id="td" style="height:auto;">
+    <a style="margin-left: 10px;">搜索条件:</a>
+    <a style="margin-left: 15px;">交易时间：
+        <input type="text" class= "easyui-datebox" id="time_start_pay" data-options=" editable:false,showSeconds:false">--
+        <input type="text" class= "easyui-datebox" id="time_end_pay" data-options=" editable:false,showSeconds:false">
+    </a>
+    <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="searTimePay()">
+        <span class="l-btn-icon icon-search"></span>
+        <span class="l-btn-text l-btn-icon-left">搜索</span>
+    </a>
+    <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="showAllDataPay()">
+        <span class="l-btn-icon icon-filter"></span>
+        <span class="l-btn-text l-btn-icon-left">显示全部</span>
+    </a>
+</div>
+<div id="collect_dlog">
+
+</div>
+{include file="base/js" /}
+<script>
+    $(function() {
+        $("#add").datagrid({
+            url:'{$add_url}',
+            showFooter:true,
+            columns:[[
+                { field: 'desc', title: '资金说明',width: '40%', align: 'center', }
+                ,{field: 'income_price', title: '收入金额',width: '10%', align: 'center',}
+                , { field: 'create_time', title: '交易时间', width: '20%',align: 'center', }
+                , { field: 'name', title: '审核人', width: '10%',align: 'center', }
+
+            ]],
+            singleSelect: true,
+            method: 'post',
+            rownumbers: true,
+            pageSize:20,
+            pagination:true,
+            toolbar: '#tb',
+            nowrap:false,
+        });
+        $("#pay").datagrid({
+            url:'{$pay_url}',
+            showFooter:true,
+            columns:[[
+                { field: 'desc', title: '资金说明',width: '40%', align: 'center', }
+                , { field: 'expenditure_price', title: '支出金额', width: '10%',align: 'center',}
+                , { field: 'create_time', title: '交易时间', width: '20%',align: 'center', }
+                , { field: 'name', title: '审核人', width: '10%',align: 'center', }
+
+            ]],
+            singleSelect: true,
+            method: 'post',
+            rownumbers: true,
+            pageSize:20,
+            toolbar: '#td',
+            pagination:true,
+            nowrap:false,
+        })
+    })
+    function searTimeAdd() {
+        if (!$('#time_start_add').datebox('getValue')&&!$('#time_end_add').datebox('getValue')){
+            $('#add').datagrid('load',{});
+        }else{
+            var time_start;
+            var time_end;
+            if ($('#time_start_add').datebox('getValue')){
+                time_start=$('#time_start_add').datebox('getValue');
+
+            }
+            if ($('#time_start_add').datebox('getValue')){
+                time_end= $('#time_end_add').datebox('getValue');
+            }
+            if(!time_start&&time_end){
+                time_start=time_end;
+            }
+            if(time_start&&!time_end){
+                time_end=time_start;
+            }
+        }
+        var str='[{"field":"create_time","op":"betweendate","value":"'+time_start+" - "+time_end +'"}';
+        str+=']';
+        $('#add').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+    function showAllDataAdd() {
+        $('#time_start_add').datebox('setValue','');
+        $('#time_end_add').datebox('setValue','');
+        $('#add').datagrid('load',{});
+    }
+    function searTimePay() {
+        if (!$('#time_start_pay').datebox('getValue')&&!$('#time_end_pay').datebox('getValue')){
+            $('#pay').datagrid('load',{});
+        }else{
+            var time_start;
+            var time_end;
+            if ($('#time_start_pay').datebox('getValue')){
+                time_start=$('#time_start_pay').datebox('getValue');
+
+            }
+            if ($('#time_start_pay').datebox('getValue')){
+                time_end= $('#time_end_pay').datebox('getValue');
+            }
+            if(!time_start&&time_end){
+                time_start=time_end;
+            }
+            if(time_start&&!time_end){
+                time_end=time_start;
+            }
+        }
+        var str='[{"field":"create_time","op":"betweendate","value":"'+time_start+" - "+time_end +'"}';
+        str+=']';
+        $('#pay').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+    function showAllDataPay() {
+        $('#time_start_pay').datebox('setValue','');
+        $('#time_end_pay').datebox('setValue','');
+        $('#pay').datagrid('load',{});
+    }
+</script>
+</body>
+</html>
+

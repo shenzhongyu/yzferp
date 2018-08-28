@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+    <style>
+        .edui-container{width: 780px !important;border: 1px solid #95B8E7;}
+        #container{height: 280px;width: 760px !important;}
+        #fm{font-size: 16px;}
+        #fm section{margin-bottom: 18px;display: inline-block;width: 48%}
+        #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+        #button a{width: 100px !important;margin: 0 0 0 10px}
+        #_easyui_textbox_input1{width: 40%}
+        .myPanelHead .panel-title{font-size: 15px;padding-left: 43%;height: 25px;line-height: 25px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="p" class="easyui-panel" title="维修投诉"   style="width:100%;padding:25px 10px;margin-bottom: 20px;"  data-options="headerCls:'myPanelHead'">
+        <form id="fm" style="padding:0 0px;width:100%;" method="post" name="fm">
+            <section>
+                <label class="label_1" >项目名称:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox" type="text" name="project_id" id="project_id"
+                           data-options="required:true,validType:'length[1,10]'" placeholder=""
+                           style="width:40%">
+                </label>
+            </section>
+            <section>
+                <label class="label_1" >客户名称:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox" type="text" name="customer_name" id="customer_name"
+                           data-options="required:true,validType:'length[1,15]'" placeholder=""
+                           style="width:40%">
+                </label>
+            </section>
+            <section>
+                <label class="label_1" >联系电话:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox" type="text" name="customer_phote" id="customer_phone"
+                           data-options="required:true,validType:'length[1,15]'" placeholder=""
+                           style="width:40%">
+                </label>
+            </section>
+            <section>
+                <label class="label_1" >原项目经理:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox" type="text" name="project_uuid" id="project_uuid"
+                           data-options="required:true,validType:'length[1,15]'" placeholder=""
+                           style="width:40%">
+                </label>
+            </section>
+            <section style="margin-top: 10px;">
+                <label class="label_1" style="">登记时间:</label>
+                <label class="label_2" style="width: 40% !important">
+                    <input class= "easyui-datebox"  name="time"  data-options=" editable:false,required:true,showSeconds:false"  style="width:40%" id="time">
+                </label>
+            </section>
+            <section>
+                <label class="label_1" >联系单编号:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox" type="text" name="complaint_id" id="complaint_id"
+                           data-options="validType:'length[1,15]'" placeholder=''
+                           style="width:40%">
+                </label>
+            </section>
+            <section style="margin-top: 10px;">
+                <label class="label_1" style="">验收时间:</label>
+                <label class="label_2" style="width: 40% !important">
+                    <input class= "easyui-datebox"  name="end_time"  data-options=" editable:false,required:true,showSeconds:false"  style="width:40%" id="end_time">
+                </label>
+            </section><br/>
+            <section>
+                <label class="label_1" >需修事宜:</label>
+                <label class="label_2" >
+                    <textarea id="content"  name="complaint_content"  cols="60" rows="3" style="resize: none;margin-bottom: -10px;" ></textarea>
+                </label>
+            </section>
+        </form>
+    </div>
+    <div id="button">
+        <a style="margin-left: 37%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">录 入</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重 置</a>
+    </div>
+
+</div>
+
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script>
+    //表单提交(下一步)
+    function submitForm(){
+        var  url='{:url("/erp/system/addLeaveData")}';
+        var project_id=$("#project_id").val();
+        var content=$("#content").val();
+        var customer_name=$('#customer_name').val();
+        var complaint_id=$('#complaint_id').val();
+        var customer_phone=$("#customer_phone").val();
+        var project_uuid=$("#project_uuid").val();
+        var time=$("#time").val();
+        var end_time=$("#end_time").val();
+        if(!project_id){
+            layer.msg("请填写项目名称", {icon: 2});
+            return false;
+        }
+        if(!content){
+            layer.msg("请填写投诉的内容或者维修事宜", {icon: 2});
+            return false;
+        }
+        if(!project_uuid){
+            layer.msg("请填写原项目经理", {icon: 2});
+            return false;
+        }
+        if(!customer_name){
+            layer.msg("请填写客户姓名", {icon: 2});
+            return false;
+        }
+        if(!customer_phone){
+            layer.msg("请填写客户联系电话", {icon: 2});
+            return false;
+        }
+        if(!time){
+            layer.msg("请填写登记日期", {icon: 2});
+            return false;
+        }
+        if(!end_time){
+            layer.msg("请填写验收日期", {icon: 2});
+            return false;
+        }
+        if(Date.parse(new Date($("#end_time").datetimebox("getValue"))) <= Date.parse(new Date($("#time").datetimebox("getValue")))){
+            layer.msg("请填写验收日期小于登记日期，请重新选择", {icon: 2});
+            return false;
+        }
+        var data={
+            project_id:project_id,
+            customer_name:customer_name,
+            customer_phone:customer_phone,
+            project_uuid:project_uuid,
+            time:time,
+            end_time:end_time,
+            complaint_content:content,
+        };
+        $.ajax({
+            url: "{:url('addComplaint')}",
+            type: "post",
+            data: data,
+            dataType: "json",
+            success: function(obj) {
+                if(obj.code=="1001"){
+                    layer.msg(obj.msg, {icon: 1});
+                    clearForm();
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            },
+        })
+    }
+
+    //清楚表单内容
+    function clearForm() {
+        $('#fm')[0].reset();
+    }
+</script>
+</body>
+</html>

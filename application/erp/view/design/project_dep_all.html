@@ -1,0 +1,329 @@
+proUser_list.html{extend name="base/base_search_list" /}
+
+
+{block name="title"}{$title}{/block}
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true,  movable: false }
+, { field: 'project_name', title: '项目名称', width: '100', align: 'center', sortable: true}
+, { field: 'payment_phase', title: '定金', width: '80', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'decoration_area', title: '装修面积', width: '80', align: 'center', sortable: true}
+, { field: 'project_budget', title: '工程预算', width: '80', align: 'center', sortable: true}
+, { field: 'design_department_name', title: '所属部门', width: '80', align: 'center', sortable: true}
+<!--, { field: 'expected_duration', title: '预计总工期', width: '80', align: 'center', sortable: true}-->
+<!--, { field: 'customer_source', title: '客户来源', width: '80', align: 'center', sortable: true,{:widget('Easyui/formatter')}}-->
+, { field: 'tracking_name', title: '跟踪人员', width: '180', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'decoration_grade',  hidden:'true',title: '装修档次', width: '80', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'decoration_style',  hidden:'true',title: '装修风格', width: '80', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'decoration_type', hidden:'true', title: '装修类型', width: '80', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'color_orientation', hidden:'true', title: '色彩取向', width: '80', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'project_description', hidden:'true', title: '项目要求', width: '180', align: 'center', sortable: true}
+, { field: 'transfer_status', title: '转部状态', width: '120', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'transfer_desc',  title: '转部说明', width: '180', align: 'center', sortable: true}
+, { field: 'examine_status', title: '审核状态', width: '120', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'examine_desc',  title: '审核说明', width: '180', align: 'center', sortable: true}
+, { field: 'operate', title: '操作', width: 300,align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+]]{/block}
+
+{block name="filter"}[
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber']},
+
+{:widget('Easyui/showFilter', ["decoration_grade","combobox"])}
+{:widget('Easyui/showFilter', ["decoration_style","combobox"])}
+{:widget('Easyui/showFilter', ["decoration_type","combobox"])}
+{:widget('Easyui/showFilter', ["color_orientation","combobox"])}
+{:widget('Easyui/showFilter', ["customer_source","combobox"])}
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["decoration_grade","decoration_grade"] )}
+{:widget('Easyui/showAll', ["decoration_style","decoration_style"] )}
+{:widget('Easyui/showAll', ["decoration_type","decoration_type"] )}
+{:widget('Easyui/showAll', ["color_orientation","color_orientation"] )}
+{:widget('Easyui/showAll', ["customer_source","customer_source"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if(field=="payment_phase"){
+if(value=="1"){
+return '<a href="javascript:lookProjectDe(&apos;'+row.guid+'&apos;);">已付定金</a>';
+}else{
+return '';
+}
+
+}
+else if(field=="tracking_name"){
+var arr=value.split(',');
+var str="";
+for(var i=0;i < arr.length;i++){
+str+="<li style='list-style: none'>"+arr[i]+"</li>";
+}
+return str;
+}
+else if (field == 'transfer_status') {
+if(value=="1"){
+return '<a>转部中</a>';
+}
+if(value=="2"){
+return '<a>已申请,不通过</a>';
+}
+}else if (field == 'examine_status') {
+if(value=="0" && row.transfer_status=="1" ){
+return '<a>等待审核</a>';
+}
+if(row.transfer_status=="-1" || value=="-1" ){
+return '<a style="color: red">审核不通过</a>';
+}
+}else if (field == 'operate') {
+var str="";
+str+='<a href="javascript:;" onclick="look(&apos;'+row.guid+'&apos;)">查看</a>&nbsp;&nbsp;&nbsp;';
+<!--if( row.transfer_status=="0" && row.tracking_name ){-->
+<!--str+='<a href="javascript:;" onclick="audit(&apos;'+row.guid+'&apos;)">申请转部</a>&nbsp;&nbsp;&nbsp;';-->
+<!--}-->
+<!--if(row.examine_status=="-1" && row.tracking_name ){-->
+<!--str+='<a href="javascript:;" onclick="audit(&apos;'+row.guid+'&apos;)">再次申请转部</a>&nbsp;&nbsp;&nbsp;';-->
+<!--}-->
+<!--str+='<a href="javascript:;" onclick="delet(&apos;'+row.guid+'&apos;)">删除</a>&nbsp;&nbsp;&nbsp;';-->
+str+='<a href="javascript:;" onclick="showLog(&apos;'+row.guid+'&apos;)">操作记录</a>';
+
+return str;
+}else if (eval("value_" + field)[value]){
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+<script>
+    function lookProjectDe(a) {  //查看定金单
+        $(mikkleClass.dialog).dialog({
+            title: '定金单查看',
+            iconCls: 'icon-save',
+            width: '80%',
+            height: '60%',
+            cache: false,
+            href: '{:url("ProjectDeposit/lookProjectDe")}/guid/'+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function look(t){
+        window.parent.addTab('项目明细','{:url("Project/showProjectOfDepartment")}/guid/'+t,'close');
+    };
+    function addT(){
+        window.parent.addTab('项目录入','{:url("/erp/Project/showProjectEntry")}','');
+    };
+    function delet(id) {
+        $.messager.confirm('提示信息', '确定要删除吗？', function (result) {
+            if (!result) return false;
+            $.messager.progress({text: '处理中，请稍候...'});
+            $.post(mikkleClass.dialog_url, {id: id, action: 'del'}, function (data) {
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    mikkleClass.refresh();
+                }
+            }, 'json');
+        })
+    };
+    function audit(a){
+        $(mikkleClass.dialog).dialog({
+            title: '转部申请',
+            iconCls: 'icon-save',
+            width: 400,
+            height: 280,
+            cache: false,
+            href: '{:url("Project/showProjectAuditEdit")}/guid/'+a,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text:' 确 认  ',
+                    iconCls:'icon-save',
+                    handler: function(){
+                        $(mikkleClass.dialog).find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post('{:url("Project/addProjectAuditEdit")}/guid/'+a+"/type/2", $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else {
+                                        layer.msg('申请成功，等待审核', {icon: 1});
+                                        $(mikkleClass.dialog).dialog('close');
+                                        $('#list').datagrid('showColumn','transfer_status');//显示列
+                                        $('#list').datagrid('showColumn','transfer_desc');
+                                        $('#list').datagrid('showColumn','examine_status');//显示列
+                                        $('#list').datagrid('showColumn','examine_desc');
+                                        hideAll();
+                                        mikkleClass.refresh();
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },
+                {
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $(mikkleClass.dialog).dialog('close');
+                    }
+                }],
+        });
+    }
+
+    function showLog(id){
+        $(mikkleClass.dialog).dialog({
+            title: "操作记录",
+            iconCls: 'icon-save',
+            width: 740,
+            height: 600,
+            cache: false,
+            href: "{:url('Project/showProjectAuditLog')}/guid/"+id,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+
+    function showAll(){
+        $('#list').datagrid('showColumn','decoration_grade');//显示列
+        $('#list').datagrid('showColumn','decoration_type');
+        $('#list').datagrid('showColumn','decoration_style');//显示列
+        $('#list').datagrid('showColumn','color_orientation');
+        $('#list').datagrid('showColumn','project_description');//显示列
+        mikkleClass.refresh();
+    }
+    function hideAll(){
+        $('#list').datagrid('hideColumn','decoration_grade');//显示列
+        $('#list').datagrid('hideColumn','decoration_type');
+        $('#list').datagrid('hideColumn','decoration_style');//显示列
+        $('#list').datagrid('hideColumn','color_orientation');
+        $('#list').datagrid('hideColumn','project_description');//显示列
+    }
+
+    //    function showProjectPerson(){
+    //        var a=getSelectRows("查看");
+    //        if(!a){
+    //            return false;
+    //        }else{
+    //            $(mikkleClass.dialog).dialog({
+    //                title: "关系人",
+    //                iconCls: 'icon-save',
+    //                width: 740,
+    //                height: 450,
+    //                cache: false,
+    //                href: "{:url('Design/showProjectPerson')}/guid/"+a,
+    //                modal: true,
+    //                collapsible: false,
+    //                minimizable: false,
+    //                resizable: false,
+    //                maximizable: false,
+    //            })
+    //        }
+    //    }
+    function showAssignPersonnel(action){
+        var a=getSelectRows("分配设计师");
+        if(!a){
+            return false;
+        }else{
+            $(mikkleClass.dialog).dialog({
+                title: "分配设计师",
+                iconCls: 'icon-save',
+                width: 740,
+                height: 450,
+                cache: false,
+                href: "{:url('Design/showAssignPersonnel')}/guid/"+a+'/action/'+action,
+                modal: true,
+                collapsible: false,
+                minimizable: false,
+                resizable: false,
+                maximizable: false,
+            })
+        }
+    }
+    function delAssignPersonnel(){
+        var a=getSelectRows("解除分配");
+        if(a== ''){
+            return false;
+        }
+        $.messager.confirm('提示信息', '确定要解除设计师分配吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("delAssignPersonnel")}', {id:a,}, function(data){
+                $.messager.progress('close');
+                if (data.code == 1001) {
+                    layer.msg(data.msg, {icon: 1});
+                    mikkleClass.refresh();
+                }else if(data.code == 1002) {
+                    layer.msg(data.msg, {icon: 2})
+                }else{
+                    layer.msg(data.msg, {icon: 2})
+                }
+            }, 'json');
+        });
+    }
+
+    function getSelectRows(name){
+        var rows = $("#list").datagrid('getSelections');
+        if (rows.length > 0) {
+            if (rows.length == 1){
+                return  $("#list").datagrid('getSelected').guid; //获取选中的数据
+            } else {
+                layer.msg(''+name+'操作只能选择一条数据！', {icon: 2});
+                return false;
+            }
+        } else {
+            layer.msg('请选择要'+name+'的数据！', {icon: 2});
+            return false;
+        }
+    }
+</script>
+
+{/block}
+{block name="my_db"}
+window.parent.addTab('项目明细','{:url("Project/showProjectOfDepartment")}/guid/'+row.guid,'close');
+{/block};
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+{block name="toolbar"}[
+<!--{ text:'添加', iconCls: 'icon-add', handler:function(){addT()} },'-',-->
+{ text:'分配设计师', iconCls: 'icon-add', handler:function(){ showAssignPersonnel('add')  } },'-',
+{ text:'重新分配', iconCls: 'icon-add', handler:function(){ showAssignPersonnel('edit')  } },'-',
+{ text:'解除分配', iconCls: 'icon-add', handler:function(){ delAssignPersonnel() } },'-',
+<!--{ text:'关系人', iconCls: 'icon-add', handler:function(){ showProjectPerson()    } },'-',-->
+<!--{ text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm();} },'-',-->
+{ text:'显示更多信息', iconCls: 'icon-add', handler:function(){showAll()} },'-',
+{ text:'隐藏更多信息', iconCls: 'icon-add', handler:function(){hideAll()} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

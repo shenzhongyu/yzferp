@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <!--引用百度地图API-->
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=1QinGPMBB0uYU6peg4TLvrXcS1DVd9L2"></script>
+    <script type="text/javascript" src="__STATIC__/easyui_151/jquery.min.js"></script>
+</head>
+
+<body>
+<!--百度地图容器-->
+<div style="width:700px;height:550px;border:#ccc solid 1px;font-size:12px" id="map"></div>
+</body>
+<script type="text/javascript">
+    //创建和初始化地图函数：
+    function initMap(lng,lat){
+
+        createMap(lng,lat);//创建地图
+        setMapEvent();//设置地图事件
+        addMapControl();//向地图添加控件
+        addMapOverlay(lng,lat);//向地图添加覆盖物
+    }
+    function createMap(lng,lat){
+        map = new BMap.Map("map");
+        map.centerAndZoom(new BMap.Point(lng,lat),14);
+    }
+    function setMapEvent(){
+        map.enableScrollWheelZoom();
+        map.enableKeyboard();
+        map.enableDragging();
+        map.enableDoubleClickZoom()
+    }
+    function addClickHandler(target,window){
+        target.addEventListener("click",function(){
+            target.openInfoWindow(window);
+        });
+    }
+    function addMapOverlay(lng,lat){
+        console.log(lng,lat);
+        var markers = [
+            {content:"{$desc}",title:"签到位置",imageOffset: {width:0,height:-46},position:{lat:lat,lng:lng}}
+        ];
+        for(var index = 0; index < markers.length; index++ ){
+            var point = new BMap.Point(markers[index].position.lng,markers[index].position.lat);
+            var marker = new BMap.Marker(point,{icon:new BMap.Icon("http://api.map.baidu.com/lbsapi/createmap/images/icon.png",new BMap.Size(20,25),{
+                imageOffset: new BMap.Size(markers[index].imageOffset.width,markers[index].imageOffset.height)
+            })});
+            var label = new BMap.Label(markers[index].title,{offset: new BMap.Size(25,5)});
+            var opts = {
+                width: 200,
+                title: markers[index].title,
+                enableMessage: false
+            };
+            var infoWindow = new BMap.InfoWindow(markers[index].content,opts);
+            marker.setLabel(label);
+            addClickHandler(marker,infoWindow);
+            map.addOverlay(marker);
+        };
+    }
+    //向地图添加控件
+    function addMapControl(){
+        var scaleControl = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+        scaleControl.setUnit(BMAP_UNIT_IMPERIAL);
+        map.addControl(scaleControl);
+        var navControl = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_LARGE});
+        map.addControl(navControl);
+        var overviewControl = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:true});
+        map.addControl(overviewControl);
+    }
+    var map;
+
+    getBaiduPosition('{$lon}','{$lat}');
+    function getBaiduPosition(lng,lat) {
+        var url ="http://api.map.baidu.com/geoconv/v1/?coords="+lng+","+lat+"&from=1&to=5&ak=1QinGPMBB0uYU6peg4TLvrXcS1DVd9L2";
+        $.ajax({
+            url: url,
+            type: 'GET',
+            contentType: "application/json",
+            dataType: 'jsonp',//这里要用jsonp的方式不然会报错
+            success: function(data) {
+                if(data.status==4) {
+                    initMap(lng,lat);
+                }else{
+                    var lng = data.result[0].x;//经度
+                    var lat  = data.result[0].y;//纬度
+                    initMap(lng,lat);
+
+                }
+
+
+            }
+        });
+    }
+</script>
+</html>

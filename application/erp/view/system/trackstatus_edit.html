@@ -1,0 +1,41 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section >
+        <label  class="label_1" style="">类别名称:</label>
+        <label  class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="strack_name"
+                   data-options="required:true,validType:'maxLengthTwo[15]'"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">字体颜色:</label>
+        <label class="label_2">
+            <input class="easyui-combobox"  id="font_color"  name="font_color" style="width:80%;" value="1"
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/font_color')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label for="department_type" class="label_1">部门类型:</label>
+        <label for="department_type" class="label_2">
+            <input class="easyui-combobox"  id="department_type"  name="department_type" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/department_type')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label for="department_type" class="label_1">是否统计:</label>
+        <label for="department_type" class="label_2">
+            <input class="easyui-combobox"   name="statistics" style="width:80%;" value="0"
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/statistics')}',method:'get',">
+        </label>
+    </section>
+    <section >
+        <label  class="label_1" style="">排序值:</label>
+        <label  class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="sort_value"
+                   data-options="required:true,validType:'digits',invalidMessage:'数字,值越小越靠前',missingMessage:'数字,值越小越靠前',"
+                   style="width:80%">
+        </label>
+    </section>
+
+
+</form>

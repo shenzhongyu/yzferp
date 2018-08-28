@@ -1,0 +1,88 @@
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script language="JavaScript">
+    $(function () {setJSAPI()});
+    function setJSAPI(){
+        var option = {
+//            title: '装企传统运营模式已经无路可走，云紫峰装企ERP带你走出困境',
+//            desc: 'yzf erp, 为yzf erp 服务量身设计',
+//            link: "https://www.yzferp.com/wechat/index/",
+//            imgUrl: '/static/mui/image/indexLogo.png'
+//            title:'装企传统运营模式已经无路可走，云紫峰装企ERP带你走出困境',
+//            desc: '现今装企已从资源、品牌竞争转变到运营模式竞争；云紫峰装企ERP管理系统帮你行业中脱颖而出！',
+            title:'装企福音到！7搜装企ERP管理软件现在申请全国免费使用啦......',
+            desc: '7搜ERP降低装企运营成本，提高工作效率，全程系统化办公，杜绝财务与业务流失漏洞',
+            link: location.href,
+            imgUrl: 'http://www.yzferp.com/static/mui/image/indexLogo.png'
+        };
+
+        $.getJSON('{:url(\'api/jsSign\')}?url=' + encodeURIComponent(location.href.split('#')[0]), function (res) {
+            if (res.err) return false;
+            wx.config({
+                beta: true,
+                debug: false,
+                appId: res.appId,
+                timestamp: res.timestamp,
+                nonceStr: res.nonceStr,
+                signature: res.signature,
+                jsApiList: [
+                    'checkJsApi',
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage',
+                    'onMenuShareQQ',
+                    'onMenuShareWeibo',
+                    'hideMenuItems',
+                    'showMenuItems',
+                    'hideAllNonBaseMenuItem',
+                    'showAllNonBaseMenuItem',
+                    'translateVoice',
+                    'startRecord',
+                    'stopRecord',
+                    'onRecordEnd',
+                    'playVoice',
+                    'pauseVoice',
+                    'stopVoice',
+                    'uploadVoice',
+                    'downloadVoice',
+                    'chooseImage',
+                    'previewImage',
+                    'uploadImage',
+                    'downloadImage',
+                    'getNetworkType',
+                    'openLocation',
+                    'getLocation',
+                    'hideOptionMenu',
+                    'showOptionMenu',
+                    'closeWindow',
+                    'scanQRCode',
+                    'chooseWXPay',
+                    'openProductSpecificView',
+                    'addCard',
+                    'chooseCard',
+                    'openCard'
+                ]
+            });
+            wx.ready(function () {
+                /*
+                 wx.invoke('setNavigationBarColor', {
+                 color: '#F8F8F8'
+                 });
+                 */
+                wx.invoke('setBounceBackground', {
+                    'backgroundColor': '#F8F8F8',
+                    'footerBounceColor' : '#F8F8F8'
+
+                });
+                wx.onMenuShareTimeline(option);
+                wx.onMenuShareQQ(option);
+                wx.onMenuShareAppMessage({
+//                  title:'装企传统运营模式已经无路可走，云紫峰装企ERP带你走出困境',
+//                  desc: '现今装企已从资源、品牌竞争转变到运营模式竞争；云紫峰装企ERP管理系统帮你行业中脱颖而出！',
+                    title:'装企福音到！7搜装企ERP管理软件现在申请全国免费使用啦......',
+                    desc: '7搜ERP降低装企运营成本，提高工作效率，全程系统化办公，杜绝财务与业务流失漏洞！',
+                    link: location.href,
+                    imgUrl: 'http://www.yzferp.com/static/mui/image/zu13.png'
+                });
+            });
+        });
+    }
+</script>

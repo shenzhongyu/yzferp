@@ -1,0 +1,116 @@
+depositList.html{extend name="base/base_nosearch_list" /}
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'project_name', title: '项目名称', width: 200, align: 'center', sortable: true}
+, { field: 'payment_name', title: '支付方式', width:200, align: 'center', sortable: true}
+, { field: 'payment_uuid_name', title: '定金单录入者', width:200, align: 'center', sortable: true}
+, { field: 'payment_price', title: '付款金额', width:200, align: 'center', sortable: true}
+, { field: 'payment_date', title: '付款日期', width:200, align: 'center', sortable: true}
+, { field: 'create_time', title: '录入时间',width:140,align: 'center', sortable: true }
+
+]]{/block}
+
+{block name="filter"}[
+{field: 'create_time', type: 'datebox', options: { precision: 1 }, op: ['betweendate'] },
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber'] },
+{:widget('Easyui/showFilter', ["status","combobox"])}
+
+]{/block}
+
+
+{block name="value"}
+{:widget('Easyui/ShowArray',["status",[''=>'全部','-1'=>'已删除',0=>'禁用',1=> '正常']] )}
+{:widget('Easyui/ShowValue',["status",['-1'=>'<font color=red>已删除</font>',0=>'禁用',1=> '正常']] )}
+{/block}
+
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+{block name="my_js"}
+<script>
+    function auditDeposit() {
+        var id=mikkleClass.getSelectRows('审核');
+        if(!id){
+            return false;
+        }
+        $(mikkleClass.dialog).dialog({
+            title: '定金审核',
+            iconCls: 'icon-save',
+            width: 500,
+            height: 500,
+            cache: false,
+            href: '{:url("ProjectDeposit/showProjectDepositEdit")}/guid/'+id,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text:' 确 认 收 款  ',
+                    iconCls:'icon-save',
+                    handler: function(){
+                        $(mikkleClass.dialog).find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post('{:url("ProjectDeposit/showProjectDepositEdit")}/guid/'+id, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else {
+                                        layer.msg('定金审核成功', {icon: 1});
+                                        $(mikkleClass.dialog).dialog('close');
+                                        mikkleClass.refresh();
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },
+                {
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $(mikkleClass.dialog).dialog('close');
+                    }
+                }],
+        });
+    }
+</script>
+{/block}
+
+
+{block name="toolbar"}[
+{text:'审核', iconCls: 'icon-add', handler:function(){ auditDeposit();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+
+]{/block}
+

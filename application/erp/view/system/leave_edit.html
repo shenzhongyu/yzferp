@@ -1,0 +1,68 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1"  style="">请假人:</label>
+        <label class="label_2"  style="">
+            <input class="easyui-combobox" id="leave_name"  name="leave_name" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'uuid',textField: 'name',required:true,url:'{:url('showUserJson')}',method:'get',
+                onSelect:function(region){
+                    $('input[name=company_id]').val(region.company_id);
+                    $('input[name=department_id]').val(region.department_id);
+                    $('input[name=jobs_id]').val(region.jobs_id);
+                    $('#company_id').combobox('reload','/erp/system/showCompanyJson?company='+region.company_id);
+                    $('#department_id').combobox('reload','/erp/system/showDepartmentJsonUser?department='+region.department_id);
+                    $('#jobs_id').combobox('reload','/erp/system/showJobsJson?jobs='+region.jobs_id);
+                }
+                   ">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">公司:</label>
+        <label  class="label_2">
+            <input class="easyui-combobox" id="company_id" name="company_id" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'id',textField: 'text',required:true,url:'{:url('showCompanyJson')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">部门:</label>
+        <label  class="label_2">
+            <input class="easyui-combobox" id="department_id" name="department_id" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'department_id',textField: 'department_name',required:true,url:'{:url('showDepartmentJson')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">职位:</label>
+        <label  class="label_2">
+            <input class="easyui-combobox" id="jobs_id"  name="jobs_id" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',required:true,editable:false,valueField: 'jobs_id',textField: 'jobs_name',url:'{:url('showJobsJson')}',method:'get'">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">请假类型:</label>
+        <label class="label_2">
+            <input class="easyui-combobox"  id="leave_type"  name="leave_type" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/leave_type')}',method:'get',">
+        </label>
+    </section>
+
+    <section>
+        <label class="label_1" style="">开始日期:</label>
+        <label class="label_2" style="">
+            <input class= "easyui-datetimebox" name="start_time" data-options="editable:false,showSeconds:false"  style="width:80%" id="datetime">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">结束日期:</label>
+        <label class="label_2" style="">
+            <input class= "easyui-datetimebox" name="end_time" data-options="editable:false,showSeconds:false"  style="width:80%" id="datetime">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">请假事由:</label>
+        <label  class="label_2">
+            <textarea  name="leave_content" style="width:80%;height: 60px;outline:none;resize:none;" data-options="required:true," ></textarea>
+        </label>
+    </section>
+    <input type="hidden" name="dep_manager" value="0">
+    <input type="hidden" name="admin_supervisor" value="0">
+    <input type="hidden" name="total_manager" value="0">
+</form>

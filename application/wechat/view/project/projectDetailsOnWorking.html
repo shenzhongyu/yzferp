@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>项目施工计划</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">项目施工计划</h1>
+    <!--<a id="menu" class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>-->
+    <!--<a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right mui-btn-primary mui-btn-block" id="openPopover" style="font-size: 24px;"></a>-->
+</header>
+
+
+<div class="addBoss">
+    <div class="addFirst" v-for="item in res">
+        <div class="addPro">施工详情</div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">项目名称：</div>
+            <div class="detailRightOnly">
+                {$project_name}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">施工阶段：</div>
+            <div class="detailRightOnly">
+                {{item.build_name}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">施工阶段：</div>
+            <div class="detailRightOnly">
+            {{item.build_name}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">开始时间：</div>
+            <div class="detailRightOnly">
+            {{item.build_time}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">施工天数：</div>
+            <div class="detailRightOnly">
+                {{item.build_days}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">结束时间：</div>
+            <div class="detailRightOnly">
+                {{item.build_end_time}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">施工说明：</div>
+            <div class="detailRightOnly">
+                {{item.desc}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">状态：</div>
+            <div class="detailRightOnly">
+
+                <span v-if="item.type==0" class="red">未完成</span>
+                <span v-if="item.type==1">等待验收</span>
+                <span v-if="item.type==2">已完成</span>
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly ">创建者：</div>
+            <div class="detailRightOnly">
+                {{item.name}}
+            </div>
+        </div>
+        <div class="detailBoss " >
+
+            <div class="detailLeftOnly">操作：</div>
+            <div class="detailRightOnly" >
+               <a @click="details(item.guid)" v-if="item.id">明细</a>&nbsp;&nbsp; <a v-if="item.id" @click="workingMan(item.guid)">施工人员</a>&nbsp;&nbsp; <a v-if="item.id&&item.type!==1" @click="addLogclick(item.guid)">申请验收</a>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+    </div>
+
+    <div class="addLog" style="font-size: 0.32rem">
+        <div style="text-align: center;">申请验收</div>
+        <form method="post" name="form" id="LogForm">
+
+            <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                <div style="display:inline-block; width: 30%;text-align: left;float: left">申请原因：</div>
+                <textarea type="text" style="width: 60%;display:inline-block;background: lavender;height: 2rem"
+                          name="desc" id="content"></textarea>
+            </div>
+
+
+        </form>
+        <div style="margin-top: 0.3rem;text-align: center">
+            <button @click="addLog()" type="button">申请</button>
+            <button style="margin-left: 0.3rem" @click="closeLog" type="button">关闭</button>
+        </div>
+    </div>
+    <input type="hidden" value="" id="input">
+
+</div>
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('/erp/engin_project/buildplan/guid/'+"{$guid}", {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                dataA.res = response.rows;
+                var vue = new Vue({
+                    el: '#details',
+                    data: dataA,
+                    methods: {
+                        addLogclick: function (id) {
+                            $("#input").val(id);
+                            $(".addLog").css("display", "block")
+                        },
+
+                        closeLog: function () {
+                            $(".addLog").css("display", "none")
+                        },
+                        addLog: function () {
+                            var id=$("#input").val();
+                            var ff_data = $("#LogForm").serialize();
+                            console.log(ff_data);
+                            console.log($("#content").val());
+                            mui.ajax('{:url("erp/engin_project/buildcontapply")}/guid/'+id, {
+                                data: ff_data,
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+                                success: function (response) {
+                                    if(response.code == 1001){
+                                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                        setTimeout(function () {
+                                            window.location.reload()
+                                        },2000);
+                                    }
+                                    else{
+                                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    }
+                                }
+                            })
+                        },
+                        details:function (id) {
+                            mui.openWindow({
+                                url: "{:url('/wechat/project/dayList',['project_id'=>$guid])}/id/" + id
+                            })
+                        },
+                        workingMan:function (id) {
+                            mui.openWindow({
+                                url: "{:url('workingManDetails',['project_id'=>$guid])}/id/" + id
+                            })
+                        }
+
+
+
+                    }
+                })
+            }
+        })
+    }
+</script>

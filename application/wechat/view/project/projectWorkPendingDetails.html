@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>转工程部审核</title>
+    {include file="base_mui/weui_wechat"/}
+
+</head>
+<body>
+<div id="app"  v-cloak>
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back" ></a>
+        <h1 class="mui-title">转工程部审核</h1>
+    </header>
+    <div class="addBoss" v-for="item  in res">
+        <div class="addPro">转工程部审核</div>
+
+        <div class="addFirst">
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">项目名称：</div>
+                <div class="detailRightOnly">
+                    {{item.check_desc.project_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">申请人：</div>
+                <div class="detailRightOnly">
+                    {{item.check_desc.apply_name}}
+            </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">申请理由：</div>
+                <div class="detailRightOnly">
+                    {{item.check_desc.apply_desc}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">设计阶段：</div>
+                <div class="detailRightOnly">
+                    <!--{{res.jobs_name}}-->
+                    <span v-if="item.design_type==1">量房阶段</span>
+                    <span v-if="item.design_type==2">设计阶段</span>
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">设计名称：</div>
+                <div class="detailRightOnly">
+                    {{item.design_phase}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">开始日期：</div>
+                <div class="detailRightOnly">
+                    {{item.start_data}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">验收日期：</div>
+                <div class="detailRightOnly">
+                    <!--{{res.jobs_name}}-->
+                    {{item.date}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">负责人：</div>
+                <div class="detailRightOnly">
+                    {{item.check_desc.apply_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">完工日期：</div>
+                <div class="detailRightOnly">
+
+                    {{item.completion_date}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">预计天数：</div>
+                <div class="detailRightOnly">
+                    {{item.expected_days}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div  class="detailLeftOnly">状态：</div>
+                <div class="detailRightOnly">
+                    <!--<span v-if="item.status == 1&&(!item.app_status)" style="color: red">未完成</span>-->
+                    <span  style="color: green">已完成，等待审核</span>
+                    <!--<span v-if="item.status == 2" style="color: green">完成</span>-->
+
+                </div>
+            </div>
+            <div class="detailBoss ">
+                <div  class="detailLeftOnly">查看：</div>
+                <div class="detailRightOnly">
+                    <button type="button" @click="img(item.guid)" v-if="item.app_status !=1">图片</button>
+                    <button type="button" @click="appendix(item.guid)" v-if="item.app_status !=1">附件</button>
+
+                </div>
+            </div>
+
+        </div>
+        <form method="post" id="add_pending" name="form">
+        <div class="addFirst">
+            <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;">
+                <div style="display: inline-block;width: 23%;float: left;line-height: 40px">审核说明：</div>
+
+                    <textarea style="display: inline-block;width: 77%;" name="examine_desc" id="text_area">
+                    </textarea>
+                    <div style="text-align: center">
+                        <input name="examine_status" type="radio" checked value="1">通过
+                        <input name="examine_status" type="radio" class="ml20" value="-1">不通过
+                    </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="mui-button-row  " style="margin-top: 0.2rem;margin-bottom: 0.2rem">
+            <button type="button" class="mui-btn mui-btn-primary w80 h50 fz15" id="leave_add" @click="pending(item.guid,$event)" >确定</button>
+        </div>
+        </form>
+    </div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        var id = "";
+
+        mui.ajax('{:url("",["guid"=>$guid])}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                dataA.res= response;
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {
+                        img:function (id) {
+                            mui.openWindow({
+                                url:"{:url('designer/designerImg',['id'=>$Request.param.guid])}/guid/"+id
+
+                            })
+                         },
+
+                        appendix:function (id) {
+                            mui.openWindow({
+                                url:"{:url('designer/designerFile',['id'=>$Request.param.guid])}/guid/"+id
+
+                            })
+                        },
+                        pending:function (id,t) {
+                            var formData ={}
+//                            console.log($(t.currentTarget).parent().parent().find($("#text_area")));
+//                            console.log($(t.currentTarget).parent().parent().find($("input[name =examine_status ]:checked")));
+                            formData.examine_desc =($(t.currentTarget).parent().parent().find($("textarea"))).val();
+                            formData.examine_status = ($(t.currentTarget).parent().parent().find($("input[name =examine_status ]:checked"))).val();
+                            console.log(  formData.examine_desc);
+                            console.log( formData.examine_status);
+                            if(formData.examine_desc == ""){
+                                mui.toast("审核说明不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if(formData.examine_status == ""){
+                                mui.toast("请选择是否通过", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            var url = "{:url('erp/design/editcheck',['pro_id'=>$Request.param.guid])}/guid/"+id;
+                            mui.ajax(url, {
+                                data: formData,
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+                                success: function (response) {
+                                    if(response.code == 1001){
+                                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                        setTimeout(function () {
+//                                            mui.openWindow({
+//                                                url: "{:url('project/designerPendingList')}"
+//                                            })
+                                            history.back();
+                                        },2000)
+
+                                    }else{
+                                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    }
+
+                                }
+                            })
+                        }
+                    }
+                });
+
+            }
+        });
+
+
+    }
+</script>
+</html>

@@ -1,0 +1,140 @@
+prouser_list.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+{block name="columns"}
+[[{ field: 'project_name', title: '项目名称', width: '50%', align: 'center', sortable: true}
+, { field: 'operate', title: '操作', width: '25%',align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+]]{/block}
+
+{block name="filter"}[
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber']}
+]{/block}
+
+{block name="value"}
+
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'operate') {
+var str="";
+str+='<a href="javascript:;" onclick="look(&apos;'+row.guid+'&apos;)">查看</a>&nbsp;&nbsp;&nbsp;';
+
+
+str+='<a href="javascript:;" onclick="addField(&apos;'+row.guid+'&apos;)">添加附件</a>&nbsp;&nbsp;&nbsp;';
+
+str+='<a href="javascript:;" onclick="showLog(&apos;'+row.guid+'&apos;)">项目日志</a>';
+
+return str;
+}else if (eval("value_" + field)[value]){
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+<script>
+    function showLog(id){
+        $(mikkleClass.dialog).dialog({
+            title: "项目日志",
+            iconCls: 'icon-save',
+            width: 740,
+            height: 600,
+            cache: false,
+            href: "{:url('project/showProjectAuditLog')}/guid/"+id,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function addField(a) {  //添加附件
+        $(mikkleClass.dialog).dialog({
+            title: '附件上传',
+            iconCls: 'icon-save',
+            width: 500,
+            height: 500,
+            cache: false,
+            href: '{:url("Project/showAddField")}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[
+                {
+                    text:' 确 认  ',
+                    iconCls:'icon-save',
+                    handler: function(){
+                        if($("#photo_name").val()){
+                            var i=0;
+                        }else{
+                            var i=1;
+                        }
+                        $(mikkleClass.dialog).find('form').eq(i).form('submit', {
+                            onSubmit: function () {
+                                if ($("#photo_name").val()){
+                                    if(!$("#photo_address").textbox('getValue')){
+                                        layer.msg("还没有上传图片",{icon:2})
+                                        return false;
+                                    }
+                                }
+                                if ($("#field_name").val()){
+                                    if(!$("#field_address").textbox('getValue')){
+                                        layer.msg("还没有上传附件",{icon:2})
+                                        return false;
+                                    }
+                                }
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                $.post('{:url("project/AddField")}/guid/'+a, $(this).serialize(), function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg, {icon: 3});
+                                    } else {
+                                        layer.msg('上传成功', {icon: 1});
+                                        $(mikkleClass.dialog).dialog('close');
+                                    }
+                                }, 'json');
+                                return false;
+                            }
+                        });
+                    }
+                },
+                {
+                    text:' 关 闭  ',
+                    iconCls:'icon-clear',
+                    handler: function(){
+                        $(mikkleClass.dialog).dialog('close');
+                    }
+                }],
+        });
+    }
+
+    function look(a) {
+        window.parent.addTab("项目信息",'{:url("lookProjectInfo")}/guid/'+a,"close");
+    }
+</script>
+
+{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

@@ -1,0 +1,101 @@
+notice_list.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+{block name="my_css"}
+<!--<link href="/static/erp/css/base.css" rel="stylesheet">-->
+{/block}
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+,{ field: 'title', title: '标题', width: '200', align: 'center', sortable: true}
+,{ field: 'create_time', title: '发布时间', width: '180', align: 'center', sortable: true}
+,{ field: 'type', title: '公告类型', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+,{ field: 'name', title: '发布者', width: '100', align: 'center', sortable: true}
+,{ field: 'jobs_name', title: '发布者职位', width: '100', align: 'center', sortable: true}
+,{ field: 'operate', title: '操作', width: 230,align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+]]{/block}
+
+{block name="filter"}[
+
+]{/block}
+
+{block name="value"}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'type'){
+    if(value=="1"){
+        return  '<a>公司</a>';
+    }else if(value=="2"){
+        return  '<a>部门</a>';
+    }else{
+        return  "";
+    }
+}else if (field == 'operate'){
+var str="";
+str+='<a  href="javascript:;" style="margin-right: 10px" onclick="getNotice(&apos;'+row.guid+'&apos;)">详细</a>';
+str+='<a  href="javascript:;" style="margin-right: 10px" onclick="editNotice(&apos;'+row.guid+'&apos;)">修改</a>';
+str+='<a  href="javascript:;" style="margin-right: 10px" onclick="delNo(&apos;'+row.guid+'&apos;)">删除</a>';
+return str;
+
+}else if (eval("value_" + field)[value]){
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}'
+{/block}
+
+{block name="my_js"}
+<script>
+    function getNotice(a){
+        window.parent.addTab('通知公告','{:url("work/showNoticeDetailed")}/guid/'+a,'close');
+    }
+    function editNotice(a){
+        var url='{:url("work/showNoticeEdit")}/id/';
+        window.parent.addTab('通知公告修改',url+a,'close');
+    }
+    function delNotice() {
+        var id=mikkleClass.getSelectRows("删除");
+        if (id== '') {
+            layer.msg('未选择会员', {icon: 2});
+            return false;
+        }
+       delNo(id);
+    }
+    function delNo(id){
+        $.messager.confirm('提示信息', '确定要删除吗？', function (result) {
+            if (!result) return false;
+            $.messager.progress({text: '处理中，请稍候...'});
+            $.post('{:url("delNotice")}', {id: id,}, function (data) {
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    mikkleClass.refresh();
+                }
+            }, 'json');
+        });
+    }
+</script>
+{/block}
+
+{block name="toolbar"}[
+{ text:'删除公告', iconCls: 'icon-cancel', handler: function(){ delNotice();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

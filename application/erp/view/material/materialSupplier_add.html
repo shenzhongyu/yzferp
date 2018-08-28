@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {include file="base/css" /}
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+
+
+    <style>
+        #fm{font-size: 16px;}
+        #fm section{margin-bottom: 10px;width: 60%;}
+        #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+        #button a{width: 100px !important;margin: 0 0 0 10px}
+        .myPanelHead .panel-title{font-size: 15px;padding-left: 43%;height: 25px;line-height: 25px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="p" class="easyui-panel" title="供应商添加"   style="width:100%;padding:15px;margin-bottom: 20px;min-height:400px;"  data-options="headerCls:'myPanelHead'">
+        <form id="fm" style="width: 70%;margin-left: 25%" method="post" name="form">
+            <section>
+                <label class="label_1" style="">供应商名称:</label>
+                <label class="label_2" style="">
+                    <input class="easyui-validatebox" type="text" name="supplier_name" id="supplier_name"
+                           data-options="required:true,validType:'length[1,35]'" style="width:60%">
+                </label>
+            </section>
+            <section >
+                <label class="label_1" >品牌:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox"  name="supplier_brand"
+                           data-options="validType:'length[1,30]'"
+                           style="width:60%">
+                </label>
+            </section>
+            <section >
+                <label class="label_1" >折扣:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox"  name="supplier_discount" id="supplier_discount"
+                           data-options="validType:'length[1,20]'"
+                           style="width:60%">
+                </label>
+            </section>
+            <section >
+                <label class="label_1" >利润率(%):</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox"  name="profit_margin" id="profit_margin"
+                           data-options="validType:'length[1,4]'"
+                           style="width:60%">
+                </label>
+            </section>
+            <section>
+                <label class="label_1">供应商描述:</label>
+                <label class="label_2">
+                    <textarea placeholder="请填写供应商描述" name="supplier_desc" style="width:60%;height: 60px;outline:none;resize:none;"></textarea>
+                </label>
+            </section>
+        </form>
+    </div>
+</div>
+<div id="button">
+    <a style="margin-left: 37%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">供 应 商 添 加</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">关 闭</a>
+</div>
+
+
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script>
+    //表单提交(下一步)
+    function submitForm(){
+        var  url='{:url("Material/addMaterialSupplier")}';
+        $('#fm').form('submit',{
+            onSubmit:function(){
+                if(!$("#supplier_name").val()){
+                    layer.msg('供应商名称不能为空', {icon: 2});
+                    return false;
+                }else if($("#supplier_discount").val()){
+                    var val=$("#supplier_discount").val();
+                    if(isNaN(val)){
+                        layer.msg('折扣的内容只能为数字类型', {icon: 2});
+                        return false;
+                    }
+                }else if($("#profit_margin").val()){
+                    var val=$("#profit_margin").val();
+                    if(isNaN(val)){
+                        layer.msg('利润率的内容只能为数字类型', {icon: 2});
+                        return false;
+                    }
+                }else{
+                    $.messager.progress({text: '供应商添加中，请稍候...'});
+                    $.post(url, $(this).serialize(), function (data) {
+                        $.messager.progress('close');
+                        if (data.code == 1001) {
+                            layer.msg("已成功添加供应商", {icon: 1});
+                            $('#fm').form('clear');
+                        }else{
+                            if(data.msg!=""){
+                                layer.msg(data.msg, {icon: 2});
+                            }else{
+                                layer.msg("供应商添加失败，请联系管理员", {icon: 2});
+                            }
+                        }
+                    }, 'json');
+                    return false;
+                }
+            }
+        });
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        window.parent.closeTab("添加供应商");
+    }
+</script>
+</body>
+</html>

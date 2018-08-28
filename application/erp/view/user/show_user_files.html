@@ -1,0 +1,91 @@
+userList.html{extend name="base/base_search_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'photo', title: '员工照片', width: '10%', align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+, { field: 'name', title: '用户姓名', width: '12%', align: 'center', sortable: true}
+, { field: 'department_type', title: '部门类型',width: '10%', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'department_id', title: '所属部门',width: '12%', align: 'center', sortable: true ,{:widget('Easyui/formatter')}}
+, { field: 'jobs_id', title: '所属职位', width: '12%',align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+, { field: 'xue_l', title: '学历证', width: '10%',align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+, { field: 'sfz_z', title: '身份证（正面）', width: '10%',align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+, { field: 'sfz_f', title: '学历证（反面）', width: '10%',align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+, { field: 'gz_jl', title: '工作简历', width: '10%',align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+
+]]{/block}
+
+{block name="filter"}[
+{field: 'create_time', type: 'datebox', options: { precision: 1 }, op: ['betweendate'] },
+{ field: 'id', type: 'numberbox', options: { precision: 1 }, op: ['betweennumber']},
+{:widget('Easyui/showFilter', ["status","combobox"])}
+{:widget('Easyui/showFilter', ["company_id","combobox"])}
+{:widget('Easyui/showFilter', ["department_id","combobox"])}
+{:widget('Easyui/showFilter', ["jobs_id","combobox"])}
+{:widget('Easyui/showFilter', ["role_id","combobox"])}
+{:widget('Easyui/showFilter', ["department_type","combobox"])}
+
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/ShowArray',["status",'status'] )}
+{:widget('Easyui/ShowValue',["status",'status_value'] )}
+{:widget('Easyui/showValueByUrl',["company_id","company_json",$ma])}
+{:widget('Easyui/showArrayByUrl',["company_id","company_json",$ma])}
+{:widget('Easyui/showValueByUrl',["department_id","department_json",$map])}
+{:widget('Easyui/showArrayByUrl',["department_id","department_json",$map])}
+{:widget('Easyui/showValueByUrl',["jobs_id","jobs_json",$map])}
+{:widget('Easyui/showArrayByUrl',["jobs_id","jobs_json",$map])}
+{:widget('Easyui/showValueByUrl',["role_id","role_json",$map])}
+{:widget('Easyui/showArrayByUrl',["role_id","role_json",$map])}
+{:widget('Easyui/showAll', ["department_type","department_type"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'photo') {
+if(value){
+var str='<img style="width: 60px;height: 60px;margin: 5px 0px;" src="'+value+'">';
+}
+
+return str;
+}else if(field=="xue_l"|| field=="sfz_z"|| field=="sfz_f"|| field=="gz_jl"){
+    if(value){
+        return '<a href="javascript:downLoad(&apos;'+value+'&apos;)">下载</a>';
+    }
+
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+{block name="my_js"}
+<script>
+    function downLoad(id) {
+        window.open('{:url("User/showHtml")}/m/'+id);
+    }
+</script>
+{/block}
+
+{block name="toolbar"}[
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

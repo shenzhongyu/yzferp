@@ -1,0 +1,77 @@
+{extend name="base/base_simple" /}
+{block name="title"}{$title}{/block}
+
+{block name="body"}
+<div class="easyui-panel" title="{$title}" iconCls="icon-search" collapsible="false"
+     style="padding:5px;width:95%;height:680px;">
+    <ul id="tree_node" class="easyui-tree"
+        data-options="url:'{$tree_node_url}',method:'post',animate:true,checkbox:true,cascadeCheck:false"></ul>
+
+</div>
+<div style="margin:20px 0;">
+    <a href="#" class="easyui-linkbutton" onclick="load()">选择</a>
+    <a href="#" class="easyui-linkbutton" onclick="postData()">确认修改</a>
+</div>
+{/block}
+{block name="js_code"}
+<script type="text/javascript">
+    function load(){
+        setTimeout(function(){
+            $.ajax({
+                url:"{:url('getMenuList',['role_id'=>$rid,'is_mobile'=>$is_mobile])}",
+                dataType:"json",
+                cache:false,
+                async:true,
+                success:function(data){
+                    $(data).each(function(i, obj){
+//                        console.log(i);
+//                        console.log(obj);
+                        var n = $("#tree_node").tree('find',obj);
+                        if(n){
+                            $("#tree_node").tree('check',n.target);
+                        }
+                    });
+                },
+                error:function(){alert("发送请求失败");}
+            });
+        },500);
+
+    }
+
+
+    function postData() {
+
+        layer.confirm('您是确定要修改这个角色的权限？', {
+            btn: ['确定修改', '取消修改'] //按钮
+        }, function () {
+            var nodes = $('#tree_node').tree('getChecked');
+            var s = '';
+            for (var i = 0; i < nodes.length; i++) {
+                if (s != '') s += ',';
+                s += nodes[i].id;
+            }
+            //写入库
+            post_url = "{:url('editUserNodeRole',['rid'=>$rid,'is_mobile'=>$is_mobile])}";
+            $.post(post_url, {'rule': s}, function (res) {
+                // layer.close(index);
+                if (res.code == 1001) {
+                    layer.alert(res.msg, function () {
+                        window.parent.closeTab('{$title_name?$title_name:"权限编辑"}');
+                        //window.location.href="{:url('userlist')}";
+                    });
+                } else {
+                    layer.alert(res.msg);
+                }
+
+            }, 'json')
+        }, function () {
+            return false
+        });
+
+
+    }
+
+
+    load();
+</script>
+{/block}

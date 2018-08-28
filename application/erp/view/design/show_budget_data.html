@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+
+    <!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+    {include file="base/js" /}
+</head>
+<body>
+<p>
+    <a style="margin-left: 10px;margin-right: 15px;">搜索条件:</a>
+    预算模板类型：<input id="baseId" class="easyui-combobox"  name="basestyle" value=""
+                  data-options="valueField: 'guid',textField: 'template_name',url:'{:url('showTemBudgetJson')}',method:'get',
+        onSelect:function(a){
+            if(a.guid){
+                addFiled(a.guid);
+            }
+        }">
+    <button style="margin-left: 10px;cursor: pointer;" onclick="showAll()">显示全部</button>
+</p>
+<table id="budget" class="easyui-datagrid">
+</table>
+
+<script type="text/javascript">
+    $(function(){
+        $('#budget').datagrid({
+            url:'{$url}',
+            height:260,
+            rownumbers:true,
+            singleSelect:true,
+            pagination:true,
+            method:'get',
+            columns:[[
+                {field:'budget_name',title:'名称',width:'50%',align:'center'},                                                                                          //&apos;'+row.uuid+'&apos;
+                {field:'operate',title:'操作',width:'50%',align:'center',formatter:function(value,row,index){   return '<a href="javascript:;" onclick="appointBudget(&apos;'+row.budget_name+'&apos;,&apos;'+row.guid+'&apos;)">移入空间</a>'}}
+            ]]
+        });
+    })
+    function appointBudget(txt,id){
+        layer.confirm('是否需要重命名空间名称？', {
+            btn: ['需要','不需要'] //按钮
+        }, function(){
+            layer.prompt({ value:txt,title: '请输入新的名称，并确认', formType: 0}, function(text, index){
+                ajaxUse(text,id);
+            });
+        }, function(){
+            ajaxUse(txt,id);
+        });
+
+    }
+    function ajaxUse(text,id){
+        $.ajax({
+            url: "{:url('addBudgetData')}",
+            type: "post",
+            data: {project_guid:'{$guid}',oldTemp_guid:id,new_name:text},
+            dataType: "json",
+            success: function(obj){
+                if(obj.code=="1001"){
+                    layer.msg('移入成功', {icon: 1});
+                    $('#space').datagrid('reload');
+                    $('#rate').datagrid('reload');
+                    setTimeout(function(){
+                        $('#dg').treegrid('reload');
+                    },1);
+                    layer.closeAll();
+                }else{
+                    layer.msg(obj.msg,{icon: 2});
+                }
+            },
+        });
+    }
+    function showAll() {
+        $("#baseId").combobox('setValue','');
+        $('#budget').datagrid('load',{});
+    }
+    function addFiled(a,txt,id,t){
+        var str="";
+        str+='[{"field":"template_id","op":"equal","value":"'+a+'","type":"text"}';
+        str+=']';
+        $('#budget').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>项目信息录入</title>
+    {include file="base_mui/weui_wechat"/}
+
+
+</head>
+<body>
+<div id="app">
+    <div id="nomalinform">
+        <div class="d_top"></div>
+        <div  id="informa"> </div>
+        <header class="mui-bar mui-bar-nav ">
+            <a class=" mui-icon mui-icon-left-nav mui-pull-left" id="leftbacka"></a>
+            <h1 class="mui-title">项目基本信息</h1>
+        </header>
+        <form id="ff">
+                <div class="d_both">
+                   <div class="d_left">项目名称:</div>
+                   <div type="text" class="d_right">
+                            <input class="inputclass" maxlength="10" type='text' name="project_name">
+                   </div>
+                </div>
+            <div class="d_both">
+                <div class="d_left">预算总工期:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass" maxlength="10" type='text' name="expected_duration">
+                </div>
+            </div>
+            <div class="d_both">
+                <div class="d_left">装修面积:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass" maxlength="10" type='text' name="decoration_area">
+                </div>
+            </div>
+            <div class="d_both">
+                <div class="d_left">工程预算:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass" maxlength="10" type='text' name="project_budget">
+                </div>
+            </div>
+
+            <div class="d_both " >
+                <div class="d_left">装修档次</div>
+                <div type="text" class="d_right">
+                     <select name="decoration_grade" >
+                         <option value="">经济型</option>
+                         <option value="">中档型</option>
+                         <option value="">豪华型</option>
+                         <option value="">简装</option>
+                         <option value="">精装</option>
+                         <option value="">豪装</option>
+                         <option value="">钻装</option>
+                       </select>
+                </div>
+            </div>
+            <div class="d_both " >
+                <div class="d_left">色彩取向</div>
+                <div type="text" class="d_right">
+                    <select name="color_orientation" >
+                        <option value="">红色</option>
+                        <option value="">黄色</option>
+                        <option value="">蓝色</option>
+                        <option value="">灰色</option>
+                        <option value="">白色</option>
+                        <option value="">黑色</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d_both " >
+                <div class="d_left">装修风格</div>
+                <div type="text" class="d_right">
+                    <select name="decoration_style" >
+                        <option value="">现代简约风格</option>
+                        <option value="">恬淡田园风格</option>
+                        <option value="">新中式风格</option>
+                        <option value="">欧式古典风格</option>
+                        <option value="">地中海风格</option>
+                        <option value="">日式风格</option>
+
+                    </select>
+                </div>
+            </div>
+        <div class="d_both " >
+            <div class="d_left">装修类型</div>
+            <div type="text" class="d_right">
+                <select name="decoration_style" >
+                    <option value="">半包</option>
+                    <option value="">全包</option>
+                    <option value="">装壁纸</option>
+                    <option value="">墙壁粉刷</option>
+                    <option value="">维修</option>
+                    <option value="">水电</option>
+
+                </select>
+            </div>
+        </div>
+        <div class="d_both " >
+            <div class="d_left">客户来源</div>
+            <div type="text" class="d_right">
+                <select name="decoration_style" >
+                    <option value="">上门咨询</option>
+                    <option value="">朋友介绍</option>
+                    <option value="">装壁纸</option>
+                    <option value="">广告招揽</option>
+                    <option value="">邮件咨询</option>
+                    <option value="">客户拜访</option>
+
+                </select>
+            </div>
+        </div>
+        <div class="d_both " >
+            <div class="d_left ofh">项目要求</div>
+            <div type="text" class="d_right">
+                <textarea name="project_description"></textarea>
+            </div>
+        </div>
+
+        <div class="d_bottom"><button id="nextbtn">下一步</button></div>
+
+    </div>
+
+    <div id="personinform" style="display: none">
+        <header class="mui-bar mui-bar-nav">
+            <a class=" mui-icon mui-icon-left-nav mui-pull-left" id="leftback"></a>
+            <h1 class="mui-title">个人信息</h1>
+        </header>
+
+        <div class="d_top"></div>
+            <div class="d_both">
+                <div class="d_left">姓名:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass" maxlength="10" type='text' name="contact_name">
+                </div>
+            </div>
+            <div class="d_both">
+                <div class="d_left">联系电话:</div>
+                <div type="text" class="d_right">
+                    <input class="inputclass" maxlength="10" type='text' name="contact_number">
+                </div>
+            </div>
+        <div class="d_both " >
+            <div class="d_left">性别</div>
+            <div type="text" class="d_right">
+                <select name="sex" >
+                    <option value="">男</option>
+                    <option value="">女</option>
+
+                </select>
+            </div>
+        </div>
+        <div class="d_both " >
+            <div class="d_left">与户主关系</div>
+            <div type="text" class="d_right">
+                <select name="householder_relation" >
+                    <option value="">本人</option>
+                    <option value="">亲戚</option>
+                    <option value="">朋友</option>
+                    <option value="">家人</option>
+                </select>
+            </div>
+        </div>
+        <div class="d_both">
+            <div class="d_left">QQ:</div>
+            <div type="text" class="d_right">
+                <input class="inputclass" maxlength="10" type='text' name="customer_qq">
+            </div>
+        </div>
+        <div class="d_both">
+            <div class="d_left">邮箱:</div>
+            <div type="text" class="d_right">
+                <input class="inputclass" maxlength="10" type='text'  name="customer_email">
+            </div>
+        </div>
+        </form>
+
+        <div class="d_bottom "><button class="mui-btn mui-btn-primary" id="d_tioajiao">提交</button ><button  class="ml20 mui-btn mui-btn-danger" @click="replay" id="relay">重置</button></div>
+    </div>
+</div>
+</body>
+<script>
+
+    window.onload = function () {
+
+
+       var aa =  $("#ff").serialize();
+        alert(aa);
+
+        for(var a = 0; a<=5;a++){
+//           alert(a)
+            $("input:eq("+a+")").addClass("border_red")
+        }
+        $("#nextbtn").click(function(){
+            $("#nomalinform").hide();
+            $("#personinform").show();
+
+        });
+        $("#leftback").click(function () {
+            $("#personinform").hide();
+            $("#nomalinform").show();
+            return false;
+        });
+
+//      alert($("select:eq(6)").text());
+
+        $("#d_tioajiao").click(function () {
+//            alert(mui.toast)
+//                项目名称正则匹配
+            if($("input[type='text']").get(0).value.match(/[^\u4e00-\u9fa5]/)){
+
+                mui.toast('项目名称只能为汉字',{ duration:'short', type:'div' });
+                return false;
+            }else
+//            姓名正则匹配
+            if($("input[type='text']").get(4).value.match(/[^\u4e00-\u9fa5]/)){
+                mui.toast('姓名格式为汉字',{ duration:'short', type:'div' });
+                return false;
+            }else
+            if($("input[type='text']").get(5).value.match(/^[0-9]*$/)){}else{
+                mui.toast('电话号码格式为数字',{ duration:'short', type:'div' });
+                return false;
+            }
+//各项数据不为空
+//            for(var i = 0;i<= 5;i++){
+//                if(( $("input[type='text']").get(i).value)== ""){
+//                    mui.toast(arreyb[i], {duration: 'short', type: 'div'});
+//                    return false;
+//                }
+//            }
+            $("select:eq(6) option:selected").each(function (i,value) {
+                if($(this).text()=="请选择"){
+                    mui.toast('与户主关系不能为空',{ duration:'short', type:'div' });
+                    return false;
+                }
+            });
+        });
+
+    }
+</script>
+
+
+
+
+</html>

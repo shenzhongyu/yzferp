@@ -1,0 +1,117 @@
+contentEdit.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false}
+, { field: 'name', title: '装饰项目名称', width: '100', align: 'center'}
+, { field: 'unit', title: '单位',width: 100, align: 'center',{:widget('Easyui/formatter')}}
+, { field: 'price', title: '单价', width: 100, align: 'center',{:widget('Easyui/formatter')}}
+, { field: 'desc', title: '说明',width: 180, align: 'center', sortable: true}
+]]{/block}
+
+{block name="filter"}[
+
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["unit","unit_name"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if(field=="price"){
+    var value=sumPrice(row);
+    return value.toFixed(2);
+}
+else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+}else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+{block name="my_js"}
+<script>
+    function sumPrice(obj) {
+        //算法1
+        var u_value=Number(obj.unit_price)*(1+Number(obj.unit_profit)); //主材报价
+        var a_value=Number(obj.auxiliary_unit)*(1+Number(obj.auxiliary_profit)); //辅材报价
+        var p_value=Number(obj.artificial_price)*(1+Number(obj.artificial_profit)); //人工报价
+        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //损耗报价
+        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //机械费报价
+        //算法2
+//        var u_value=Number(obj.unit_price)/(1-Number(obj.unit_profit)); //主材报价
+//        var a_value=Number(obj.auxiliary_unit)/(1-Number(obj.auxiliary_profit)); //辅材报价
+//        var p_value=Number(obj.artificial_price)/(1-Number(obj.auxiliary_profit)); //人工报价
+//        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //损耗报价
+//        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //机械费报价
+        return u_value+a_value+p_value+l_value+m_value;
+    }
+    function moveDataItem() {  //移入基装项
+        $(mikkleClass.dialog).dialog({
+            title: "移入基装项",
+            iconCls: 'icon-save',
+            width: 840,
+            height: 690,
+            cache: false,
+            href: "{:url('showDataItem')}/guid/"+'{$guid}',
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function del(){
+        var rows = $('#list').datagrid('getSelections');
+        console.log(rows.budget_id);
+        if(rows.length>0){
+            if(rows.length=="1"){
+                var row=$('#list').datagrid('getSelected');
+                $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+                    if(!result) return false;
+                    $.messager.progress({text:'处理中，请稍候...'});
+                    $.post('{:url("delBudgetContent")}',{budget_id: row.budget_id,material_id:row.material_id}, function(data){
+                        $.messager.progress('close');
+                        if (data.code == 1001) {
+                            layer.msg(data.msg, {icon: 1});
+                            mikkleClass.refresh();
+                        }else if(data.code == 1020){
+                            layer.msg(data.msg ? data.msg :'删除失败，请联系管理员', {icon: 2});
+                        }else {
+                            layer.msg(data.msg ? data.msg :'删除失败，请联系管理员', {icon: 2});
+                        }
+                    }, 'json');
+                });
+            }else{
+                layer.msg('删除操作只能选择一条数据！', {icon: 2});
+                return false;
+            }
+        }else{
+            layer.msg('请选择要删除的数据！', {icon: 2});
+            return false;
+
+        }
+    }
+</script>
+{/block}
+
+{block name="toolbar"}[
+{ text:'移入装饰项', iconCls: 'icon-add', handler:function(){ moveDataItem()  } },'-',
+{ text:'删除', iconCls: 'icon-cancel', handler: function(){ del()  } },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+]{/block}

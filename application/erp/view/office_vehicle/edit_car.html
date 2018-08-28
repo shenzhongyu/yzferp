@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>办公用品登记</title>
+    <link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+</head>
+<style type="text/css">
+    #fm section{width: 40%;margin-top: 10px;line-height: 35px;}
+    #fm section label{height: 35px;line-height: 35px;display: inline-block}
+    #fm section .label_1{width: 70px;text-align: center}
+    #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+    #button a{width: 100px !important;margin: 0 0 0 10px}
+</style>
+
+<body>
+<div class="container">
+    <form id="fm" style="width: 99%" method="post" name="form">
+        <div id="p" class="easyui-panel" title="{$title}" style="width:100%;padding:15px;margin-bottom: 20px; ">
+            <section>
+                <label class="label_1" >车牌号:</label>
+                <label class="label_2" >
+                    <input class="easyui-validatebox" value="{$car['number']}" type="text" name="number"
+                           data-options="required:true,validType:'length[1,20]'" >
+                </label>
+            </section>
+            <section>
+                <label class="label_1" style="">品牌型号:</label>
+                <label class="label_2" style="">
+                    <input class="easyui-validatebox" value="{$car['name']}"  type="text" name="name"data-options="">
+                </label>
+            </section>
+            <section>
+                <label class="label_1" style="">类型:</label>
+                <label class="label_2" style="">
+                    <input class="easyui-validatebox" value="{$car['type']}"  type="text" name="type"data-options="">
+                </label>
+            </section>
+            <section>
+                <label class="label_1" style="">颜色:</label>
+                <label class="label_2" style="">
+                    <input class="easyui-validatebox"  value="{$car['color']}" type="text" name="color"data-options="">
+                </label>
+            </section>
+            <section>
+                <label class="label_1" >图片:</label>
+                <label class="label_2" >
+                    <input class="easyui-textbox"  id="photo"  name="photo" style="width: 60%" value="{$car['photo']}"
+                           data-options="editable:false,valueField: 'value',textField: 'text',onChange:function(newValue, oldValue){addImg(newValue,oldValue)}">
+                    <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="addPhoto('photo')">上传图片</a>
+                    <input type="hidden"  id="photo_m"  name="photo_m" style="width:40%" value="{$car['photo_m']}">
+                </label>
+            </section>
+            <section style="width: 100%">
+                <label class="label_1" style="height: 36px;line-height: 36px;">车辆描述:</label>
+                <label class="label_2" style="height: 36px;line-height: 36px;" >
+                    <textarea name="desc"  cols="50" rows="5"  style="resize: none;margin-bottom: -10px;">{$car['desc']}</textarea>
+                </label>
+            </section>
+        </div>
+    </form>
+    <div id="show_img" style="position: absolute;right: 8%;top: 8%;display: {$car['photo']?'block':'none'};">
+        <img id="add_img" style="width: 200px;height: 200px;" src="{$car['photo']}">
+    </div>
+    <div style="clear: both"></div>
+    <div id="button">
+        <a style="margin-left: 35%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">录 入</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重 置</a>
+    </div>
+</div>
+<div id="log"></div>
+{include file="base/js" /}
+</body>
+<script>
+    //表单提交(下一步)
+    function submitForm(){
+        $('#fm').form('submit',{
+            url:'{$url}',
+            onSubmit:function(){
+                return $(this).form('enableValidation').form('validate');
+            },
+            success:function(data){
+                var obj=JSON.parse(data);
+                if(obj.code=="1001"){
+                    layer.msg("车辆修改成功", {icon: 1});
+                    $('#fm').form('clear');
+                    setTimeout(function () {
+                        window.parent.closeTab("车辆信息修改");
+                    },600);
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            }
+        });
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        $('#fm').form('clear');
+    }
+    function addPhoto(name) {
+        $("#log").dialog({
+            title:'上传图片',
+            width:400,
+            height:300,
+            href:'{:url("design/showuploadhtml")}/idName/'+name,
+        });
+    }
+    function addImg(n,o) {
+        $("#show_img").css("display",'block');
+        $("#add_img").attr('src',n);
+    }
+</script>
+
+</html>

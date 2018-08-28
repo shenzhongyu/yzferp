@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>员工录入</title>
+    <link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+</head>
+<style type="text/css">
+    #fm section{width: 30%;float: left;margin-top: 10px;line-height: 35px;}
+    #fm section label{height: 35px;line-height: 35px;display: inline-block}
+    #fm section .label_1{width: 70px;text-align: center}
+    #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+    #button a{width: 100px !important;margin: 0 0 0 10px}
+</style>
+
+<body>
+<div class="container">
+    <form id="fm" style="width: 99%" method="post" name="form">
+        <div id="p" class="easyui-panel" title="员工信息录入" style="width:100%;padding:15px;margin-bottom: 20px; ">
+            <section >
+                <label class="label_1" style="">登录账号:</label>
+                <label class="label_2" style="">
+                    <input class="easyui-validatebox" type="text" name="username"
+                           data-options="invalidMessage:'格式为字母和数字,下划线_或破折号-',missingMessage:'格式为字母和数字,下划线_或破折号-',required:true,validType:'maxLengthTwo[3]'" placeholder=""
+                           style="width:100%">
+                </label>
+            </section>
+            <section >
+                <label class="label_1" style="">员工姓名:</label>
+                <label class="label_2" style="">
+                    <input class="easyui-validatebox" type="text" name="name"
+                           data-options="required:true,validType:'maxLengthTwo[3]'" placeholder="用户姓名"
+                           style="width:100%">
+                </label>
+            </section>
+            <section >
+                <label class="label_1" style="">手机号:</label>
+                <label class="label_2" style="">
+                    <input class="easyui-validatebox"  name="mobile"
+                           data-options="invalidMessage:'数字,长度为11位',missingMessage:'数字,长度为11位',required:true,validType:'length[11,11]'" placeholder="请填写手机号"
+                           style="width:100%">
+                </label>
+            </section>
+            <section>
+                <label for="company_id" class="label_1">所属公司:</label>
+                <label for="company_id" class="label_2">
+                    <input class="easyui-combobox" id="company_id"  name="company_id" style="width:100%" value=""
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'company_name',required:true,url:'{:url('showCompanyJson')}',method:'get',
+                   ">
+                </label>
+            </section>
+            <section style="display: none">
+                <label for="department_type" class="label_1">部门类型:</label>
+                <label for="department_type" class="label_2">
+                    <input class="easyui-combobox"  id="department_type"  name="department_type" style="width:100%" value=""
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/department_type')}',method:'get', onSelect:function(region){
+                            $('#department_id').combobox('clear');
+                           $('#jobs_id').combobox('clear');
+                           $('#department_type').combobox('clear');
+                    $('#department_id').combobox('reload','/erp/user/showDepartmentJson?type='+region.value);}
+                   ">
+                </label>
+            </section>
+            <section>
+                <label for="department_id" class="label_1">所属部门:</label>
+                <label for="department_id" class="label_2">
+                    <input class="easyui-combobox" id="department_id" name="department_id" style="width:100%" value=""
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'department_name',required:true,url:'{:url('showDepartmentJson')}',method:'get',
+                           onSelect:function(region){
+                            $('#jobs_id').combobox('reload','/erp/user/showJobsJson?department='+region.guid);
+                            $('#department_type').combobox({value: region.department_type,})
+                           }" >
+
+                </label>
+            </section>
+            <section>
+                <label for="jobs_id" class="label_1">所属职位:</label>
+                <label for="jobs_id" class="label_2">
+                    <input class="easyui-combobox" id="jobs_id"  name="jobs_id" style="width:100%" value=""
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',required:true,editable:false,valueField: 'guid',textField: 'jobs_name',method:'get'">
+                </label>
+            </section>
+            <section>
+                <label for="sex" class="label_1">性别:</label>
+                <label for="sex" class="label_2">
+                    <input class="easyui-combobox"  id="sex"  name="user_sex" style="width:100%" value="1"
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/sex_value')}',method:'get',">
+                </label>
+            </section>
+            <section style="width: 100%">
+                <label class="label_1" style="height: 36px;line-height: 36px;">家庭情况:</label>
+                <label class="label_2" style="height: 36px;line-height: 36px;" >
+                            <textarea name="user_family"  cols="30" rows="2" style="resize: none;margin-bottom: -10px;">
+                            </textarea>
+                </label>
+            </section>
+            <section style="opacity: 0">
+                <label  class="label_2">
+                    <input class="easyui-combobox" type="hidden"  name="status" style="width:100%" value="0">
+                </label>
+            </section>
+        </div>
+    </form>
+    <div style="clear: both"></div>
+    <div id="button">
+        <a style="margin-left: 35%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">提 交</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重 置</a>
+    </div>
+</div>
+{include file="base/js" /}
+<!--<script src="/static/erp/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>-->
+<!--<script type="text/javascript" src="/static/erp/js/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+</body>
+<script>
+    //表单提交(下一步)
+    function submitForm(){
+
+        $('#fm').form('submit',{
+            url:'{:url("/erp/System/addStaff")}',
+            onSubmit:function(){
+                return $(this).form('enableValidation').form('validate');
+            },
+            success:function(data){
+                var obj=JSON.parse(data);
+                if(obj.code=="1001"){
+                    layer.msg("员工录入成功", {icon: 1});
+                    $('#fm').form('clear');
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            }
+        });
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        $('#fm').form('clear');
+    }
+</script>
+
+</html>

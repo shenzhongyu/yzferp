@@ -1,0 +1,33 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">费率项名称:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="rate_name" id="supplier_name"
+                   data-options="required:true,validType:'length[1,35]'" style="width:80%">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >费率值:</label>
+        <label class="label_2" >
+            <input class="easyui-validatebox"  name="rate_value" placeholder="0.00"
+                   data-options="validType:'length[1,5]',required:true,"
+                   style="width:80%">
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >固定费率:</label>
+        <label class="label_2" >
+            <select class="easyui-combobox" name="type" style="width:80%;">
+                <option value="1">是</option>
+                <option value="2">否</option>
+            </select>
+        </label>
+    </section>
+    <section>
+        <label class="label_1">备注:</label>
+        <label class="label_2">
+            <textarea placeholder="请填写费率描述" name="rate_desc" style="width:80%;height: 60px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+
+</form>

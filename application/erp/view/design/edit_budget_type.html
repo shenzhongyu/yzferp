@@ -1,0 +1,10 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">预算类型</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox"  id="budget_type"  name="budget_type" style="width:80%;" value="1"
+                   data-options="required:true,invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/budget_type')}',method:'get',">
+        </label>
+    </section>
+</form>
+

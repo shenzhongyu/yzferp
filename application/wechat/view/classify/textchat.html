@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>wechat</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+</head>
+<style type="text/css">
+    @charset "utf-8";
+    /* CSS Document */
+    /*author:wm*/
+    /*content:初始化样式*/
+
+    * { word-wrap: break-word; word-break: break-all; }
+    html{font-family: 'PingFang SC', 'Myriad Pro', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+    }
+    input,textarea,button{font-family: 'PingFang SC', 'Myriad Pro', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;color: #000000;}
+    body {color: #000000;font-family: 微软雅黑 }
+    body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, blockquote, p { margin: 0; padding: 0; }
+    /*table, td, tr, th { font-size: 15px; }*/
+    li { list-style-type: none; }
+    table { margin: 0 auto; }
+    img { border: 0; vertical-align: top; }
+    ol, ul { list-style: none; }
+    caption, th { text-align: left; }
+    h1, h2, h3, h4, h5, h6 {font-weight: normal;}
+    q:before, q:after { content: ''; }
+    address, caption, cite, code, dfn, em, th, var { font-style: normal; font-weight: normal; }
+    .clean { clear: both; display: block; height: 0px; overflow: hidden; padding: 0; }
+    .clean2:after { display: block; clear: both; height: 0px; font-size: 0px; padding: 0; overflow: hidden; }
+    a:link, a:visited { color: #5c6169; text-decoration: none; }
+    a:hover, a:active { color: #4aa7f3; text-decoration: none; }
+    .r { float: right; }
+    .l { float: left; }
+    .ofh { overflow: hidden; }
+
+    .chat_list{
+        width: 20%;
+        /*background: red;*/
+        height: 100%;
+        float: left;
+        overflow: scroll
+    }
+    .chat_img_other{
+        /*display: inline-block;*/
+        width: 0.8rem;
+        height: 0.8rem;
+        background: black;
+        border-radius: 0.7rem;
+        overflow: hidden;
+
+
+        margin: 0.2rem auto
+    }
+    .chat_img_other_image{
+        width: 100%;
+        height: 100%;
+    }
+    .chat_prompt{
+        width: 100%;
+        /*background: lawngreen;*/
+        height: 0.6rem;
+        line-height: 0.6rem;
+        font-size: 0.26rem;
+        text-align: center;
+        padding-left:0.2rem;
+        padding-right:0.2rem;
+        box-sizing: border-box;
+        margin-top: 0.2rem;
+        float: left;
+    }
+    .chat_content{
+        width: 80%;
+        /*background: red;*/
+        height: 100%;
+        float: left;
+        border-left: 1px solid #d6e9c6;
+        box-sizing: border-box;
+        overflow: scroll;
+        padding-top: 0.2rem;
+
+    }
+
+
+    ::-webkit-scrollbar{width:1px;}
+    /*::-webkit-scrollbar-track{background-color:#bee1eb;}*/
+    ::-webkit-scrollbar-thumb{background-color:#00aff0;}
+    ::-webkit-scrollbar-thumb:hover {background-color:#9c3}
+    ::-webkit-scrollbar-thumb:active {background-color:#00aff0}
+
+    scrollbar{width:1px;}
+    .chat_other_all{
+        width: 80%;
+        min-height: 1rem;
+        /*background: lightcoral;*/
+        font-size: 0.26rem;
+        margin-top: 0.2rem;
+        overflow: hidden;
+        padding-left: 0.2rem
+    }
+    .chat_other_image{
+        width: 0.8rem;
+        height: 0.8rem;
+        /*background: black;*/
+        border-radius: 0.7rem;
+        float: left
+    }
+    .chat_other_name{
+        width: 3.6rem;
+        height: 0.4rem;
+        /*background: lightgreen;*/
+        float:left;
+    }
+    .chat_other_message{
+        box-sizing: border-box;
+        padding: 0.1rem;
+        width: 3rem;
+        background: #d9edf7;
+        float:left;
+        border-radius: 0.2rem;
+        margin-top: 0.1rem
+    }
+    .chat_my_all{
+        width: 80%;
+        min-height: 1rem;
+        /*background: lightcoral;*/
+        font-size: 0.26rem;
+        margin-top: 0.2rem;
+        float: right;
+        overflow: hidden;
+        padding-right: 0.2rem
+    }
+    .chat_my_name{
+        width: 0.8rem;
+        height: 0.8rem;
+        background: black;
+        border-radius: 0.7rem;
+        float: right
+    }
+    .chat_my_image{
+        width: 3.6rem;
+        height: 0.4rem;
+        /*background: lightgreen;*/
+        float:right;
+        text-align: right;
+        text-overflow:ellipsis;
+    }
+    .chat_my_message{
+        box-sizing: border-box;
+        padding: 0.1rem;
+        width: 3rem;
+        background: #d9edf7;
+        float:right;
+        border-radius: 0.2rem;
+        margin-top: 0.1rem
+    }
+    .chat_bottom_all{
+        position: fixed;
+
+        bottom: 0.01rem;
+        width: 100%;
+        box-sizing: border-box;
+        background: white;
+    }
+    .chat_bottom_textarea{
+        width: 76%;
+        /*background: white;*/
+      height: 0.8rem;
+        float: left;
+        box-sizing: border-box;
+        border-radius: 0.1rem;
+        background: lightgrey;
+        border: 0 solid white;
+        outline:none;
+        margin-left: 0.1rem;
+        margin-right: 0.1rem;
+    }
+    .chat_bottom_send{
+        border-radius: 0.2rem;background: lightblue;
+        text-align: center;
+        line-height: 0.8rem;
+        font-size: 0.26rem;
+        float: left;
+        width:20%;
+        height: 0.8rem;
+        /*background: peru*/
+    }
+    .chat_message_body{
+        width: 100%;
+        box-sizing: border-box;
+        /*background: yellow*/
+    }
+    .chat_look{
+        width: 100%;
+        height: 0.6rem;
+        /*background: yellow;*/
+    }
+</style>
+<body>
+<div class="chat_message_body" id="message_body">
+    <div class="chat_list" id="content">
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+        <div class="chat_img_other">
+            <img src="/static/mui/image/0.jpg" class="chat_img_other_image">
+        </div>
+
+    </div>
+    <div class="chat_content" id="bottom">
+        <div class="chat_prompt">
+           欢迎加入馍馍馍聊天室
+        </div>
+
+        <div class="chat_other_all">
+            <img class="chat_other_image" src="/static/mui/image/0.jpg">
+            <div class="chat_other_name">我们都是好孩子</div>
+            <div class="chat_other_message">
+                我们都是好孩子我们都是好孩子我们都是好孩子我们都是好孩子我们都是好孩子
+            </div>
+        </div>
+        <div class="chat_other_all">
+            <img class="chat_other_image" src="/static/mui/image/0.jpg">
+            <div class="chat_other_name">我们都是好孩子</div>
+            <div class="chat_other_message">
+                我们都是好
+            </div>
+        </div>
+        <div class="chat_prompt">
+            欢迎加入馍馍馍聊天室
+        </div>
+        <div class="chat_my_all">
+            <img class="chat_my_name" src="/static/mui/image/0.jpg">
+            <div class="chat_my_image">我们都是好孩子</div>
+            <div class="chat_my_message">
+                我们都是好孩子我们都是好孩子我们都是好孩子我们都是好孩子我们都是好孩子
+            </div>
+        </div>
+
+        <div class="chat_my_all">
+            <img class="chat_my_name" src="/static/mui/image/0.jpg">
+            <div class="chat_my_image">我们都是好孩子</div>
+            <div class="chat_my_message">
+                我们都是好孩子我们都是好孩子我们都是好孩子我们都是好孩子我们都是好孩子
+            </div>
+        </div>
+
+        <div class="chat_my_all">
+            <img class="chat_my_name" src="/static/mui/image/0.jpg">
+            <div class="chat_my_image">我们都是好孩子</div>
+            <div class="chat_my_message">
+                我们都是好孩子我们都是好孩子我们都是好孩子我们都是好孩子我们都是好孩子
+            </div>
+        </div>
+        <div class="chat_my_all">
+            <img class="chat_my_name" src="/static/mui/image/0.jpg">
+            <div class="chat_my_image">我们都是好孩子</div>
+            <div class="chat_my_message">
+                我们都是好孩子我们都是好孩子我们都是好孩子我们都是好孩子我们都是好孩子
+            </div>
+        </div>
+        <div class="chat_prompt">
+            欢迎加入馍馍馍聊天室
+        </div>
+
+    </div>
+</div>
+<div class="chat_bottom_all" id="chat_bottom_all">
+    <div class="chat_look"></div>
+    <input class="chat_bottom_textarea">
+    <div class="chat_bottom_send">发送</div>
+</div>
+
+</body>
+</html>
+<script src="__MUI__/js/jQuery%20v3.1.1.js"></script>
+<script>
+    console.log($(document).height());
+    console.log($(document).height()*0.8)
+    console.log($(document).height()*0.2)
+    var html = document.querySelector('html');
+    var rem = html.offsetWidth / 7.2;
+    html.style.fontSize = rem + "px";
+$("#message_body").css("height",$(window).height()*0.87)
+    $("#chat_bottom_all").css("height",$(window).height()*0.13)
+
+</script>

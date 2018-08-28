@@ -1,0 +1,17 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">{$title}:</label>
+        <label class="label_2" style="" id="stater">
+            {$value ? $value : 0 }
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">{$name_title}:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="number" name="{$name}" id="{$name}"
+                   data-options="required:true,validType:'length[1,14]'"
+                   style="width:80%">
+        </label>
+    </section>
+</form>
+

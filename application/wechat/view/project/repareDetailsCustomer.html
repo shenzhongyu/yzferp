@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>维修项目详情</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+.change{
+    font-size: 0.23rem;
+    padding: 0.2rem 0.2rem;
+    width: 90%;
+    background: white;
+    padding-bottom: 10%;
+    border: 1px silver solid;
+    border-radius: 10px;
+    display: none;
+    position: fixed;
+    left: 5%;
+    top: 20%;
+}
+    </style>
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">维修项目详情</h1>
+    <!--<a id="menu" class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>-->
+    <!--<a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right mui-btn-primary mui-btn-block" id="openPopover" style="font-size: 24px;"></a>-->
+</header>
+
+
+<div class="addBoss">
+    <div v-if="item==''" class="text-center">暂无信息</div>
+    <div class="addFirst"  v-cloak>
+        <!--<div class="addPro">维修项目详情</div>-->
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">登记日期：</div>
+            <div class="detailRightOnly">
+                {{item.time}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">维修编号：</div>
+            <div class="detailRightOnly">
+            {{item.guid}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">客户姓名：</div>
+            <div class="detailRightOnly">
+            {{item.customer_name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">联系电话：</div>
+            <div class="detailRightOnly">
+                {{item.customer_phone}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">项目地址：</div>
+            <div class="detailRightOnly">
+                {{item.project_id}}
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">项目经理：</div>
+            <div class="detailRightOnly">
+                {{item.project_uuid}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">需修事宜：</div>
+            <div class="detailRightOnly">
+                {{item.complaint_content}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">登记人：</div>
+            <div class="detailRightOnly">
+                {{item.register.name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">处理人：</div>
+            <div class="detailRightOnly">
+                {{item.handle.name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">处理状态：</div>
+            <div class="detailRightOnly">
+                <span v-if="item.processing_status==-1">未处理</span>
+                <span v-if="item.processing_status==1">正在处理</span>
+                <span v-if="item.processing_status==2">已完成</span>
+
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">完毕回访：</div>
+            <div class="detailRightOnly">
+                {{item.complaint_desc}}
+            </div>
+        </div>
+
+        <div class="detailBoss ">
+
+            <div class="detailLeftOnly">验收日期：</div>
+            <div class="detailRightOnly">
+                {{item.end_time}}
+            </div>
+        </div>
+
+        <!--<div class="detailBoss " >-->
+
+            <!--<div class="detailLeftOnly">操作：</div>-->
+            <!--<div class="detailRightOnly" >-->
+               <!--<a @click="headMan(item.guid)">设为负责人</a>-->
+            <!--</div>-->
+        <!--</div>-->
+
+    </div>
+
+    </div>
+</div>
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        var url = "{:url('',['guid'=>$guid])}";
+        mui.ajax(url, {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                dataA.item = response;
+                var vue = new Vue({
+                    el: '#details',
+                    data: dataA,
+                    methods: {
+
+
+                    }
+                })
+            }
+        })
+    }
+</script>

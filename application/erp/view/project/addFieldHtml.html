@@ -1,0 +1,91 @@
+<p style="padding-left: 15px">
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="hideF()">图片上传</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="hideP()">附件上传</a>
+</p>
+<div style="width: 97%;height: 300px;border: 1px solid #95B8E7;margin-left: 1%">
+    <form id="fmq" style="padding:0 30px;" method="post" name="form">
+        <section>
+            <label class="label_1" style="">图片名称:</label>
+            <label class="label_2" style="">
+                <input class="easyui-validatebox" type="text" name="photo_name" id="photo_name"
+                       data-options="required:true,validType:'length[1,100]'" style="width:60%">
+            </label>
+        </section>
+        <section >
+            <label class="label_1" >图片上传:</label>
+            <label class="label_2" >
+                <input class="easyui-textbox"  name="photo_address" id="photo_address" readonly
+                       data-options=""
+                       style="width:auto">
+                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="uploadPhoto()">上&nbsp;传</a>
+            </label>
+        </section>
+        <section>
+            <label class="label_1">上传说明:</label>
+            <label class="label_2">
+                <textarea  name="photo_desc" style="width:80%;height: 70px;outline:none;resize:none;"></textarea>
+            </label>
+        </section>
+        <input type="hidden" id="photo_m" name="photo_m" value="">
+    </form>
+    <div id="log">
+
+    </div>
+    <form id="fmq1" style="padding:0 30px;display: none" method="post" name="form">
+        <section>
+            <label class="label_1" style="">附件名称:</label>
+            <label class="label_2" style="">
+                <input class="easyui-validatebox" type="text" name="field_name" id="field_name"
+                       data-options="required:true,validType:'length[1,100]'" style="width:60%">
+            </label>
+        </section>
+        <section >
+            <label class="label_1" >附件上传:</label>
+            <label class="label_2" >
+                <input class="easyui-textbox"  name="field_address" id="field_address" readonly
+                       style="width:auto">
+                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="uploadField()">上&nbsp;传</a>
+            </label>
+        </section>
+        <section>
+            <label class="label_1">上传说明:</label>
+            <label class="label_2">
+                <textarea  name="field_desc" style="width:80%;height: 70px;outline:none;resize:none;"></textarea>
+            </label>
+        </section>
+        <input type="hidden" id="field_m" name="field_m" value="">
+    </form>
+    <div id="log2">
+
+    </div>
+</div>
+
+
+<script>
+    function uploadPhoto() {
+        $("#log").dialog({
+            title:'上传图片',
+            width:400,
+            height:300,
+            href:'{:url("Design/showUploadHtml",["idName"=>"photo_address"])}',
+        });
+    }
+    function uploadField() {
+        $("#log2").dialog({
+            title:'上传附件',
+            width:400,
+            height:300,
+            href:'{:url("Design/showUploadFile",["idName"=>"field_address"])}',
+        });
+    }
+    function hideF() {
+        $("#fmq1").css("display","none");
+        $("#fmq").css("display","block");
+        $('#fmq1').form("clear");
+    }
+    function hideP() {
+        $("#fmq").css("display","none");
+        $("#fmq1").css("display","block");
+        $('#fmq').form("clear");
+    }
+</script>

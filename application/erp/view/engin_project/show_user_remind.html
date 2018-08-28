@@ -1,0 +1,38 @@
+
+<table id="remind">
+</table>
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $('#remind').datagrid({
+            url:'{$url}',
+            height:315,
+            rownumbers:true,
+            singleSelect:true,
+            pagination:false,
+            method:'post',
+            columns:[[
+                {field:'remind_time',title:'提醒时间',width:'20%',align:'center'},
+                {field:'remind_content',title:'提醒内容',width:'40%',align:'center'},
+                {field:'uuid_name',title:'添加人',width:'20%',align:'center'},
+                {field:'operate',title:'操作',width:'20%',align:'center',formatter:
+                    function(value,row,index){
+                        return '<a href="javascript:delRemind(&apos;'+row.guid+'&apos;);">删除</a>'
+                    }
+                }
+            ]]
+        });
+    })
+    function delRemind(a) {
+        var url='{:url("delRemind")}';
+        $.post(url,{id:a},function (data){
+            if (data.code!="1001"){
+                layer.msg(data.msg,{icon:2});
+            }else{
+                layer.msg(data.msg,{icon:1});
+                $('#remind').datagrid('reload');
+            }
+        },'json')
+    }
+</script>

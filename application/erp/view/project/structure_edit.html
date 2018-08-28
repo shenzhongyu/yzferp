@@ -1,0 +1,53 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">居室结构:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="living_room_structure"
+                   data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/living_room_structure')}',method:'get',"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">房屋用途:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="housing_use"
+                   data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/housing_use')}',method:'get',"
+            style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">房屋朝向:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="house_orientation"
+                   data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/house_orientation')}',method:'get',"
+            style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">采光:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="lighting"
+                   data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/lighting')}',method:'get',"
+            style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">房屋类型:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="house_type"
+                   data-options="editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/house_type')}',method:'get',"
+            style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">楼层:</label>
+        <label class="label_2">
+            <input class="easyui-textbox" style="width:80%" name="floor" type="text" data-options="validType:'length[1,10]'" placeholder="请填写楼层">
+        </label>
+    </section>
+
+
+
+
+</form>
+

@@ -1,0 +1,32 @@
+
+<table id="remind">
+</table>
+
+<script type="text/javascript">
+    $(function(){
+//        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        $('#remind').datagrid({
+            url:'{$url}',
+            height:315,
+            rownumbers:true,
+            singleSelect:true,
+            pagination:false,
+            method:'post',
+            columns:[[
+                {field:'name',title:'装饰项目',width:'30%',align:'center'},
+                {field:'desc',title:'工艺说明',width:'45%',align:'center'},
+                {field:'operate',title:'操作',width:'20%',align:'center',formatter:
+                    function(value,row,index){
+                        return '<a href="javascript:add(&apos;'+row.guid+'&apos;,&apos;'+row.name+'&apos;);">选择</a>'
+                    }
+                }
+            ]]
+        });
+    })
+    function add(id,name) {
+        console.log(id.guid);
+        $("#build_name").textbox('setValue',name);
+        $("#build_id").val(id);
+        $("#add").dialog('close');
+    }
+</script>

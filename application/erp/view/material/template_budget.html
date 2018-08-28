@@ -1,0 +1,63 @@
+templateBudget.html{extend name="base/base_search_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'template_id', title: '所属模板类型', width: '180', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'budget_name', title: '空间名称', width: 150,align: 'center', sortable: true}
+, { field: 'budget_desc', title: '模板备注',width: '120', align: 'center', sortable: true}
+, { field: 'opera', title: '操作', width: '120', align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+]]{/block}
+
+{block name="filter"}[
+{:widget('Easyui/showFilter', ["template_id","combobox"])}
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showValueByUrl',["template_id","template_id",$map])}
+{:widget('Easyui/showArrayByUrl',["template_id","template_id",$map])}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if(field=="opera"){
+    var str='';
+    str+='<a href="javascript:contentEdit(&apos;'+row.guid+'&apos;);">修改内容</a> ';
+    str+='<a href="javascript:mikkleClass.editForm(450,250);">编辑</a> ';
+    return str;
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+}else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+{block name="my_js"}
+<script>
+    function contentEdit(a) {
+        window.parent.addTab('修改内容','{:url("contentEdit")}/id/'+a,'close');
+    }
+</script>
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'新增空间', iconCls: 'icon-add', handler:function(){  mikkleClass.addForm(450,250);  } },'-',
+{ text:'删除', iconCls: 'icon-cancel', handler: function(){ mikkleClass.delForm();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

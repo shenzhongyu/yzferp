@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>请假</title>
+    {include file="base_mui/weui_wechat"/}
+    <script type="text/javascript" src="/static/mui/js/mui.picker.min.js"></script>
+    <link href="/static/mui/css/mui.picker.min.css" rel="stylesheet"/>
+    <style type="text/css">
+        .detalisleft {
+            width: 10%;
+        }
+
+        .detalisright {
+            width: 40%;
+        }
+
+        .detalboth {
+            width: 50%;
+        }
+
+        .detail_line {
+            border-bottom: 1px solid silver;
+        }
+
+        .addlink {
+            font-size: 13px;
+            padding: 0.2rem 0.2rem;
+            width: 90%;
+            padding-bottom: 10%;
+            background: white;
+            border: 1px silver solid;
+            border-radius: 10px;
+            display: none;
+            position: fixed;
+            left: 5%;
+            top: 20%
+        }
+
+        .addLog {
+            font-size: 15px;
+            padding: 0.2rem 0.2rem;
+            width: 90%;
+            padding-bottom: 10%;
+            background: white;
+            border: 1px silver solid;
+            border-radius: 10px;
+            display: none;
+            position: fixed;
+            left: 5%;
+            top: 20%
+
+        }
+
+        .addColl {
+            font-size: 13px;
+            padding: 0.2rem 0.2rem;
+            width: 90%;
+            padding-bottom: 10%;
+            background: white;
+            border: 1px silver solid;
+            border-radius: 10px;
+            display: none;
+            position: fixed;
+            left: 5%;
+            top: 20%
+        }
+
+        .addPro {
+            text-align: center;
+            height: 0.5rem;
+            width: 100%;
+            font-size: 16px;
+
+        }
+
+        .addBoss {
+            margin-top: 50px;
+            font-size: 13px;
+            padding-left: 0.2rem;
+            padding-right: 0.2rem;
+        }
+
+        .addFirst {
+
+            border-top: 1px solid silver;
+            border-left: 1px solid silver;
+            border-right: 1px solid silver;
+            border-bottom: 1px solid silver;
+            border-radius: 0.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .mui-input-row .div_left {
+            font-family: 'Helvetica Neue', Helvetica, sans-serif;
+            padding-left: 15px;
+            padding-top: 11px;
+            line-height: 0.4rem;
+            float: left;
+            width: 25%;
+
+        }
+
+        .pt-11 {
+            padding-top: -11px;
+        }
+
+        .mui-input-row .div_right {
+            font-family: 'Helvetica Neue', Helvetica, sans-serif;
+            padding-left: 15px;
+            padding-top: 11px;
+            line-height: 0.4rem;
+            float: left;
+            width: 70%;
+
+        }
+
+        .mui-input-row .div_input {
+            font-family: 'Helvetica Neue', Helvetica, sans-serif;
+            padding-left: 15px;
+            line-height: 0.4rem;
+            float: left;
+            width: 70%;
+
+        }
+
+
+    </style>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left"></a>
+    <h1 class="mui-title">请假申请</h1>
+</header>
+<div class="page" style="font-size: 13px">
+    <div class="mui-input-group" >
+        <div class="mui-input-row">
+            <div class="div_left">请假人：</div>
+            <div class="div_right">{$info.information.name}</div>
+        </div>
+
+        <div class="mui-input-row">
+            <div class="div_left">部门：</div>
+            <div class="div_right">{$info.department_name}</div>
+        </div>
+        <div class="mui-input-row">
+            <div class="div_left">职位：</div>
+            <div class="div_right">{$info.job_name}</div>
+        </div>
+<form id="ff">
+            <div class="mui-input-row">
+                <div class="div_left">开始日期：</div>
+                <div class="div_input"><input type="text" style="display:inline-block;background: lavender"
+                                              id="remind_time" name="start_time"></div>
+            </div>
+            <div class="mui-input-row">
+                <div class="div_left">结束日期：</div>
+                <div class="div_input "><input type="text"
+                                               style="display:inline-block;line-height: 0.4rem; background: lavender;"
+                                               id="end_time" name="end_time"></div>
+            </div>
+            <div class="mui-input-row">
+                <div class="div_left">请假类型：</div>
+                <select name="leave_type" class="div_input" style="font-size: 13px">
+                    <option value="1">病假</option>
+                    <option value="2">事假</option>
+                    <option value="3">婚假</option>
+                    <option value="4">产假</option>
+                </select>
+            </div>
+
+
+
+    <div style="padding-left: 0.3rem">
+        <div class="div_left">请假事由：</div>
+        <div style="padding-left: 0.2rem;padding-right: 0.2rem;margin-top: 0.2rem"><textarea style="height: 1.5rem;font-size: 14px;background: lavender;width: 4.7rem;margin-left: 1.6rem" name="leave_content"></textarea>
+        </div>
+
+    </div>
+    </form>
+</div>
+<div class="mui-button-row mt50 ">
+    <button type="button" class="mui-btn mui-btn-primary w80 h50 fz15" id="leave_add">申请</button>
+</div>
+
+<!--<div class="text-center">-->
+<!--<button style="width: 80%;height:0.8rem;background: #EAEAEA;position: fixed;bottom: 1.5rem;right: 10%"-->
+<!--@click="pushoff">申请-->
+
+<!--</button>-->
+
+<!--</div>-->
+
+</body>
+</html>
+<script type="text/javascript">
+window.onload  = function () {
+    (function (rr) {
+        var result1 = document.getElementById("remind_time");
+        var btn1 = $('#remind_time');
+        btn1.each(function (i, btn) {
+            btn.addEventListener('tap', function () {
+                var optionsJson = this.getAttribute('data-options') || '{}';
+                var options = JSON.parse(optionsJson);
+                var id = this.getAttribute('id');
+                var picker = new rr.DtPicker(options);
+                picker.show(function (rs) {
+                    result1.value = rs.text;
+                    picker.dispose();
+                    content = rs.text;
+                });
+            }, false);
+        });
+    })(mui, document);
+
+
+    (function (rr) {
+        var result1 = document.getElementById("end_time");
+        var btn1 = $('#end_time');
+        btn1.each(function (i, btn) {
+            btn.addEventListener('tap', function () {
+                var optionsJson = this.getAttribute('data-options') || '{}';
+                var options = JSON.parse(optionsJson);
+                var id = this.getAttribute('id');
+                var picker = new rr.DtPicker(options);
+                picker.show(function (rs) {
+                    result1.value = rs.text;
+                    picker.dispose();
+                    content = rs.text;
+                });
+            }, false);
+        });
+    })(mui, document);
+    $("#leave_add").on('click', function () {
+//        var ff_data = $("#ff").serialize();
+        var content = $("#ff").serialize();
+        console.log($("#remind_time").val())
+        console.log(content);
+        if(Date.parse(new Date($("#end_time").val())) <= Date.parse(new Date($("#remind_time").val()))){
+            mui.toast("结束日期小于开始日期，请重新选择日期", {duration: 'short', type: 'div'});
+            return false;
+        }
+        var url = "{:url('erp/system/addLeaveData')}";
+        mui.ajax(url, {
+            data: content,
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                if(response.code == 1001){
+                    mui.toast("请假申请成功", {duration: 'short', type: 'div'});
+                    setTimeout(function () {
+                        mui.openWindow({
+                            url: "{:url('index/index')}"
+                        });
+                    },2000)
+                }else{
+                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                }
+
+            }
+        })
+    })
+}
+
+
+</script>

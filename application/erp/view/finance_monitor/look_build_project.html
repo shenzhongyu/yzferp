@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="pro_tb" style="height:auto;padding-left: 10px;">
+        <!--<a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="contractPrint()">发包预算</a>-->
+        <!--<a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="supervision()">分配监理</a>-->
+        <!--<a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="supUser()">发包经理</a>-->
+        <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="designBook()">合同预算浏览</a>
+        <!--<a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="designBookPrint()">合同预算打印</a>-->
+        <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="contractPrintLook()">发包预算预览</a>
+        <!--<a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="backReturn()">分配监理</a>-->
+    </div>
+</div>
+<div id="pro_dlog">
+</div>
+
+<table id="pro_dg" title="{$title}" style="width: 100%"></table>
+<div style="height: 15px;"></div>
+
+<table id="pro_price" title="领款明细" style="width: 100%;"></table>
+
+
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    $(function(){
+        $('#pro_dg').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:"chk", "checkbox": true, movable: false},
+                {field:'categories_name',title:'工程类别',width:"15%",align:'center'},
+                {field:'categories_price',title:'工程价格',width:"10%",align:'center',},
+                {field:'build_time',title:'施工开始日期',width:"10%",align:'center',},
+                {field:'build_end_time',title:'施工结束日期',width:"10%",align:'center',},
+                {field:'build_status',title:'工期提醒',width:"10%",align:'center',
+                    formatter:function(value,row,index){
+                        if (row.build_status){
+                            if(row.type=="1"){
+                                return '<a style="color: green">已完工</a>';
+                            }
+                            var a=value.toFixed(1);
+                            if (row.build_status_type==1){
+                                return '<span>剩余'+a+'天</span>';
+                            }else{
+                                return '<span style="color: red">延期'+a+'天</span>';
+                            }
+                        }
+                    }
+                },
+                {field:'build_days',title:'施工天数',width:"10%",align:'center',},
+                {field:'build_user',title:'发包经理',width:"10%",align:'center',
+                    formatter:function(value,row,index){
+                        if (row.id){
+                            return '<a href="javascript:;" onclick="lookBuildUser(&apos;'+row.guid+'&apos;)">查看</a>';
+                        }
+                    }
+                },
+                {field:'op',title:'操作',width:"20%",align:'center',
+                    formatter:function(value,row,index){
+                        if (row.id){
+                            var str='<a href="javascript:;" onclick="lookBuildDetailed(&apos;'+row.guid+'&apos;)">查看明细</a>&nbsp;&nbsp;';
+                        }
+                        return str;
+                    }
+                },
+            ]],
+            showFooter:true,
+            singleSelect: false,
+            toolbar: '#pro_tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+        $('#pro_price').datagrid({
+            url:'{:url("Finance/showProjectPrice",["pro_id"=>$pro_id])}',
+            columns:[[
+                {field:'category_name',title:'工程类别',width:"15%",align:'center'},
+                {field:'value',title:'领款百分比',width:"10%",align:'center',},
+                {field:'price',title:'领款金额',width:"15%",align:'center',},
+            ]],
+            showFooter:true,
+            singleSelect: false,
+            toolbar: '',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+
+    });
+    function lookBuildDetailed(a) {
+        window.parent.addTab("工程明细",'{:url("Finance/lookBuildDetailed",["pro_id"=>$pro_id])}/id/'+a,'close');
+    }
+    function contractPrintLook() {  //发包预览
+        window.parent.addTab('发包预算预览','{:url("Finance/contractPrintLook",["pro_id"=>$pro_id])}','close');
+    }
+    function lookBuildUser(a) {  //查看施工人员
+        var href="{:url('Finance/lookBuildUser',['pro_id'=>$pro_id])}/guid/"+a;
+        $("#pro_dlog").dialog({
+            title: "施工队",
+            iconCls: 'icon-save',
+            width: '65%',
+            height: '400',
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function designBook() {  //预算书查看
+        window.parent.addTab('预算书查看','{:url("Finance/designBook",["guid"=>$pro_id])}','close');
+    }
+</script>
+</body>
+</html>

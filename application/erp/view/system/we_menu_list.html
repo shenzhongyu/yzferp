@@ -1,0 +1,84 @@
+we_menu_list.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'appid', title: '微信', width: '160', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'title', title: '标题', width: '180', align: 'center', sortable: true}
+, { field: 'tag_id', title: '标签', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'client_platform_type', title: '终端', width: 100,align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'opera', title: '操作', width: 180,align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+]]{/block}
+
+
+
+{block name="value"}
+{:widget('Easyui/showAll', ["client_platform_type","client_platform_type"] )}
+{:widget('Easyui/showAll', ["tag_id","tag_id"] )}
+{:widget('Easyui/showValueByUrl',["appid","appid_json"])}
+{:widget('Easyui/showArrayByUrl',["appid","appid_json"])}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'opera') {
+return '<a href="javascript:mikkleClass.editForm(420,240);" style="margin-right: 10px;">编辑</a>'
++'<a href="javascript:look(&apos;'+row.guid+'&apos;);"  style="margin-right: 10px;">按钮</a>'
++'<a href="javascript:sendMenu(&apos;'+row.guid+'&apos;);"  style="margin-right: 10px;">推送</a>'
++'<a href="javascript:mikkleClass.delForm();"  >禁用</a>';
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="my_js"}
+    <script>
+        function look(t){
+            window.parent.addTab('菜单按钮','{:url("System/showMenuButton")}/guid/'+t,'close');
+        }
+        function sendMenu(id){
+            $.ajax({
+                type: "GET",
+                url: '{:url("System/sendMenu")}',
+                data: {guid:id},
+                dataType: "json",
+                success: function(data){
+                    if(data.code=="1001"){
+                        layer.msg("微信菜单推送成功", {icon: 1});
+                    }else{
+                        layer.msg("微信菜单推送失败，因为"+data.msg, {icon: 1});
+                    }
+                }
+            });
+        }
+    </script>
+{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+
+
+{block name="toolbar"}[
+{ text:'添加', iconCls: 'icon-add', handler:function(){ mikkleClass.addForm(420,240);} },'-',
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm(420,240);} },'-',
+{ text:'删除', iconCls: 'icon-cancel', handler: function(){ mikkleClass.delForm();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

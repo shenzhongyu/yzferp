@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{block name="title"}{$title}{/block}</title>
+    <link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+    <link rel="stylesheet" href="__ERP__/css/submit.css">
+    {block name="my_css"}{/block}
+    <script type="text/javascript" src="__EASYUI151__/jquery.min.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="__STATIC__/daterangepicker/require.js"></script>
+    <script type="text/javascript" src="__EASYUI151__/datagrid-filter.js"></script>
+
+    <script type="text/javascript">
+       //** EasyUI mikkleClass 转载请勿删除注释
+       //** power by Mikkle
+       //** QQ 776329498
+       {block name="value"}{/block}
+        var mikkleClass={
+           {block name="url"}
+            datagrid:'#list',
+            dialog:'#dialog_div',
+            datagrid_url:'{$data_url??url()}',{/block}
+            datagrid_columns:{block name="columns"} {/block},
+            datagrid_toolbar:{block name="toolbar"}[
+                { text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+                { text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+            ]{/block},
+            remote_filter_field:{block name="filter"}{/block}
+        ,
+
+        formatter:{block name="formatter"}function(value,row,index,field) {
+            if (field == 'status') {
+                return eval("value_" + field)[key] ? eval("value_" + field)[key] : '-';
+            } else if (eval("value_" + field)[value]) {
+                return eval("value_" + field)[value];
+            } else if (field[value]) {
+                return field[value];
+            } else {
+                return value;
+            }
+        }{/block},
+        //刷新
+        refresh: function(){
+            $(this.datagrid).datagrid('reload');
+        },
+        datagridRemoteFilter:function(){
+            $(this.datagrid).datagrid('enableFilter', mikkleClass.remote_filter_field);
+        },
+
+
+        }
+        $(function () {
+            $('#list').datagrid({
+                singleSelect: false,
+                rownumbers: true,
+                resizeHandle: 'both',
+                ctrlSelect: true,
+                collapsible: false,
+                method: 'post',
+                url:mikkleClass.datagrid_url,
+				striped: true,
+                _customTitle: true,//开启自定义表头
+                _customWidth: false,//自定义列宽
+                pagination: true,
+                showFooter: false,//是否显示合计行
+                initalFilter: function(){mikkleClass.datagridRemoteFilter()},
+                filterBtnIconCls: 'icon-filter',
+				multiSort: true,
+                remoteFilter:true,
+				pageSize:20,
+				//onDblClickCell: function(){}//editForm,
+                columns:mikkleClass.datagrid_columns,
+                toolbar:mikkleClass.datagrid_toolbar,
+            });
+                mikkleClass.datagridRemoteFilter();
+         });
+        
+    </script>
+    {block name="my_js"}{/block}
+</head>
+<body>
+    <table id="list" class="easyui-datagrid" title="{block name='title'}{/block}" ></table>
+</body>
+</html>

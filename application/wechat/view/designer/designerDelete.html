@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>设计师</title>
+    {include file="base_mui/weui_wechat"/}
+    <style type="text/css">
+        .detalisleft {
+            width: 10%;
+        }
+
+        .detalisright {
+            width: 40%;
+        }
+
+        .detalboth {
+            width: 50%;
+        }
+
+        .detail_line {
+            border-bottom: 1px solid silver;
+        }
+
+        .addlink {
+            font-size: 13px;
+            padding: 0.2rem 0.2rem;
+            width: 90%;
+            padding-bottom: 10%;
+            background: white;
+            border: 1px silver solid;
+            border-radius: 10px;
+            display: none;
+            position: fixed;
+            left: 5%;
+            top: 20%
+        }
+
+        .addLog {
+            background: firebrick;
+            font-size: 15px;
+            padding: 0.2rem 0.2rem;
+            width: 90%;
+            padding-bottom: 10%;
+            background: white;
+            border: 1px silver solid;
+            border-radius: 10px;
+            display: none;
+            position: fixed;
+            left: 5%;
+            top: 20%
+
+        }
+
+        .addColl {
+            background: firebrick;
+            font-size: 13px;
+            padding: 0.2rem 0.2rem;
+            width: 90%;
+            padding-bottom: 10%;
+            background: white;
+            border: 1px silver solid;
+            border-radius: 10px;
+            display: none;
+            position: fixed;
+            left: 5%;
+            top: 20%
+        }
+
+        .addPro {
+            text-align: center;
+            height: 0.5rem;
+            width: 100%;
+            font-size: 16px;
+
+        }
+
+        .addBoss {
+            margin-top: 50px;
+            font-size: 13px;
+            padding-left: 0.2rem;
+            padding-right: 0.2rem;
+        }
+
+        .addFirst {
+
+            border-top: 1px solid silver;
+            border-left: 1px solid silver;
+            border-right: 1px solid silver;
+            border-bottom: 1px solid silver;
+            border-radius: 0.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="app">
+
+
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <h1 class="mui-title">设计师</h1>
+        <!--<a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right" @click="addLogclick" style="font-size:30px;"></a>-->
+    </header>
+    <div class="addBoss" v-cloak>
+
+        <!--<div class="addPro">设计师</div>-->
+        <div class="addFirst" v-for="item in res">
+
+
+            <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;border-bottom: 1px solid #b0aeae">
+
+                <div style="display: inline-block;width: 27%;float: left;">姓名：</div>
+                <div style="display: inline-block;width: 73%;">
+                    {{item.name}}
+                </div>
+            </div>
+
+
+            <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;border-bottom: 1px solid #b0aeae">
+
+                <div style="display: inline-block;width: 27%;float: left;">部门：</div>
+                <div style="display: inline-block;width: 73%;">
+                    {{item.department_name}}
+                </div>
+            </div>
+            <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;border-bottom: 1px solid #b0aeae">
+
+                <div style="display: inline-block;width: 27%;float: left;">职位：</div>
+                <div style="display: inline-block;width: 73%;">
+                    {{item.jobs_name}}
+                </div>
+            </div>
+            <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;border-bottom: 1px solid #b0aeae">
+
+                <div style="display: inline-block;width: 27%;float: left;">当前跟踪量：</div>
+                <div style="display: inline-block;width: 73%;">
+                    {{item.trace_num}}
+                </div>
+            </div>
+            <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;">
+                <form  name="form" method="post">
+                    <div style="display: inline-block;width: 27%;float: left;">分配：</div>
+                    <div style="display: inline-block;width: 73%;">
+
+                        <!--<input type="hidden" :value="item.uuid" name="related_uuid">-->
+                        <!--<input type="hidden" name="action" value="add">-->
+                        <input type="hidden" name="id" :value="item.guid">
+                        <input type="checkbox">
+
+                    </div>
+                    <div style="width: 100%;text-align: center">
+                        <a type="button" @click="sure($event)">解除分配</a>
+                    </div>
+                </form>
+            </div>
+
+
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+
+        mui.ajax('{:url("erp/design/getuserjson",["guid"=>$project_guid])}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                dataA.res = response.rows;
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {
+                        addLogclick: function () {
+                            $(".addLog").css("display", "block")
+                        },
+//                        linkBack: function () {
+//                            mui.openWindow({
+//                                url: "{:url('designer/progresscom',['guid'=>$Request.param.guid])}"
+//                            })
+//                        },
+                        closeLog: function () {
+                            $(".addLog").css("display", "none")
+                        },
+                        sure: function (t) {
+                            var ff_data =($(t.currentTarget).parent().parent()).serialize();
+                            console.log($(t.currentTarget).parent().parent());
+//                            var ff_data = $("#LogForm").serialize();
+                            ff_data += '{$project_guid}';
+                            console.log(ff_data);
+
+                            mui.ajax('{:url("erp/design/delassignpersonnel")}', {
+                                data: ff_data,
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+                                success: function (response) {
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    if(response.code==1001){
+                                        history.back()
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    }
+</script>

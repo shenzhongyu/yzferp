@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>{block name="title"}网站标题{/block}</title>
+
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <meta name="description" content="">
+
+    {block name="head_css"}
+
+    {include file="base_weui/weui_head_css"/}
+
+    {/block}
+
+
+
+</head>
+
+<body ontouchstart>
+
+{block name="header"}
+
+<!-- 直接编写的头部内容 -->
+
+{/block}
+
+{block name="main"}
+
+<!-- 直接编写的主体内容 -->
+
+{/block}
+
+{block name="footer"}
+
+<!-- 直接编写的尾部内容 -->
+
+<div class="weui-footer" style="margin-top: 10px">
+	<p class="weui-footer__links">
+		<a href="javascript:void(0);" class="weui-footer__link">回到首页</a>
+	</p>
+	<p class="weui-footer__text">Copyright © 2016-2099 yzf</p>
+</div>
+
+
+
+
+{/block}
+
+
+
+{block name="foot_js"}
+
+{include file="base_weui/weui_foot_js"/}
+
+{/block}
+
+
+
+{block name="my_js"}
+
+<!-- 直接编写的JS -->
+
+{/block}
+
+
+
+{block name="js_sdk"}
+
+<!-- JSKDK -->
+
+{include file="base_weui/weui_jssdk"/}
+
+{/block}
+
+</body>
+
+</html>

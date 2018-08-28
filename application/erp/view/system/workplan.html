@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>工作计划</title>
+    <link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+</head>
+<style type="text/css">
+    #fm section{width: 51%;float: left;margin-top: 10px;line-height: 35px;}
+    #fm section label{height: 35px;line-height: 35px;display: inline-block}
+    #fm section .label_1{width: 120px;text-align: center}
+    #button{width: 99%;margin-top: 20px;height: 35px;line-height: 35px;}
+    #button a{width: 100px !important;margin: 0 0 0 10px}
+</style>
+
+<body>
+<div class="container">
+    <form id="fm" style="width: 99%" method="post" name="form">
+        <div id="p" class="easyui-panel" title="创建工作计划" style="width:100%;padding:15px;margin-bottom: 20px; ">
+            <section >
+                <label class="label_1" style="">计划名称:</label>
+                <label class="label_2" style="">
+                    <input class="easyui-validatebox" type="text" name="plan_name"
+                           data-options="required:true,"
+                           style="width:100%">
+                </label>
+            </section>
+            <section >
+                <label class="label_1" style="">重要程度:</label>
+                <label class="label_2" style="">
+                    <input class="easyui-combobox" type="text" name="plan_grade" value=""
+                           data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/plan_grade')}',method:'get',"
+                           style="width:100%">
+                </label>
+            </section>
+            <section>
+                <label class="label_1" style="">计划时间:</label>
+                <label class="label_2" style="width: 70%">
+                    <input class= "easyui-datebox" name="start_time" data-options=" editable:false,required:true,showSeconds:false"  style="width:30%" id="start_time">&nbsp;至&nbsp;
+                    <input class= "easyui-datebox" name="end_time" data-options="editable:false,required:true,showSeconds:false"  style="width:30%" id="end_time">
+                </label>
+            </section>
+            <section style="width: 100%;">
+                <label class="label_1" style="height: 36px;line-height: 36px;">工作内容:</label>
+                <label class="label_2" style="height: 36px;line-height: 36px;" >
+                    <textarea id="content"  name="plan_content"  cols="60" rows="3" style="resize: none;margin-bottom: -10px;" ></textarea>
+                </label>
+            </section>
+            <section style="width: 100%">
+                <label class="label_1" style="height: 36px;line-height: 36px;">备注:</label>
+                <label class="label_2" style="height: 36px;line-height: 36px;" >
+                    <textarea  name="plan_desc"   cols="60" rows="3" style="resize: none;margin-bottom: -10px;"></textarea>
+                </label>
+            </section>
+        </div>
+    </form>
+    <div style="clear: both"></div>
+    <div id="button">
+        <a style="margin-left: 35%;" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">提 交</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重 置</a>
+    </div>
+</div>
+{include file="base/js" /}
+<!--<script src="/static/erp/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>-->
+<!--<script type="text/javascript" src="/static/erp/js/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+</body>
+<script>
+    //表单提交(下一步)
+    function submitForm(){
+        $('#fm').form('submit',{
+            url:'{:url("/erp/system/addPlan")}',
+            onSubmit:function(){
+                var flag=$(this).form('enableValidation').form('validate');
+                if(flag){
+                    if(!$("#content").val()){
+                        layer.msg("请填写工作内容", {icon: 2});
+                        return false;
+                    }
+                    if(Date.parse(new Date($("#end_time").datetimebox("getValue"))) <= Date.parse(new Date($("#start_time").datetimebox("getValue")))){
+                        layer.msg("完成日期小于开始日期，请重新完成日期", {icon: 2});
+                        return false;
+                    }
+                }
+                return flag;
+            },
+            success:function(data){
+                var obj=JSON.parse(data);
+                console.log(typeof  data +" "+data);
+                if(obj.code=="1001"){
+                    layer.msg("计划创建成功", {icon: 1});
+                    $('#fm').form('clear');
+                }else if(obj.code=="1020"){
+                    layer.msg(obj.msg, {icon: 2});
+                    setTimeout(function(){
+                        window.location.reload;
+                    },1000);
+                }else{
+                    layer.msg(obj.msg, {icon: 2});
+                }
+            }
+        });
+    }
+
+    //清楚表单内容
+    function clearForm(){
+        $('#fm').form('clear');
+    }
+</script>
+
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>提醒信息</title>
+    {include file="base_mui/weui_wechat"/}
+
+    <style type="text/css">
+        .detalisleft {
+            width: 10%;
+        }
+
+        .detalisright {
+            width: 40%;
+        }
+
+        .detalboth {
+            width: 50%;
+        }
+
+        .detail_line {
+            border-bottom: 1px solid silver;
+        }
+
+        .addlink {
+            font-size: 13px;
+            padding: 0.2rem 0.2rem;
+            width: 90%;
+            padding-bottom: 10%;
+            background: white;
+            border: 1px silver solid;
+            border-radius: 10px;
+            display: none;
+            position: fixed;
+            left: 5%;
+            top: 20%
+        }
+
+        .addLog {
+            font-size: 15px;
+            padding: 0.2rem 0.2rem;
+            width: 90%;
+            padding-bottom: 10%;
+            background: white;
+            border: 1px silver solid;
+            border-radius: 10px;
+            display: none;
+            position: fixed;
+            left: 5%;
+            top: 20%
+
+        }
+
+        .addColl {
+            font-size: 13px;
+            padding: 0.2rem 0.2rem;
+            width: 90%;
+            padding-bottom: 10%;
+            background: white;
+            border: 1px silver solid;
+            border-radius: 10px;
+            display: none;
+            position: fixed;
+            left: 5%;
+            top: 20%
+        }
+
+        .addPro {
+            text-align: center;
+            height: 0.5rem;
+            width: 100%;
+            font-size: 16px;
+
+        }
+
+        .addBoss {
+            margin-top: 50px;
+            font-size: 13px;
+            padding-left: 0.2rem;
+            padding-right: 0.2rem;
+        }
+
+        .addFirst {
+
+            border-top: 1px solid silver;
+            border-left: 1px solid silver;
+            border-right: 1px solid silver;
+            border-bottom: 1px solid silver;
+            border-radius: 0.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+
+
+    <header class="mui-bar mui-bar-nav ">
+        <!--<a class=" mui-icon mui-icon-left-nav mui-pull-left" @click="linkBack" id="linkBack"></a>-->
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back" ></a>
+        <a class="mui-icon mui-icon mui-icon-plusempty mui-pull-right" id="addT" style="font-size:30px;"></a>
+        <h1 class="mui-title">提醒信息</h1>
+    </header>
+    <div class="addBoss">
+
+        <div class="addPro">提醒信息</div>
+        {volist name="project" id ="vo" empty="无提醒信息"}
+        <div class="addFirst">
+
+            <div class="" style="border-bottom: 1px solid #b0aeae;padding-top: 0.1rem;;padding-bottom: 0.1rem;">
+
+                <div style="display: inline-block;width: 25%;float: left;">提醒时间：</div>
+                <div style="display: inline-block;width: 67%;" id="collTime">
+                    {$vo.remind_time}
+                </div>
+            </div>
+
+
+            <div class="" style="padding-top: 0.1rem;;padding-bottom: 0.1rem;">
+
+                <div style="display: inline-block;width: 25%;float: left;">提醒类容：</div>
+                <div style="display: inline-block;width: 67%;" id="collCantent">
+                    {$vo.remind_content}
+                </div>
+            </div>
+
+        </div>
+        {/volist}
+
+
+        <div style="padding-bottom: 0.5rem;" class="text-center">
+        </div>
+
+
+        <div class="addColl">
+            <div style="text-align: center;">添加提醒</div>
+            <form method="post" name="form" id="form_add">
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem;margin-top: 0.2rem">
+                    <div style="display:inline-block; width: 25%;text-align: left;float: left">项目名称：</div>
+                    <div type="text" style="width: 75%;display:inline-block;background: lavender">{$pro['pro_name']}
+                    </div>
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 25%;text-align: left;float: left">操作人：</div>
+                    <div type="text" style="width: 75%;display:inline-block;background: lavender">{$pro['name']}</div>
+
+                    <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem;margin-top: 0.2rem">
+                        <div style="display:inline-block; width: 25%;text-align: left;float: left" class="btn1">提醒时间：
+                        </div>
+                        <input type="text" style="width: 75%;display:inline-block;background: lavender" id="remind_time"
+                               name="remind_time">
+                    </div>
+
+
+                    <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                        <div style="display:inline-block; width: 25%;text-align: left;float: left">提醒内容：</div>
+                        <textarea style="width: 75%;display:inline-block;background: lavender;height: 2rem"
+                                  id="remind_content" name="remind_content"></textarea>
+                    </div>
+                    <div style="margin-top: 0.3rem;text-align: center">
+                        <button id="addColl" type="button">添加</button>
+                        <button style="margin-left: 0.3rem" id="closeColl" type="button">关闭</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<link href="/static/mui/css/mui.picker.min.css" rel="stylesheet"/>
+<script type="text/javascript" src="/static/mui/js/mui.picker.min.js"></script>
+
+<script type="text/javascript">
+
+
+    $("#addColl").on('click', function () {
+        var text = $("#form_add").serialize();
+        var url = "{:url('erp/project/addTraceTimeData',['project_guid'=>$project_guid])}";
+        mui.ajax(url, {
+            data: text,
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                mui.toast(response.msg, {duration: 'short', type: 'div'});
+                if(response.code==1001){
+                    window.location.reload()
+                }
+
+            },
+            error: function (error) {
+                //异常处理；
+                mui.toast(response.msg, {duration: 'short', type: 'div'});
+            }
+        })
+
+    });
+
+
+    window.onload = function () {
+        var content;
+        (function (rr) {
+            var result1 = document.getElementById("remind_time");
+            var btn1 = $('#remind_time');
+            btn1.each(function (i, btn) {
+                btn.addEventListener('tap', function () {
+                    var optionsJson = this.getAttribute('data-options') || '{}';
+                    var options = JSON.parse(optionsJson);
+                    var id = this.getAttribute('id');
+                    var picker = new rr.DtPicker(options);
+                    picker.show(function (rs) {
+                        result1.value = rs.text;
+                        picker.dispose();
+                        content = rs.text;
+                    });
+                }, false);
+            });
+        })(mui, document);
+//        $("#linkBack").on('click', function () {
+//            mui.openWindow({
+//                url: "{:url('designer/projectDetailsDesigner',['guid'=>$Request.param.guid])}"
+//            });
+//
+//        });
+        $("#addT").on("tap", function () {
+            $(".addColl").css("display", "block")
+        });
+        $("#closeColl").on("tap", function () {
+            $(".addColl").css("display", "none")
+        });
+
+    }
+
+
+</script>
+

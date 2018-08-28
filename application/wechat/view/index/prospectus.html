@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>七搜ERP云管家</title>
+    {include file="base_mui/weui_wechat"/}
+    {include file="base_weui/weui_jssdk"/}
+    <meta name="format-detection" content="telephone=yes">
+    <style>
+            .signphotoP{
+                color: black;
+                padding-left: 0.2rem;
+                padding-right: 0.2rem;
+                font-size: 0.28rem;
+                line-height: 0.45rem;
+
+            }
+            .text-indent{
+                text-indent:2em
+            }
+        .signphotoDiv{
+            height: 1.9rem;
+            background: #197cb9;
+            width: 100%;
+            text-align: center;
+            line-height: 1.9rem;
+            font-size: 0.4rem;
+            color: white;
+        }
+            .signphotoDivTwo{
+                height: 1.9rem;
+                background: #197cb9;
+                width: 100%;
+                text-align: center;
+                line-height: 0.85rem;
+                font-size: 0.38rem;
+                color: white;
+            }
+            .signphotoDivThree{
+                height: 1.9rem;
+                background: #197cb9;
+                width: 100%;
+                text-align: center;
+                line-height: 0.63rem;
+                font-size: 0.38rem;
+                color: white;
+            }
+            .signphotoDivThree P{
+                color: white;
+            }
+            .signphotoDivTwo P{
+                color: white;
+            }
+        .signphotoSmollP{
+            color: black;
+            padding-left: 0.2rem;
+            padding-right: 0.2rem;
+            font-size: 0.35rem;
+            line-height: 0.5rem;
+
+        }
+        .fz32{
+            font-size: 0.24rem;
+        }
+        .fz40{
+            font-size: 0.4rem;
+        }
+
+    </style>
+</head>
+<body>
+
+<div style="position: relative">
+    <img src="/static/mui/image/ziyunfeng2.jpg" style="width: 100%">
+
+</div>
+<div style="width: 100%;height: 1.4rem;background-color: white;padding-top: 0.1rem">
+    <span style="margin-left: 0.5rem;font-size: 0.28rem">咨询电话：<a href="tel:075536852777" style="color: black">0755-36852777</a></span>
+    <span style="margin-left: 0.5rem;font-size: 0.28rem">QQ:  <a href="mqqwpa://im/chat?chat_type=wpa&amp;uin=619428888&amp;version=1&amp;src_type=web&amp;web_src=oicqzone.com" style="color: black">619428888</a>
+    </span>
+    <div style="padding-left: 2rem;padding-right: 2rem;margin-top: 0.1rem;margin-bottom: 0.2rem">
+        <button type="button" style="width: 100%;height: 0.6rem;border-radius: 0.2rem;background: #2075ad;color:white;font-size: 0.4rem;line-height: 0.2rem;text-align: center" id="apply">点此申请使用</button >
+    </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+$("#apply").click(function () {
+    mui.openWindow({
+        url: "{:url('index/apply')}"
+    });
+})
+
+
+</script>
+</html>

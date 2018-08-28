@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>房屋信息</title>
+    {include file="base_mui/weui_wechat"/}
+
+</head>
+<body>
+<div id="app">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back " ></a>
+        <a class="mui-icon mui-icon mui-icon mui-icon-gear mui-pull-right" @click="addContact"></a>
+        <h1 class="mui-title">房屋信息</h1>
+    </header>
+    <div class="addBoss" v-cloak>
+
+        <div class="addPro">房屋信息</div>
+        <div class="addFirst">
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly" id="aa">居室结构：</div>
+                <div class="detailRightOnly">
+                    {{res.data.living_room_structure_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">房屋用途：</div>
+                <div class="detailRightOnly">
+                    {{res.data.housing_use_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">房屋朝向：</div>
+                <div class="detailRightOnly">
+                    {{res.data.house_orientation_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">采光：</div>
+                <div class="detailRightOnly">
+                    {{res.data.lighting_name}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">房屋类型：</div>
+                <div class="detailRightOnly">
+                    {{res.data.house_type_name}}
+                </div>
+            </div>
+            <div class="detailBoss ">
+
+                <div class="detailLeftOnly">楼层：</div>
+                <div class="detailRightOnly">
+                    {{res.data.floor}}
+                </div>
+            </div>
+        </div>
+        <div style="padding-bottom: 0.5rem;" class="text-center">
+            <!--<button type="button" >修改房屋结构</button>-->
+        </div>
+
+        <div class="addlink" id="addC">
+            <div style="text-align: center;">修改房屋结构</div>
+
+            <form type="post" id="add_form">
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">居室结构：</div>
+                    <select style="margin-bottom: 0px;width: 65%;background: lavender;font-size: 13px"
+                            name="living_room_structure">
+
+                        <option v-for="item in res.data.living_room_structure">{{item.text}}</option>
+
+                    </select>
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">房屋用途：</div>
+                    <select style="margin-bottom: 0px;width: 65%;background: lavender;font-size: 13px"
+                            name="housing_use">
+                        <option v-for="item in res.data.housing_use">{{item.text}}</option>
+                    </select>
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">房屋朝向：</div>
+                    <select style="margin-bottom: 0px;width: 65%;background: lavender;font-size: 13px"
+                            name="house_orientation">
+                        <option v-for="item in res.data.house_orientation">{{item.text}}</option>
+                    </select>
+                </div>
+
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">采光：</div>
+                    <select style="margin-bottom: 0px;width: 65%;background: lavender;font-size: 13px" name="lighting">
+                        <option v-for="item in res.data.lighting">{{item.text}}</option>
+
+                    </select>
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">房屋类型：</div>
+                    <select style="margin-bottom: 0px;width: 65%;background: lavender;font-size: 13px"
+                            name="house_type">
+                        <option v-for="item in res.data.house_type">{{item.text}}</option>
+
+                    </select>
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">楼层：</div>
+                    <input type="text" style="width: 65%;margin-bottom: 0px;background: lavender;font-size: 13px"
+                           name="floor" :value="res.data.floor">
+                </div>
+            </form>
+            <div style="margin-top: 0.3rem;text-align: center">
+                <button type="button" @click="add_form">保存</button>
+                <button style="margin-left: 0.3rem" @click="close" type="button">关闭</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var id = '';
+        var dataA = {};
+
+
+        mui.ajax('{:url("",["guid"=>$Request.param.guid])}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+//            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+                if (response.data.guid) {
+                    id = response.data.guid;
+                }
+                if (response.code == 1001) {
+                    dataA.type = response.data;
+                    dataA.res = response;
+                    var guid = response.data.guid;
+                    var vue = new Vue({
+                        el: '#app',
+                        data: dataA,
+                        methods: {
+                            addContact: function () {
+                                $("#addC").css("display", "block")
+                            },
+//                            linkBack: function () {
+//                                mui.openWindow({
+//                                    url: "{:url('project/projectDetails',['guid'=>$Request.param.guid])}"
+//                                })
+//                            },
+                            close: function () {
+                                $("#addC").css("display", "none");
+                            },
+                            add_form: function () {
+                                var add_form = $("#add_form").serialize();
+                                if (id) {
+                                    var url = '{:url("erp/project/editStructureData",["project_guid"=>$Request.param.guid])}/id/' + id;
+                                } else {
+                                    var url = '{:url("erp/project/addStructureData",["project_guid"=>$Request.param.guid])}'
+                                }
+                                console.log(add_form);
+                                mui.ajax(url, {
+                                    data: add_form,
+                                    dataType: 'json',//服务器返回json格式数据
+                                    type: 'post',//HTTP请求类型
+                                    success: function (response) {
+                                        if(response.code == 1001){
+                                            mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                            setTimeout(function () {
+                                                window.location.reload()
+                                            },2000)
+                                        }
+                                    }, error: function (error) {
+                                        //异常处理；
+                                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    }
+
+</script>

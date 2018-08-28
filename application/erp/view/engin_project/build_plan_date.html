@@ -1,0 +1,43 @@
+<form id="fmq" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">合同编号：</label>
+        <label class="label_2" style="">
+            {$book_number}
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">项目名称：</label>
+        <label class="label_2" style="">
+            {$name}
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">施工地址：</label>
+        <label class="label_2" style="">
+            {$address}
+        </label>
+    </section>
+    <input type="hidden" name="book_number" value="{$book_number}">
+    <input type="hidden" name="project_address" value="{$address}">
+    <input type="hidden" name="project_name" value="{$name}">
+    <section>
+        <label class="label_1" style="">施工开始时间:</label>
+        <label class="label_2" style="">
+            <input  id="build_time" name="build_time"  class= "easyui-datebox" data-options="editable:false,showSeconds:false" required ="required"> </input>
+        </label>
+    </section>
+    <section >
+        <label class="label_1" >施工总天数:</label>
+        <label class="label_2" >
+            <input class="easyui-textbox"  name="build_days" id="build_days"
+                   data-options="required:true,"
+                   style="width:60%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">说明:</label>
+        <label class="label_2">
+            <textarea  name="desc" style="width:80%;height: 70px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+</form>

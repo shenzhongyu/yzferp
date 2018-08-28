@@ -1,0 +1,436 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/icon.css">-->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+    <!--<link rel="stylesheet" href="__ERP__/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body style="width: 99%">
+<div id="dlog" style="display: none"></div>
+<div id="p" class="easyui-panel" title="预算报价" style="width:100%;height:100%;padding:10px;">
+    <p>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="addData()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">添加空间</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="removeData()">
+            <span class="l-btn-icon icon-remove"></span>
+            <span class="l-btn-text l-btn-icon-left">移除空间</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="delData()">
+            <span class="l-btn-icon icon-cancel"></span>
+            <span class="l-btn-text l-btn-icon-left">删除(装饰项)</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="addDataItem('1')">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">添加装饰项</span>
+        </a>
+        <!--<a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="addDataItem('2')">-->
+            <!--<span class="l-btn-icon icon-add"></span>-->
+            <!--<span class="l-btn-text l-btn-icon-left">添加主材</span>-->
+        <!--</a>-->
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="editRateValue()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">添加费率</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="delRateData()">
+            <span class="l-btn-icon icon-cancel"></span>
+            <span class="l-btn-text l-btn-icon-left">删除费率</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="changeNumber()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">修改数量</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="changeDesc()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">修改空间备注</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="lookPrice()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">报价预览</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="doBookWord()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">下载Word文件</span>
+        </a>
+        <!--<a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="doBookPdf()">-->
+            <!--<span class="l-btn-icon icon-add"></span>-->
+            <!--<span class="l-btn-text l-btn-icon-left">下载PDF</span>-->
+        <!--</a>-->
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="bookUp()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">打印预算</span>
+        </a>
+
+    </p>
+    <div style="width: 18%;float: left">
+        <div >
+            <table id="space"   title='空间列表' ></table>
+        </div>
+        <div style="margin-top: 50px;">
+            <table id="rate"   title='费率列表' ></table>
+        </div>
+    </div>
+
+    <div style="width:80%;float: left">
+        <table id="dg" class="easyui-treegrid"  ></table>
+        <div id="dialog_div" ></div>
+    </div>
+</div>
+<!--<script type="text/javascript" src="__EASYUI151__/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="__EASYUI151__/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="__EASYUI151__/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="__LAYER__/layer.js"></script>-->
+{include file="base/js" /}
+<script type="text/javascript" src="__STATIC__/daterangepicker/require.js"></script>
+<script type="text/javascript" src="__EASYUI151__/datagrid-filter.js"></script>
+<script>
+    var guid='';
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    $(function(){
+        $('#space').datagrid({
+            url:'{:url("showSpaceTree")}/id/'+'{$guid}',
+//            idField:'id',
+//            treeField:'name',
+            showFooter:true,
+            singleSelect:false,
+            columns:[[
+                { field: "chk", "checkbox": true},
+                { title: "名称", field: "name",width:'40%',align: 'left',
+                    formatter:function(value,row,index){  return '<a style="color:#0066cc">'+value+' </a>'  } },
+                { title: "金额(元)", field: "value",width:'26%',align: 'center',
+                    formatter:function(value,row,index){
+                        return '<a style="color: red">'+value.toFixed(2)+'</a>'
+                    }
+                },
+            ]],
+            onDblClickRow:function(index,row){
+                if(row.id){
+                    guid=row.guid;
+                    $('#dg').treegrid('load', {
+                        guid: row.guid,
+                    });
+                }else{
+                    return false;
+                }
+
+            }
+        });
+        $('#rate').datagrid({
+            url:'{:url("showRateTree")}/id/'+'{$guid}',
+            showFooter:true,
+            singleSelect:false,
+            columns:[[
+                { field: "chk", "checkbox": true},
+                { title: "名称", field: "name",width:'40%',align: 'left',
+                    formatter:function(value,row,index){  return '<a style="color:#0066cc">'+value+' </a>'  } },
+                { title: "金额(元)", field: "value",width:'26%',align: 'center',
+                    formatter:function(value,row,index){
+                        return '<a style="color: red">'+value.toFixed(2)+'</a>'
+                    }
+                },
+//                { title: "运算符", field: "type",width:'18%',align: 'center',},
+                { title: "费率值", field: "rate_value",width:'26%',align: 'center',
+                    formatter:function (value,row){
+                        if (value){
+                            return row.type+value;
+                        }
+                    }
+                },
+            ]],
+        });
+        $('#dg').treegrid({
+            url:'{:url("showSpaceDataList")}/id/'+'{$guid}',
+            height:650,
+            rownumbers:true,
+            singleSelect:false,
+            pagination:true,
+            method:'get',
+            pageSize:20,
+            nowrap:false,//超出部分自动换行
+            idField:'id',
+            treeField:'name',
+            columns:[[{ field: "chk", "checkbox": true}
+                ,{ field: 'name', title: '名称', width: "20%", align: 'left'}
+
+                , { field: 'unit', title: '单位', width: "5%", align: 'center',
+                    formatter:function(value,row,index){
+                        if (eval("value_unit_name" )[value]) {
+                            return eval("value_unit_name")[value];
+                        }else {
+                            return value;
+                        }
+
+                    }
+                }
+                ,{ field: 'number', title: '数量', width: "5%", align: 'center',
+                    formatter:function(value,row,index){
+                        if (row._parentId && value){
+                            return value;
+                        }else if(row._parentId && !value){
+                            return 0;
+                        }
+                    }
+                }
+                , { field: 'price', title: '单价(元)', width: "8%", align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }}
+                ,{ field: 'sum_price', title: '金额', width: "10%",align: 'center',
+                    formatter:function(value,row,index){
+                        if(row.price){
+                            var price=Number(row.price)* row.number;
+                            return  '<a style="color: red;">'+ price.toFixed(2)+'</a>';
+                        }
+                    }
+                }
+                ,{field:'desc',title:'说明',width:"37%",align:'center',}
+                ,{field:'opera',title:'操作',width:"8%",align:'center',
+                    formatter:function(value,row,index){
+                        if( row._parentId){
+                            var str='<a href="javascript:editNumber(&apos;'+row.guid+'&apos;);">修改数量</a>&nbsp;';
+                            return str;
+                        }
+
+                    }
+                }
+            ]]
+        });
+    });
+    
+    function editRateValue() {
+        window.parent.addTab('项目费率',"{:url('showRateHtml',['pro_id'=>$guid])}",'close');
+
+    }
+    function doBookWord() {
+        window.parent.addTab('新窗口','{:url("showBudgetBook",["guid"=>$guid,"type"=>"word"])}','close');
+        setTimeout(function(){
+            window.parent.closeTab("新窗口");
+        },1000);
+    }
+    function doBookPdf() {
+        window.parent.addTab('新窗口','{:url("showBudgetBook",["guid"=>$guid,"type"=>"pdf"])}','close');
+        setTimeout(function(){
+            window.parent.closeTab("新窗口");
+        },1000);
+    }
+    function bookUp() {
+        window.open('{:url("showBook",["guid"=>$guid])}');  //用来打印的
+    }
+    function lookPrice() {
+//        window.open('{:url("showBook",["guid"=>$guid])}');  //用来打印的
+        window.parent.addTab('报价表','{:url("showBudgetBook",["guid"=>$guid])}','close');
+    }
+    function changeNumber(){
+        window.parent.addTab('修改数量','{:url("showDataNumberHtml",["pro_id"=>$guid])}','close');
+    }
+    function changeDesc() {
+        window.parent.addTab('修改空间备注','{:url("showDataDescHtml",["pro_id"=>$guid])}','close');
+    }
+    function addData(){
+        $('#dlog').dialog({
+            title: "添加空间",
+            iconCls: 'icon-save',
+            width: 440,
+            height: 350,
+            cache: false,
+            href: "{:url('showbudget',['guid'=>$guid])}",
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function delRateData() {
+        var rows = $('#rate').datagrid('getSelections');
+        if(rows.length==0){
+            layer.msg('请选择要删除的费率！', {icon: 2});
+            return false;
+        }
+        var rate_arr=[];
+        var title='确定要删除费用吗？';
+        for (var i=0;i<rows.length;i++){
+            if (rows[i].guid==0){
+                title+="直接费不能删除！";
+                continue;
+            }
+            rate_arr.push(rows[i].guid);
+        }
+        $.messager.confirm('提示信息', title, function(result){
+            if(!result) return false;
+            var url='{:url("delRateData")}';
+            $.post(url,{guid:rate_arr},function(obj){
+                if(obj.code=="1001"){
+                    layer.msg('删除成功', {icon: 1});
+                    $('#rate').datagrid('reload');
+                }else{
+                    layer.msg('删除失败，请联系管理员', {icon: 3});
+                }
+            },"json")
+        });
+    }
+
+    function removeData() {
+        var rows = $('#space').datagrid('getSelections');
+        if(rows.length==0){
+            layer.msg('请选择要删除的空间！', {icon: 2});
+            return false;
+        }
+        var arr=[];
+        $.each(rows,function (i,t) {
+            arr.push(t.guid);
+        });
+        $.messager.confirm('提示信息', '确定要删除空间吗？', function(result){
+            if(!result) return false;
+            var url='{:url("delSpaceData")}';
+            $.post(url,{guid:arr},function(obj){
+                if(obj.code=="1001"){
+                    layer.msg('删除成功', {icon: 1});
+                    $('#space').treegrid('reload');
+                    setTimeout(function(){
+                        $('#dg').treegrid('reload');
+                    },1);
+                }else{
+                    layer.msg('删除失败，请联系管理员', {icon: 3});
+                }
+            },"json")
+        });
+
+    }
+    function addDataItem(type) {
+        if(!guid){
+            var arr=$('#space').treegrid('getData');
+            if(arr.length==0){
+                layer.msg('当前无空间，请先添加空间！', {icon: 2});
+                return false;
+            }else{
+                guid=arr[0].guid;
+            }
+        }
+        if(type=="2"){
+            var title="确定为当前空间添加主材？ 添加主材后会把主材以装饰项目的形式显示!";
+        }else{
+            var title='确定为当前空间添加数据';
+        }
+        $.messager.confirm('提示信息', title, function(result){
+            if(!result) return false;
+//            var url='{:url("addMaterialData")}';
+            $('#dlog').dialog({
+                title: "添加装饰项",
+                iconCls: 'icon-save',
+                width: '60%',
+                height: '75%',
+                cache: false,
+                href: "{:url('addMaterialData')}/guid/"+guid+'/project_id/'+'{$guid}'+'/type/'+type,
+                modal: true,
+                collapsible: false,
+                minimizable: false,
+                resizable: false,
+                maximizable: false,
+            })
+        });
+    }
+
+    function delData() {
+        var rows = $('#dg').datagrid('getSelections');
+        if(rows.length==0){
+            layer.msg('请选择要删除的装饰项！', {icon: 2});
+            return false;
+        }
+        var arr=[];
+        $.each(rows,function(i,t){
+            arr[i]=t.guid;
+        });
+        $.messager.confirm('提示信息', '确定要删除空间吗？', function(result){
+            if(!result) return false;
+            var url='{:url("delSpaceData")}';
+            $.post(url,{guid:arr},function(obj){
+                if(obj.code=="1001"){
+                    layer.msg('删除成功', {icon: 1});
+                    $('#space').treegrid('reload');
+                    setTimeout(function(){
+                        $('#dg').treegrid('reload');
+                        setTimeout(function(){
+                            $('#rate').treegrid('reload');
+                        },5);
+                    },1);
+                }else{
+                    layer.msg('删除失败，请联系管理员', {icon: 3});
+                }
+            },"json")
+        });
+    }
+    function editNumber(id){
+        $('#dlog').dialog({
+            title: "修改数据",
+            iconCls: 'icon-save',
+            width: 380,
+            height: 200,
+            cache: false,
+            href: "{:url('showEdit')}/guid/"+id,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#dlog").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            if(!$('#number').val()){
+                                layer.msg('内容不能为空',{icon:2});
+                                return false;
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post("{:url('saveData')}/guid/"+id, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg('数据修改成功', {icon: 1});
+                                    $("#dlog").dialog('close');
+                                    $('#space').treegrid('reload');
+                                    $('#rate').datagrid('reload');
+                                    setTimeout(function(){
+                                        $('#dg').treegrid('reload');
+                                    },1);
+                                }
+                            }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#dlog").dialog('close');
+                }
+            }]
+        })
+    }
+    function sumPrice(obj) {
+        //1
+        var u_value=Number(obj.unit_price)*(1+Number(obj.unit_profit)); //
+        var a_value=Number(obj.auxiliary_unit)*(1+Number(obj.auxiliary_profit)); //
+        var p_value=Number(obj.artificial_price)*(1+Number(obj.artificial_profit)); //
+        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //
+        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //
+        //2
+//        var u_value=Number(obj.unit_price)/(1-Number(obj.unit_profit)); //
+//        var a_value=Number(obj.auxiliary_unit)/(1-Number(obj.auxiliary_profit)); //
+//        var p_value=Number(obj.artificial_price)/(1-Number(obj.auxiliary_profit)); //
+//        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //
+//        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //
+        return u_value+a_value+p_value+l_value+m_value;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>首页</title>
+    <link href="__STATIC__/erp/css/index_easyui.css" rel="stylesheet">
+    <style>
+        *{margin: 0;padding: 0;font-family: '微软雅黑';box-sizing: border-box; }
+        .table_td{border-left:1px solid #ccc;border-top:1px solid #ccc;width: 14.27%;height: 50px;line-height: 50px;background: #e6faf6;text-align: center;display: inline-block;font-size: 16px;letter-spacing: 5px;}
+        .table{border-right:1px solid #ccc;border-bottom:1px solid #ccc}
+        .table_con{border-left:1px solid #ccc;border-top:1px solid #ccc;width: 14.27%;height: 50px;line-height: 50px;text-align: center;display: inline-block;font-size: 14px;letter-spacing: 5px;}
+        .con_notice_li{font-size:16px;color:#555;letter-spacing:5px;height:26px;line-height: 26px;width: 60%;min-width:100px;overflow: hidden; padding-left: 40px;box-sizing: border-box;}
+        .con_notice_li a{text-decoration: none;color: #555;}
+        .con_notice_li a:hover{text-decoration: underline;color: #555}
+        .con_notice_com_div{cursor:pointer;min-width:193px;box-sizing: border-box;margin-left:40px;margin-top:33px;width: 60%;height:18px;letter-spacing:5px;line-height:18px;background: url('__STATIC__/erp/images/notice_a.png') no-repeat 170px  center;font-size: 15px;color: #555;font-weight: bold}
+        .con_notice_com_div a:hover{border-bottom: 1px solid #555}
+        .table_user{width: 25%;}
+        .table tbody tr:nth-of-type(odd){ background: #fff}
+        .table tbody tr:nth-of-type(even){ background: #fafafa}
+        #con_div span{width:286px;height: 174px;display: inline-block;margin-left: 1%;margin-bottom: 15px;}
+        .flash{
+            color: #0000ff;
+            font-size: 16px;
+            -webkit-animation:flash 1s infinite  cubic-bezier(1,0,0.5,0) ;
+            animation:flash 1s infinite  cubic-bezier(1,0,0.5,0);
+        }
+        @keyframes flash {
+            0%{
+
+            }
+
+            50%{
+                color: #ff0000;
+            }
+
+            100%{
+
+            }
+        }
+        @-webkit-keyframes flash {
+            0%{
+
+            }
+            50%{
+
+                color: #ff0000;
+            }
+            100%{
+
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container" style="width: 100%;font-family: '微软雅黑';box-sizing: border-box">
+    <!--<div id="bd" style="width: 100%;height: 50px;line-height:50px;background:#FAFAFA;font-size: 16px;letter-spacing: 1px;">-->
+        <!--<a style="margin-left: 60px;">服务期限：2015/09/06-2019/09/06</a><a style="color: red;float: right;margin-right: 60px;">剩余时间：1127天</a>-->
+    <!--</div>-->
+    <div id="con_div" style=" text-align:center;margin-top: 34px;padding-left:59px;width: 100%;box-sizing: border-box">
+        <span style="width:20%;height: 174px;display: inline-block;margin-left: 1%">
+            <div style="background:url('__STATIC__/erp/images/work.png') center no-repeat;width: 124px;height:124px;border: 1px solid lightblue;border-radius: 50%;margin: 0 auto"></div>
+            <div style="width: 100%;height: 24px;margin-top:26px;text-align: center;font-size: 18px;color: #333">
+                销售月冠：
+            </div>
+        </span>
+        <span style="width:20%;height: 174px;display: inline-block;margin-left: 1%">
+            <div style="background:url('__STATIC__/erp/images/work.png') center no-repeat;width: 124px;height:124px;border: 1px solid lightblue;border-radius: 50%;margin: 0 auto"></div>
+            <div style="width: 100%;height: 24px;margin-top:26px;text-align: center;font-size: 18px;color: #333">
+                设计月冠：
+            </div>
+        </span>
+        <span style="width:20%;height: 174px;display: inline-block;margin-left: 1%" >
+            <div style="background:url('__STATIC__/erp/images/work.png') center no-repeat;width: 124px;height:124px;border: 1px solid lightblue;border-radius: 50%;margin: 0 auto"></div>
+            <div style="width: 100%;height: 24px;margin-top:26px;text-align: center;font-size: 18px;color: #333" id="business_work" >我的业务量</div>
+        </span> <!--286px;-->
+        <span style="width:20%;height: 174px;display: inline-block;margin-left: 1%" >
+            <div style="background:url('__STATIC__/erp/images/work.png') center no-repeat;width: 124px;height:124px;border: 1px solid lightblue;border-radius: 50%;margin: 0 auto"></div>
+            <div style="width: 100%;height: 24px;margin-top:26px;text-align: center;font-size: 18px;color: #333" id="design_work">我的设计量</div>
+        </span>
+        <!--<span style="width:286px;height: 122px;display: inline-block">-->
+            <!--<div style="background:url('/static/erp/images/work.png') center no-repeat ;width: 80px;height:80px;border: 1px solid lightblue;border-radius: 50%;margin: 0 auto"></div>-->
+            <!--<div style="width: 100%;height: 24px;margin-top:18px;text-align: center;font-size: 18px;color: #333;letter-spacing: 2px;">我的业务</div>-->
+        <!--</span>-->
+
+
+    </div>
+    <div id="con_remind" style="width: 100%;margin-top: 20px;">
+        <div style="letter-spacing:3px;box-sizing: border-box;padding-left:64px;width: 100%;height: 28px;line-height: 28px;background: url('__STATIC__/erp/images/remind.png') no-repeat 30px center;font-size: 18px;">今日提醒</div>
+    </div>
+    <div id="con_remind_tab" style="width: 100%;margin-top: 20px;">
+        <table class="table" width="100%" cellpadding="0" cellspacing="0" >
+            <tr>
+                <td class="table_td" >预约</td>
+                <td class="table_td" >业务跟踪</td>
+                <td class="table_td" >验收提醒</td>
+                <td class="table_td" >维修投诉</td>
+                <td class="table_td" >今日提醒</td>
+                <td class="table_td" >超期提醒</td>
+                <td class="table_td" >收款提醒</td>
+
+            </tr>
+            <tbody>
+                <tr>
+                    <td class="table_con" >暂无</td>
+                    <td class="table_con" id="project_remind" >暂无</td>
+                    <td class="table_con" >暂无</td>
+                    <td class="table_con" >暂无</td>
+                    <td class="table_con" >暂无</td>
+                    <td class="table_con" >暂无</td>
+                    <td class="table_con" id="collect_remind" >暂无</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+    <div id="con_notice" style="margin-top: 20px;width: 100%">
+        <!--<div id="1" style="width: 25%;float: left">-->
+            <!--<div style="letter-spacing:3px;box-sizing: border-box;padding-left:64px;width: 100%;height: 28px;line-height: 28px;background: url('__STATIC__/erp/images/notice.png') no-repeat 30px center;font-size: 18px;">市场月星</div>-->
+            <!--<div style="width: 100%;margin-top: 10px;min-height: 78px;">-->
+                <!--<div style="margin-left:45px;width: 100px;height: 100px;border: 1px solid #ccc;border-radius: 50%;"></div>-->
+                <!--<div style="margin-left:45px;text-align:center;width: 100px;height: 40px;line-height: 40px;font-size:15px;font-weight: bold">123</div>-->
+
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div id="2" style="width: 25%;float: left">-->
+            <!--<div style="letter-spacing:3px;box-sizing: border-box;padding-left:64px;width: 100%;height: 28px;line-height: 28px;background: url('__STATIC__/erp/images/notice.png') no-repeat 30px center;font-size: 18px;">设计月星</div>-->
+            <!--<div style="width: 100%;margin-top: 10px;min-height: 78px;text-align: center">-->
+                <!--<div style="margin-left:45px;width: 100px;height: 100px;border: 1px solid #ccc;border-radius: 50%;"></div>-->
+                <!--<div style="margin-left:45px;text-align:center;width: 100px;height: 40px;line-height: 40px;font-size:15px;font-weight: bold">取得方式</div>-->
+            <!--</div>-->
+
+        <!--</div>-->
+        <div id="" style="width: 25%;float: left">
+            <div style="letter-spacing:3px;box-sizing: border-box;padding-left:64px;width: 100%;height: 28px;line-height: 28px;background: url('__STATIC__/erp/images/notice.png') no-repeat 30px center;font-size: 18px;">最新公司通告</div>
+            <div style="width: 100%;margin-top: 10px;min-height: 78px;">
+                {volist name="com" id="v" empty="<li class='con_notice_li'><a>暂无</a></a></li>" mod="3" }
+                <li onclick="getNotice('{$v.guid}')" class="con_notice_li">
+                    <a href="javascript:;">{$v.title}</a>
+                </li>
+                {/volist}
+            </div>
+            <div class="con_notice_com_div" onclick="showAll('1')">
+                <a>查看全部公司通告</a>
+            </div>
+        </div>
+        <div id="con_notice_dep" style="width: 25%;float: left">
+            <div style="letter-spacing:3px;box-sizing: border-box;padding-left:64px;width: 100%;height: 28px;line-height: 28px;background: url('__STATIC__/erp/images/notice.png') no-repeat 30px center;font-size: 18px;">最新部门通告</div>
+            <div style="width: 100%;margin-top: 10px;min-height: 78px;">
+                {volist name="dep" id="vo" empty="<li class='con_notice_li'><a>暂无</a></a></li>" mod="3" }
+                <li onclick="getNotice('{$v.guid}')" class="con_notice_li">
+                    <a href="javascript:;">{$vo.title}</a>
+                </li>
+                {/volist}
+            </div>
+            <div class="con_notice_com_div" onclick="showAll('2')">
+                <a>查看全部部门通告</a>
+            </div>
+        </div>
+        <div id="1" style="width: 25%;float: left">
+            <div style="letter-spacing:3px;box-sizing: border-box;padding-left:64px;width: 100%;height: 28px;line-height: 28px;background: url('__STATIC__/erp/images/notice.png') no-repeat 30px center;font-size: 18px;">最新奖惩通告</div>
+            <div style="width: 100%;margin-top: 10px;min-height: 78px;">
+                <li  class="con_notice_li">
+                    <a href="javascript:;">暂无</a>
+                </li>
+            </div>
+            <div class="con_notice_com_div" onclick="showAll('1')">
+                <a>查看全部奖励通告</a>
+            </div>
+        </div>
+        <div id="2" style="width: 25%;float: left">
+            <div style="letter-spacing:3px;box-sizing: border-box;padding-left:64px;width: 100%;height: 28px;line-height: 28px;background: url('__STATIC__/erp/images/notice.png') no-repeat 30px center;font-size: 18px;">最新曝光台</div>
+            <div style="width: 100%;margin-top: 10px;min-height: 78px;">
+
+                <li  class="con_notice_li">
+                    <a href="javascript:;">暂无</a>
+                </li>
+
+            </div>
+            <div class="con_notice_com_div" onclick="showAll('2')">
+                <a>查看全部处罚通告</a>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+    <div id="con_line" style="width: 100%;margin-top: 20px;">
+        <div style="letter-spacing:3px;box-sizing: border-box;padding-left:64px;width: 100%;height: 28px;line-height: 28px;background: url('__STATIC__/erp/images/user_line.png') no-repeat 30px center;font-size: 18px;">在线人员</div>
+    </div>
+    <div id="con_user_line" style="margin-top: 20px;width: 100%">
+        <table class="table" width="100%" cellpadding="0" cellspacing="0" >
+            <tr>
+                <td class="table_td table_user">姓名</td>
+                <td class="table_td table_user" >部门</td>
+                <td class="table_td table_user" >职位</td>
+                <td class="table_td table_user" >电话</td>
+
+            </tr>
+            <tbody id="table_body">
+                <tr>
+                    <td class="table_con table_user" >123</td>
+                    <td class="table_con table_user" >暂无</td>
+                    <td class="table_con table_user" >暂无</td>
+                    <td class="table_con table_user" >暂无</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+        <!--<div class="bd-content">-->
+            <!--<div class="right-zone" style="padding-right: 15px;">-->
+                <!--<div class="inform item-box">-->
+                    <!--<div class="inform-hd">-->
+                        <!--<label><i class="iconfont" style="margin-right: 5px;">&#xe6f9;</i>公司通知公告</label>-->
+                        <!--<a href="javascript:showAll('1');">更多<span>&gt;</span></a>-->
+                    <!--</div>-->
+                    <!--<ul id="com">-->
+                        <!--{volist name="com" id="v" empty="暂时没有新通知公告" mod="5" }-->
+                        <!--<li>-->
+                            <!--<span></span>-->
+                            <!--<a href="javascript:getNotice('{$v.guid}');" class="ellipsis">{$v.title}<i></i></a>-->
+                            <!--<label>{$v.time}</label>-->
+                        <!--</li>-->
+                        <!--{/volist}-->
+                    <!--</ul>-->
+                <!--</div>-->
+                <!--<div class="price item-box">-->
+                    <!--<div class="inform-hd">-->
+                        <!--<label><i class="iconfont" style="margin-right: 5px;">&#xe6f9;</i>部门通知公告</label>-->
+                        <!--<a href="javascript:showAll('2');">更多<span>&gt;</span></a>-->
+                    <!--</div>-->
+                    <!--<ul id="dep">-->
+                        <!--{volist name="dep" id="vo" empty="暂时没有新通知公告" mod="7" }-->
+                        <!--<li>-->
+                            <!--<span></span>-->
+                            <!--<a href="javascript:getNotice('{$vo.guid}');" class="ellipsis">{$vo.title}<i></i></a>-->
+                            <!--<label>{$vo.time}</label>-->
+                        <!--</li>-->
+                        <!--{/volist}-->
+                    <!--</ul>-->
+                <!--</div>-->
+                <!--<div class="price item-box" style="height: 150px !important;">-->
+                    <!--<div class="inform-hd">-->
+                        <!--<label><i class="iconfont" style="margin-right: 5px;">&#xe6f9;</i>系统服务期限</label>-->
+                    <!--</div>-->
+                    <!--<ul id="">-->
+                        <!--<li>-->
+                            <!--截止时间：2099-06-12-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--剩余天数：999天-->
+                        <!--</li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="center-part" style="padding-left: 10px;">-->
+                <!--<div class="center-items todo">-->
+                    <!--<ul class="work-items " id="create_li">-->
+                    <!--</ul>-->
+                <!--</div>-->
+
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <!--<div id="ft"></div>-->
+</div>
+<script src="__STATIC__/erp/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="__STATIC__/erp/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__STATIC__/erp/js/index.js"></script>
+
+
+
+<script type="text/javascript">
+    $(function(){
+        //createDiv();
+        getUserOnline();
+        projectRemind();
+        getUserWork();
+    });
+
+    function getUserWork() {
+        var url="{:url('index/getUserWork')}";
+        $.post(url,{},function (data){
+            if(data.design){
+                if(data.design.number!=0){
+                    var str='<a style="margin-left: 10px;text-decoration: none" href="javascript:addList(&apos;'+data.design.url+'&apos;,&apos;'+data.design.title+'&apos;);">'+data.design.number+'</a>';
+                    $("#design_work").append(str);
+                }
+            }
+            if(data.business){
+                if(data.business.number!=0) {
+                    var str='<a style="margin-left: 10px;text-decoration: none" href="javascript:addList(&apos;'+data.business.url+'&apos;,&apos;'+data.business.title+'&apos;);">'+data.business.number+'</a>';
+                    $("#business_work").append(str);
+                }
+            }
+        })
+    }
+    function addList(url,title) {
+        window.parent.addTab(title,url,'close');
+    }
+
+
+
+
+    function getUserOnline() {
+        var url="{:url('index/getUserOnline')}";
+        $.post(url,{},function (data){
+            var str='';
+            if (data.code=="1001"){
+                var obj=data.data;
+                if(obj.length>0){
+                    $.each(obj,function (i,t) {
+                        str+='<tr><td class="table_con table_user" >'+t.name+'</td>';
+                        str+='<td class="table_con table_user" >'+t.department_name+'</td>';
+                        str+='<td class="table_con table_user" >'+t.jobs_name+'</td>';
+                        if(t.mobile){
+                            str+='<td class="table_con table_user" >'+t.mobile+'</td></tr>';
+                        }else{
+                            str+='<td class="table_con table_user" >暂无</td></tr>';
+                        }
+
+                    });
+
+                }
+                $("#table_body").html('');
+                $("#table_body").append(str);
+            }else{
+
+            }
+        },'json');
+    }
+
+    function createDiv() {
+        var url="{:url('Statistics/HomeDataNumber')}";
+        $.post(url,{},function (data){
+            var str='';
+            if(data.length>0){
+                $.each(data,function (i,t) {
+                    str+='';
+                });
+            }
+//                $("#create_li").html('');
+            $("#con_div").append(str);
+        },'json');
+    }
+    function getNotice(a){
+        window.parent.addTab('通知公告','{:url("work/showNoticeDetailed")}/guid/'+a,'close');
+    }
+    function oppenTab(title,url) {
+        window.parent.addTab(title,url,'close');
+    }
+
+    function showAll(a){
+        window.parent.addTab('更多公告','{:url("work/showNoticeAll")}/type/'+a,'close');
+    }
+
+    function projectRemind() {
+        var url="{:url('Remind/remindNumber')}";
+        $.post(url,{},function (data){
+            if(data.code=="1001"){
+                var obj=data.data;
+                if(obj.project!=0){
+                    var str='<a href="javascript:addProjectRemind();" class="flash" style="text-decoration: none" id="project_remind">'+obj.project+'</a>';
+                    $("#project_remind").html(str);
+                }
+                if(obj.collect!=0){
+                    var str='<a href="javascript:addCollectRemind();" class="flash" style="text-decoration: none" id="project_remind">'+obj.collect+'</a>';
+                    $("#collect_remind").html(str);
+                }
+            }else{
+                $("#project_remind").html(data.msg);
+            }
+        },'json');
+    }
+    function addProjectRemind() {
+        window.parent.addTab('跟踪提醒','{:url("Remind/showProjectRemind")}','close');
+    }
+    function addCollectRemind() {
+        window.parent.addTab('收款提醒','{:url("Remind/showCollectRemind")}','close');
+    }
+
+</script>
+</body>
+</html>

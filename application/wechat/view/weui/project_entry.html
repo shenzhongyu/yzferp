@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<form id="fm" style="width: 99%" method="post" name="form">
+    <div id="p" class="easyui-panel" title="项目基本信息" style="width:100%;padding:15px;margin-bottom: 20px; ">
+        <section>
+            <label class="label_1" style="">项目名称:</label>
+            <label class="label_2" style="">
+                <input class="easyui-validatebox" type="text" name="project_name"data-options=" required:true,validType:'length[1,10]'">
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">预算总工期:</label>
+            <label class="label_2" style="">
+                <input class="easyui-validatebox" type="text" name="expected_duration"
+                       data-options="required:true,validType:'length[1,15]'" >
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">装修面积:</label>
+            <label class="label_2" style="">
+                <input class="easyui-validatebox" type="text" name="decoration_area"
+                       data-options="required:true,validType:'length[1,15]'" >
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">工程预算:</label>
+            <label class="label_2" style="">
+                <input class="easyui-validatebox" type="text" name="project_budget"
+                       data-options="required:true,validType:'length[1,15]'" >
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">装修档次 :</label>
+            <label class="label_2" style="">
+                <input class="easyui-combobox" type="text" name="decoration_grade"
+                       data-options="required:true,editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/decoration_grade')}',method:'get',">
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">色彩取向:</label>
+            <label class="label_2" style="">
+                <input class="easyui-combobox" type="text" name="color_orientation"
+                       data-options="required:true,editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/color_orientation')}',method:'get',">
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">装修风格:</label>
+            <label class="label_2" style="">
+                <input class="easyui-combobox" type="text" name="decoration_style"
+                       data-options="required:true,editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/decoration_style')}',method:'get',">
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">装修类型 :</label>
+            <label class="label_2" style="">
+                <input class="easyui-combobox" type="text" name="decoration_type"
+                       data-options="required:true,editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/decoration_type')}',method:'get',">
+            </label>
+        </section>
+        <section>
+            <label class="label_1" style="">客户来源:</label>
+            <label class="label_2" style="">
+                <input class="easyui-combobox" type="text" name="customer_source"
+                       data-options="required:true,editable:false,valueField: 'value',textField: 'text',url:'{:url('/erp/api/showFieldJson/name/customer_source')}',method:'get',">
+            </label>
+        </section>
+        <section style="width: 100%">
+            <label class="label_1" style="height: 36px;line-height: 36px;">项目要求:</label>
+            <label class="label_2" style="height: 36px;line-height: 36px;" >
+                        <textarea name="project_description"  cols="30" rows="2" style="resize: none;margin-bottom: -10px;">
+                        </textarea>
+            </label>
+        </section>
+
+</body>
+</html>

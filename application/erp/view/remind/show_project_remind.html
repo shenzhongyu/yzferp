@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<div id="tt" class="easyui-tabs" style="width:100%;height:600px;">
+    <div title="未读消息" style="padding: 10px;">
+        <table id="unread_list" style="height: 530px;" class="easyui-datagrid"></table>
+    </div>
+    <div title="已读消息" style="padding: 10px;">
+        <table id="read_list" style="height: 530px;" class="easyui-datagrid"></table>
+    </div>
+</div>
+<div id="dialog_div" ></div>
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function () {
+        $('#unread_list').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:'project_name',title:'项目名称',width:'25%',align:'center'},
+                {field:'remind_content',title:'提醒内容',width:"35%",align:'center'},
+                {field:'remind_time',title:'提醒时间',width:"20%",align:'center'},
+                {field:'op',title:'操作',width:"18%",align:'center',
+                    formatter:function(value,row,index){
+                        return '<a href="javascript:editStatus(&apos;'+row.guid+'&apos;);">标记为已读</a>'
+                    }
+                }
+            ]],
+            rownumbers:true,
+            pageSize:20,
+            pagination:true,
+            nowrap:false, //超出部分自动换行
+        });
+        $('#read_list').datagrid({
+            url:'{$url}',
+            columns:[[
+                {field:'project_name',title:'项目名称',width:'25%',align:'center'},
+                {field:'remind_content',title:'提醒内容',width:"35%",align:'center'},
+                {field:'remind_time',title:'提醒时间',width:"20%",align:'center'},
+            ]],
+            rownumbers:true,
+            pageSize:20,
+            pagination:true,
+            nowrap:false, //超出部分自动换行
+        });
+    });
+    function editStatus(a) {
+        var url="{:url('remind/editStatusProjectRemind')}";
+        $.post(url,{id:a},function (data) {
+            if (data.code=="1001"){
+                $("#read_list").datagrid("reload");
+                $("#unread_list").datagrid("reload");
+                layer.msg(data.msg,{icon:1});
+            }else{
+                layer.msg(data.msg,{icon:2});
+            }
+        })
+    }
+</script>
+</body>
+</html>

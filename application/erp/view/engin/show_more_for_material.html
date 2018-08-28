@@ -1,0 +1,43 @@
+<table  border="1" cellspacing="0" cellpadding="0" width="98%" style="margin-left:1%;text-align: center">
+    <tr style="height: 30px;">
+        <th style="width: 20%;word-break:break-all;white-space:nowrap;">材料类型：</th>
+        <td style="width: 30%;">{$type}</td>
+        <th style="width: 20%;word-break:break-all;white-space:nowrap;">供应商：</th>
+        <td style="width: 30%;">{$supplier}</td>
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%">材料名称：</th>
+        <td style="width: 30%;">{$obj['material_name']}</td>
+        <th style="width: 20%;word-break:break-all;white-space:nowrap;">品牌：</th>
+        <td style="width: 30%;">{$obj['material_pin']}</td>
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%;word-break:break-all;white-space:nowrap;">规格：</th>
+        <td style="width: 30%;">{$obj['specifications']}</td>
+        <th style="width: 20%;word-break:break-all;white-space:nowrap;">型号：</th>
+        <td style="width: 30%;">{$obj['material_version']}</td>
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%;word-break:break-all;white-space:nowrap;">进价：</th>
+        <td style="width: 30%;">{$obj['floor_price']}</td>
+        <th style="width: 20%;word-break:break-all;white-space:nowrap;">售价：</th>
+        <td style="width: 30%;">{$obj['material_price']}</td>
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%;word-break:break-all;white-space:nowrap;">需求量：</th>
+        <td style="width: 30%;">{$obj['number']}</td>
+        <th style="width: 20%;word-break:break-all;white-space:nowrap;">单位：</th>
+        <td style="width: 30%;">{$unit}</td>
+
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%">金额(元)：</th>
+        <td style="width: 30%" colspan="3">{$obj['floor_price']*$obj['number']}</td>
+        <!--<th style="width: 20%">收款人：</th>-->
+        <!--<td style="width: 30%">{}</td>-->
+    </tr>
+    <tr style="height: 30px;">
+        <th style="width: 20%;word-break:break-all;white-space:nowrap;">材料说明：</th>
+        <td style="" colspan="3">{$obj['material_desc']}</td>
+    </tr>
+</table>

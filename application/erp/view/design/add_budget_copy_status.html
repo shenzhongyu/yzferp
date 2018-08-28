@@ -1,0 +1,287 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="__EASYUI151__/themes/icon.css">-->
+    <link rel="stylesheet" type="text/css" href="__STATIC__/daterangepicker/numberrangebox.css">
+    <!--<link rel="stylesheet" href="__ERP__/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body style="width: 99%">
+<div id="dlog" style="display: none"></div>
+<div id="p" class="easyui-panel" title="预算报价" style="width:100%;height:100%;padding:10px;">
+    <p>
+        <a style="margin-left: 10px;" href="javascript:void(0)" id="mb" class="easyui-menubutton button"
+           data-options="menu:'#mm',iconCls:'icon-save'">
+            保存模板
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="appChangeData()">
+            <span class="l-btn-icon icon-edit"></span>
+            <span class="l-btn-text l-btn-icon-left">申请修改预算</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="lookPrice()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">报价预览</span>
+        </a>
+        <a style="margin-left: 10px;" href="javascript:;" class="easyui-linkbutton" >
+            <span class="l-btn-icon icon-block"></span>
+            <span class="l-btn-text l-btn-icon-left">该预算正在处于审核中</span>
+        </a>
+        <a style="margin-left: 10px;" href="#" class="easyui-linkbutton" onclick="showAppLog()">
+            <span class="l-btn-icon icon-add"></span>
+            <span class="l-btn-text l-btn-icon-left">申请记录</span>
+        </a>
+    </p>
+    <div id="mm" style="width:150px;">
+        <div data-options="iconCls:'icon-save'" onclick="copyDataCom()">保存为共享模板</div>
+        <div data-options="iconCls:'icon-save'" onclick="copyData()">保存为个人模板</div>
+    </div>
+    <div style="width: 18%;float: left">
+        <div >
+            <table id="space"   title='空间列表' ></table>
+        </div>
+        <div style="margin-top: 50px;">
+            <table id="rate"   title='费率列表' ></table>
+        </div>
+    </div>
+
+    <div style="width:80%;float: left">
+        <table id="dg" class="easyui-treegrid"  ></table>
+        <div id="dialog_div" ></div>
+    </div>
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="__EASYUI151__/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="__EASYUI151__/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="__EASYUI151__/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="__LAYER__/layer.js"></script>-->
+<script type="text/javascript" src="__STATIC__/daterangepicker/require.js"></script>
+<script type="text/javascript" src="__EASYUI151__/datagrid-filter.js"></script>
+<script>
+    var guid='';
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    $(function(){
+        $('#space').datagrid({
+            url:'{:url("showSpaceTree")}/id/'+'{$guid}',
+//            idField:'id',
+//            treeField:'name',
+            showFooter:true,
+            singleSelect:false,
+            columns:[[
+                { field: "chk", "checkbox": true},
+                { title: "名称", field: "name",width:'40%',align: 'left',
+                    formatter:function(value,row,index){  return '<a style="color:#0066cc">'+value+' </a>'  } },
+                { title: "金额(元)", field: "value",width:'26%',align: 'center',
+                    formatter:function(value,row,index){
+                        return '<a style="color: red">'+value.toFixed(2)+'</a>'
+                    }
+                },
+            ]],
+            onDblClickRow:function(index,row){
+                if(row.id){
+                    guid=row.guid;
+                    $('#dg').treegrid('load', {
+                        guid: row.guid,
+                    });
+                }else{
+                    return false;
+                }
+
+            }
+        });
+        $('#rate').datagrid({
+            url:'{:url("showRateTree")}/id/'+'{$guid}',
+            showFooter:true,
+            singleSelect:false,
+            columns:[[
+                { field: "chk", "checkbox": true},
+                { title: "名称", field: "name",width:'40%',align: 'left',
+                    formatter:function(value,row,index){  return '<a style="color:#0066cc">'+value+' </a>'  } },
+                { title: "金额(元)", field: "value",width:'26%',align: 'center',
+                    formatter:function(value,row,index){
+                        return '<a style="color: red">'+value.toFixed(2)+'</a>'
+                    }
+                },
+//                { title: "运算符", field: "type",width:'18%',align: 'center',},
+                { title: "费率值", field: "rate_value",width:'26%',align: 'center',
+                    formatter:function (value,row){
+                        if (value){
+                            var a=row.type?row.type:'*';
+                            return a+value;
+                        }
+                    }
+                },
+            ]],
+        });
+        $('#dg').treegrid({
+            url:'{:url("showSpaceDataList")}/id/'+'{$guid}',
+            height:650,
+            rownumbers:true,
+            singleSelect:false,
+            pagination:true,
+            method:'get',
+            pageSize:20,
+            idField:'id',
+            treeField:'name',
+            nowrap:false,//超出部分自动换行
+            columns:[[{ field: "chk", "checkbox": true}
+                ,{ field: 'name', title: '名称', width: "20%", align: 'left'}
+
+                , { field: 'unit', title: '单位', width: "5%", align: 'center',
+                    formatter:function(value,row,index){
+                        if (eval("value_unit_name" )[value]) {
+                            return eval("value_unit_name")[value];
+                        }else {
+                            return value;
+                        }
+
+                    }
+                }
+                ,{ field: 'number', title: '数量', width: "5%", align: 'center',
+                    formatter:function(value,row,index){
+                        if (row._parentId && value){
+                            return value;
+                        }else if(row._parentId && !value){
+                            return 0;
+                        }
+                    }
+                }
+                , { field: 'price', title: '单价(元)', width: "8%", align: 'center',
+                    formatter:function(value,row,index){
+                        return value;
+                    }}
+                ,{ field: 'sum_price', title: '金额', width: "10%",align: 'center',
+                    formatter:function(value,row,index){
+                        if(row.price){
+                            var price=Number(row.price)* row.number;
+                            return  '<a style="color: red;">'+ price.toFixed(2)+'</a>';
+                        }
+                    }
+                }
+                ,{field:'desc',title:'说明',width:"37%",align:'center',}
+                ,{field:'opera',title:'操作',width:"12%",align:'center',
+                    formatter:function(value,row,index){
+                        if( row._parentId){
+                            return '';
+                        }
+
+                    }
+                }
+            ]]
+        });
+    });
+    function showAppLog() {  //申请记录
+        $('#dlog').dialog({
+            title: "添加空间",
+            iconCls: 'icon-save',
+            width: '80%',
+            height: '80%',
+            cache: false,
+            href: "{:url('DesignExtract/showAppLog',['guid'=>$guid])}",
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+    function copyData() {  //提取个人模板
+        var url='{:url("DesignExtract/copySpace",["guid"=>$guid,"type"=>"1"])}';
+        var href="{:url('DesignExtract/showTemEdit')}";
+        dlog(url,"保存模板",href,'模板名称不能为空','保存成功');
+    }
+    function copyDataCom() { //提取公司模板
+        var url='{:url("DesignExtract/copySpace",["guid"=>$guid,"type"=>"2"])}';
+        var href="{:url('DesignExtract/showTemEdit')}";
+        dlog(url,"保存模板",href,'模板名称不能为空','保存成功');
+    }
+    function appChangeData() {
+        var url='{:url("DesignExtract/appChangeData",["guid"=>$guid])}';
+        var href="{:url('DesignExtract/showApplyEdit')}";
+        dlog(url,"申请预算更改",href,'预算更改申请原因不能为空','申请成功，等待审批',1);
+    }
+    function ads(){
+        window.parent.closeTab('预算报价');
+    }
+    function dlog(url,title,href,msg,sucess,fn) {
+        $('#dlog').dialog({
+            title: title,
+            iconCls: 'icon-save',
+            width: 380,
+            height: 200,
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $("#dlog").find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            if(!$('#name').val()){
+                                layer.msg(msg,{icon:2});
+                                return false;
+                            }
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(url, $(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(sucess  , {icon: 1});
+                                    $("#dlog").dialog('close');
+                                    if(fn){
+                                        setTimeout(function(){ads()},500);
+                                    }
+                                }
+                            }, 'json');
+                            return false;
+
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $("#dlog").dialog('close');
+                }
+            }]
+        })
+    }
+    function getTem() { //提取个人模板
+        window.parent.addTab('模板提取',"{:url('DesignExtract/showTemHtml',['pro_id'=>$guid,'type'=>'1'])}",'close');
+    }
+    function getTemCom() { //提取公司模板
+        window.parent.addTab('模板提取',"{:url('DesignExtract/showTemHtml',['pro_id'=>$guid,'type'=>'2'])}",'close');
+    }
+    function bookUp() {
+        window.open('{:url("showBook",["guid"=>$guid])}');  //用来打印的
+    }
+    function lookPrice() {
+//        window.open('{:url("showBook",["guid"=>$guid])}');  //用来打印的
+        window.parent.addTab('报价表','{:url("showBudgetBook",["guid"=>$guid])}','close');
+    }
+    function sumPrice(obj) {
+        //1
+        var u_value=Number(obj.unit_price)*(1+Number(obj.unit_profit)); //
+        var a_value=Number(obj.auxiliary_unit)*(1+Number(obj.auxiliary_profit)); //
+        var p_value=Number(obj.artificial_price)*(1+Number(obj.artificial_profit)); //
+        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //
+        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //
+        //2
+//        var u_value=Number(obj.unit_price)/(1-Number(obj.unit_profit)); //
+//        var a_value=Number(obj.auxiliary_unit)/(1-Number(obj.auxiliary_profit)); //
+//        var p_value=Number(obj.artificial_price)/(1-Number(obj.auxiliary_profit)); //
+//        var l_value=Number(obj.unit_price)*Number(obj.loss_coefficient); //
+//        var m_value=Number(obj.unit_price)*Number(obj.mechanical_coefficient); //
+        return u_value+a_value+p_value+l_value+m_value;
+    }
+</script>
+</body>
+</html>

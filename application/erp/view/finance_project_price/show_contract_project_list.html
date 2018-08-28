@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<div style="" id="tool">
+    <a style="font-size: 14px;">预算书编号：</a>
+    <input id="number" class="easyui-textbox" type="text" name="name" >
+    <a style="font-size: 14px;">项目名称：</a>
+    <input id="name" class="easyui-textbox" type="text" name="name" >
+    <a href="#" class="easyui-linkbutton" onclick="searName()">搜 索</a>
+    <a href="#" class="easyui-linkbutton" onclick="showAllUser()">显示全部</a>
+</div>
+
+<table id="list" class="easyui-datagrid" title="{$title}"></table>
+<div id="apply"></div>
+
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function () {
+        $('#list').datagrid({
+            singleSelect: false,
+            rownumbers: true,
+            resizeHandle: 'both',
+            ctrlSelect: true,
+            collapsible: false,
+            method: 'post',
+            url:'{$data_url}',
+            striped: true,
+            _customTitle: true,//开启自定义表头
+            _customWidth: false,//自定义列宽
+            pagination: true,
+            showFooter: false,//是否显示合计行
+            filterBtnIconCls: 'icon-filter',
+            multiSort: true,
+            remoteFilter:false,
+            pageSize:20,
+            columns:[
+                [
+                    { field: 'book_number', title: '预算书编号', width: '15%', align: 'center',},
+                    { field: 'project_name', title: '项目名称', width: '30%', align: 'center',},
+                    { field: 'price_num', title: '已收款', width: '15%', align: 'center',
+                        formatter:function(value,row,index){
+                            if(row.price && row.contract_amount){
+                                var str=row.price/row.contract_amount*100;
+                                return '<a>'+str.toFixed(2)+'%</a>';
+                            }
+                        }},
+                    { field: 'op', title: '操作',width:'20%',align: 'center',
+                        formatter:function(value,row,index){
+                            var str='';
+                            str+='<a href="javascript:;" onclick="lookProjectMore(&apos;'+row.guid+'&apos;)">收支明细</a>&nbsp;&nbsp;';
+                            return str;
+                        }
+                    },
+                ]
+            ],
+            toolbar:'#tool',
+            nowrap:false,//超出部分自动换行
+        });
+    });
+    function searName() {
+        var name=$("#name").textbox('getValue');
+        var number=$("#number").textbox("getValue");
+        $('#list').datagrid({
+            queryParams:{project_name:name,book_number:number}
+        });
+    }
+    function lookProjectMore(a) {
+        window.parent.addTab("项目收支明细",'{:url("lookProjectMore")}/guid/'+a,'close');
+    }
+</script>
+</body>
+</html>
+

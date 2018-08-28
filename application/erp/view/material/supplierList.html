@@ -1,0 +1,77 @@
+supplier_list.html{extend name="base/base_search_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'supplier_name', title: '供应商名称', width: '180', align: 'center', sortable: true}
+, { field: 'supplier_brand', title: '品牌', width: 150,align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'supplier_discount', title: '折扣',width: '120', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'profit_margin', title: '利润率', width: '120', align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'supplier_desc', title: '供应商描述', width: '200', align: 'center', sortable: true}
+]]{/block}
+
+{block name="filter"}[
+{:widget('Easyui/showFilter', ["unit_name","combobox"])}
+]{/block}
+
+{block name="value"}
+{:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status') {
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if(field == 'supplier_brand'){
+    if(value==""){
+        return '<a>无</a>';
+    }else{
+        return '<a>'+value+'</a>';
+    }
+}else if(field == 'supplier_discount'){
+    if(value==""){
+        return '<a>0</a>';
+    }else{
+        return '<a>'+value+'</a>';
+    }
+}else if(field == 'profit_margin'){
+    if(value==""){
+        return '<a>0%</a>';
+    }else{
+        return '<a>'+value+'%</a>';
+    }
+}else if (eval("value_" + field)[value]) {
+return eval("value_" + field)[value];
+}else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}',
+dialog_url:'{$dialog_url??str_replace("List","Edit",url())}'
+{/block}
+
+{block name="my_js"}
+    <script>
+        function add(){
+            window.parent.addTab("添加供应商","{:url('showMaterialSupplier')}");
+        }
+    </script>
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'添加供应商', iconCls: 'icon-add', handler:function(){  add()  } },'-',
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ mikkleClass.editForm(420,330);} },'-',
+{ text:'删除', iconCls: 'icon-cancel', handler: function(){ mikkleClass.delForm();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

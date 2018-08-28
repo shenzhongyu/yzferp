@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>联系人信息</title>
+    {include file="base_mui/weui_wechat"/}
+
+</head>
+<body>
+<div id="app">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <a class="mui-icon mui-icon mui-icon mui-icon-gear mui-pull-right" @click="addContact"></a>
+        <h1 class="mui-title">楼盘信息</h1>
+    </header>
+    <div class="addBoss" v-cloak>
+        <div class="addPro">楼盘信息</div>
+        <div class="addFirst">
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">楼盘名称：</div>
+                <div class="detailRightOnly">
+                    {{res.building_name}}
+                </div>
+            </div>
+
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">楼盘地址：</div>
+                <div class="detailRightOnly">
+                    {{res.building_adress}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">楼盘均价：</div>
+                <div class="detailRightOnly">
+                    {{res.building_price_name}}
+                </div>
+            </div>
+            <div class="detailBoss ">
+
+                <div class="detailLeftOnly">房产信息：</div>
+                <div class="detailRightOnly">
+                    {{res.room_number}}
+                </div>
+            </div>
+        </div>
+
+        <div class="addlink" id="addC">
+            <form type="post" id="form_add">
+                <div style="text-align: center;">修改楼盘信息</div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem;margin-top: 0.2rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">楼盘名称：</div>
+                    <input type="text" placeholder="请填写楼盘名称"
+                           style="width: 65%;margin-bottom: 0px;background: lavender;font-size: 13px"
+                           :value=" res.building_name" name="building_name">
+                </div>
+
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">楼盘地址：</div>
+                    <input type="text" placeholder="请填写楼盘地址"
+                           style="width: 65%;margin-bottom: 0px;background: lavender;font-size: 13px"
+                           :value="res.building_adress" name="building_adress">
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">楼盘均价：</div>
+                    <select style="margin-bottom: 0px;width: 65%;background: lavender;font-size: 13px"
+                            :value="res.building_price_name" name="building_price">
+                        <option v-for="item in res.building_price_name_list">{{item.text}}</option>
+
+                    </select>
+                </div>
+                <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+                    <div style="display:inline-block; width: 30%;text-align: left">房产信息：</div>
+                    <input type="text" placeholder="请填写房产信息"
+                           style="width: 65%;margin-bottom: 0px;background: lavender;font-size: 13px"
+                           :value="res.room_number" name="room_number">
+                </div>
+
+                <div style="margin-top: 0.3rem;text-align: center">
+                    <button @click="hold" type="button">保存</button>
+                    <button style="margin-left: 0.3rem" @click="close" type="button">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var id = '';
+        var dataA = {};
+        mui.ajax('{:url("",["guid"=>$Request.param.guid])}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                if (response.data.guid) {
+                    id = response.data.guid;
+                }
+                dataA.res = response.data;
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {
+                        addContact: function () {
+                            $("#addC").css("display", "block")
+                        },
+//                        linkBack: function () {
+//                            mui.openWindow({
+//                                url: "{:url('project/projectDetails',['guid'=>$Request.param.guid])}"
+//                            })
+//                        },
+                        close: function () {
+                            $("#addC").css("display", "none")
+                        },
+                        hold: function () {
+                            var data = $("#form_add").serialize();
+                            if (id) {
+                                var url = '{:url("erp/project/editBuildingData",["project_guid"=>$Request.param.guid])}/id/' + id;
+                            } else {
+                                var url = '{:url("erp/project/addBuildingData",["project_guid"=>$Request.param.guid])}'
+                            }
+                            mui.ajax(url, {
+                                data: data,
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+                                success: function (response) {
+                                    if(response.code == 1001){
+                                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                        setTimeout(function () {
+                                            window.location.reload()
+                                        },2000);
+                                    }
+
+                                }, error: function (error) {
+                                    //异常处理；
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                }
+                            })
+
+                        }
+                    }
+                })
+            }
+        })
+    }
+</script>

@@ -1,0 +1,381 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" type="image/x-icon" href="__STATIC__/erp/images/favicon.ico" media="screen" />
+    <title>7搜装企ERP</title>
+    <link href="__STATIC__/erp/css/base.css" rel="stylesheet">
+    <link href="__STATIC__/erp/css/login.css" rel="stylesheet">
+
+	<link href="__STATIC__/erp/css/easyui.css" rel="stylesheet">
+	<!--<script src="/static/erp/js/login.js" type="text/javascript" charset="utf-8"></script>-->
+	<style>
+		#applyTrail{width: 100%;display: none;padding-top: 50px;}
+		#applyTrail #applyTrail_div{width: 40%;margin: 15px auto;font-size: 18px;letter-spacing: 2px;}
+		#applyTrail #applyTrail_div form div{width: 100%;min-width:340px;height: 40px;margin: 10px 0px;}
+		#applyTrail #applyTrail_div form div .label_1{width: 20%;min-width:120px;display: inline-block;text-align: right;line-height: 30px;}
+		#applyTrail #applyTrail_div form div .label_2{width: 60%;min-width:200px;display: inline-block}
+		#applyTrail #applyTrail_div form div .label_2 input{font-size:16px;padding-left:10px ;width: 80%;height: 30px;}
+		.apply_a{color: #ffffff;margin:0px 5px;letter-spacing: 1px;text-decoration: none;display: inline-block;min-width:90px;width: 25%;height: 35px;line-height: 35px;text-align: center}
+		@media screen and (max-width: 1250px) {
+			.login-bd .bd-inner .inner-wrap .lg-zone{
+				right: 0;
+				left: 0;
+				top: 0;
+				bottom: 0;
+				margin: auto;
+			}
+			.login-bd .bd-inner .inner-wrap .lg-poster{
+				width: 0px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<!--<div class="login-hd">-->
+		<!--<div class="left-bg"></div>-->
+		<!--<div class="right-bg"></div>-->
+		<!--<div class="hd-inner">-->
+			<!--<span class="logo"></span>-->
+			<!--<span class="split"></span>-->
+			<!--<span class="sys-name" style="font-size: 24px;">装企ERP管理系统登录平台</span>-->
+		<!--</div>-->
+	<!--</div>-->
+	{include file="base/login_head" /}
+	<div class="login-bd" id="login_center">
+		<div class="bd-inner">
+			<div class="inner-wrap">
+				<div class="lg-zone">
+					<div class="lg-box">
+						<div class="lg-label">
+							<div id="wx_img" onclick="getQrCode()" style="cursor:pointer;float:right;width: 215px;height: 58px;background: url('__STATIC__/erp/images/saomadenglu.png')"></div>
+							<div id="pc_img" onclick="fanhui()" style="cursor:pointer;float:right;width: 215px;height: 58px;background: url('__STATIC__/erp/images/mimadenglu.png') no-repeat;display: none"></div>
+							<div style="clear: both"></div>
+							<li id="head_title" style="list-style:none;font-weight:600;width: 100%;color: #444444;font-size: 18px">用户登陆</li>
+						</div>
+						<form id="form_login">
+							<div  style="height: 50px;">
+
+							</div>
+							<a style="margin-left: 32px;color: red;" id="warm"></a>
+							<div class="lg-username input-item clearfix" style="height: 46px;margin-top: 5px;">
+								<i  class="iconfont" style="background: url('__STATIC__/erp/images/yonghuming.png')"></i>
+								<input style="height: 46px;padding-left: 10px;" type="text" placeholder="用户名" id="username" name="username" maxlength="17">
+							</div>
+							<div class="lg-password input-item clearfix" style="height: 46px;">
+								<i class="iconfont" style="background: url('__STATIC__/erp/images/mima.png')"></i>
+								<input style="height: 46px;padding-left: 10px;" type="password" placeholder="请输入密码" id="password" name="password">
+							</div>
+							<div class="lg-check clearfix" style="display: none;">
+								<div class="input-item">
+									<i class="iconfont">&#xe633;</i>
+									<input type="text" placeholder="验证码">
+								</div>
+								<span class="check-code">XD34F</span>
+							</div>
+							<div class="tips clearfix">
+								<label><input type="checkbox" >记住用户名</label>
+								<a href="javascript:;" class="register" onclick="ApplyForUse()">用户申请</a>
+								<a href="javascript:showDiv();" class="forget-pwd" onclick="">忘记密码？</a>
+								<a href="javascript:;clientDown()" style="margin-right: 10px;color: inherit"  >客户端下载</a>
+							</div>
+							<div class="enter" style="margin-top: 68px;">
+								<a href="javascript:;" class="purchaser" id="wxlog" style="letter-spacing: 1px;" onclick="ApplyForUse()" >申请使用</a>
+								<a href="javascript:;" class="supplier" id="log" onclick="login()"  >登&nbsp;&nbsp;&nbsp;&nbsp;录</a><br>
+								<!--<p>换种方式登陆？扫一扫更方便！<span onclick="getQrCode()">点击生成二维码</span></p>-->
+							</div>
+						</form>
+						<div class="show">
+							<div style="height: 26px;"></div>
+							<section class="show_img">
+								<img id="srcCode" />
+							</section>
+							<!--<div class="show_text">-->
+								<!--请使用微信扫一扫-->
+							<!--</div>-->
+							<div id="show_html">
+								<span style="display:inline-block;width:29px;height:27px;background: url('__STATIC__/erp/images/saoyisao.png')"></span>
+								<span style="margin-left:10px;display:inline-block;width:180px;height:30px;font-size: 12px;margin-bottom: 3px;line-height: 16px;">打开<a style="color: #078ea8;">微信</a><br/><span id="title_wx">扫一扫登陆</span></span>
+							</div>
+							<div id="refurbish" style="display:none;width:56%;margin-top:20px;list-style:none;text-align: center;line-height:20px;box-shadow: 0 0 15px lightgray inset;padding: 5px 20px;margin-left:44px ">
+								<li>二维码失效</li>
+								<li>请点击<a onclick="refurbish()" style="color:#3cc51f;margin-left:10px;cursor: pointer;">刷新二维码</a></li>
+							</div>
+							<p><a href="javascript:;" style="color: #444;text-decoration: none" onclick="fanhui()">密码登陆</a><span style="margin-left: 15px;" onclick="ApplyForUse()">用户申请</span></p>
+							<!--<div class="show_bottom"></div>-->
+						</div>
+					</div>
+				</div>
+				<div class="lg-poster" style='background: url("__STATIC__/erp/images/loginbg.png") no-repeat 0px 50px;'>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	{include file="base/login_footer" /}
+	<script>
+	
+		var code_loop;
+		var sid;
+		$(function(){
+            if(location.href.indexOf('http://yzferp.com')==1){
+                window.location='http://www.yzferp.com';
+            }
+			if(localStorage.username){
+				$("#username").val(localStorage.getItem('username'));
+				$("input[type='checkbox']").attr("checked","checked");
+			}
+			$(document).keyup(function(event){
+				if(event.keyCode==13){
+					login();
+				}
+			});
+			$("#username").on("input",function(){
+				$(".warn").css("opacity","0");
+			});
+			$("#password").on("input",function(){
+				$(".warn").css("opacity","0");
+			});
+            myBrowser();
+		});
+		//客户端下载
+		function clientDown() {
+		    var url="http://wechat.yzferp.com/center/Client/Download";
+			window.open(url);
+        }
+        function myBrowser(){  //检测浏览器
+            var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+            var isOpera = userAgent.indexOf("Opera") > -1; //判断是否Opera浏览器
+            var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera; //判断是否IE浏览器
+            var isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
+            var isSafari = userAgent.indexOf("Safari") > -1; //判断是否Safari浏览器
+            if (isIE) {
+                var IE5 = IE55 = IE6 = IE7 = IE8 = false;
+                var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+                reIE.test(userAgent);
+                var fIEVersion = parseFloat(RegExp["$1"]);
+                IE55 = fIEVersion == 5.5;
+                IE6 = fIEVersion == 6.0;
+                IE7 = fIEVersion == 7.0;
+                IE8 = fIEVersion == 8.0;
+                if (IE55) {
+                    alert('建议使用高版本浏览器打开本系统！');
+                    return "IE55";
+                }
+                if (IE6) {
+                    alert('建议使用高版本浏览器打开本系统！');
+                    return "IE6";
+                }
+                if (IE7) {
+                    alert('建议使用高版本浏览器打开本系统！');
+                    return "IE7";
+                }
+                if (IE8) {
+                    alert('建议使用高版本浏览器打开本系统！');
+                    return "IE8";
+                }
+            }//isIE end
+            if (isFF) {
+                return "FF";
+            }
+            if (isOpera) {
+                return "Opera";
+            }
+        }//myBrowser() end
+        //以下是调用上面的函数
+
+		function service() {
+            location.href="{:url('PublicView/service')}";
+        }
+        function statement() {
+            location.href="{:url('PublicView/statement')}";
+        }
+        function aboutUs() {
+            location.href="{:url('PublicView/aboutUs')}";
+        }
+		function showDiv(){
+			$('.enter p span').parents('form').hide();
+			$("#form_login").css('display','none');
+			$('.alert').hide();
+			$("#head_title").html("找回密码");
+			$(".show").show();
+			$("#srcCode").attr("src","/static/erp/images/password.png");
+		}
+        function ApplyForUse() {
+		    var url='{:url("login/getQrCode",["name"=>"apply"])}';
+		    $.post(url,function (data) {
+				if(data.code=="1001"){
+                    $('.enter p span').parents('form').hide();
+                    $("#form_login").css('display','none');
+                    $('.alert').hide();
+                    $("#head_title").html("申请使用");
+                    $("#title_wx").html('扫一扫申请');
+                    $(".show").show();
+                    $("#srcCode").attr("src",data.url);
+				}
+            },'json');
+
+        }
+		function returnLogin() {  //返回登陆
+            $("#login_center").css('display','block');
+            $("#applyTrail").css('display','none');
+        }
+        function apply() {
+		    var form_data=$("#apply_form").serialize();
+		    var url="http://wechat.yzferp.com/center/we_action/apply";
+		    if(!$("#company").val()){
+				layer.msg("请填写公司名称",{icon:2});
+				return false;
+			}
+            if(!$("#contacts").val()){
+                layer.msg("请填写联系人",{icon:2});
+                return false;
+            }
+            if(!$("#mobile").val()){
+                layer.msg("请填写联系手机",{icon:2});
+                return false;
+            }
+            if(!$("#tencent_code").val()){
+                layer.msg("请填写微信/QQ",{icon:2});
+                return false;
+            }
+            $.post(url,form_data,function (data) {
+				if (data.code=="1001"){
+                    layer.msg('申请成功,等待审核',{icon:1});
+                    $("#apply_form").form("clean");
+				}else{
+                    layer.msg(data.msg?data.msg:'申请失败，请联系客服',{icon:2});
+				}
+            },'json');
+
+        }
+		function getQrCode(){
+			var url="/api/system/getQrCode";
+			$.ajax({
+				type:"POST",
+				url:url,
+				data:"",
+				success:function(data){
+					if(data.code == "1001"){
+						sid=parseInt(data.sid);
+						$("#head_title").html('手机扫码，安全登陆');
+						$("#form_login").css('display','none');
+						$("#wx_img").css('display','none');
+                        $("#pc_img").css('display','block');
+//						$('.enter p span').parents('form').hide();
+//						$('.alert').hide();
+						$('.show').show();
+						$("#srcCode").attr("src",data.img);
+						code_loop = setInterval("loginWe()", 2000);
+					}
+				}
+			})
+		}
+		function stopLoop(){
+			if (code_loop != null) {
+				clearTimeout(code_loop);
+				code_loop=null;
+			}
+		}
+		function loginWe(){
+			var url="/api/system/loginWe";
+			$.ajax({
+				type:"POST",
+				url:url,
+				data:{sid:sid},
+				success: function(data){
+					if (data.code=="1001"){
+						stopLoop();
+						setTimeout(function(){
+							location.href="{:url('erp/index/index')}";
+							$(".show p").parents('.show').prev('form').show();
+							$('.alert').show();
+							$(".show p").parent().hide();
+						},800);
+
+					}else if(data.code=="1031"){
+						stopLoop();
+						code_loop=null;
+						sid=null;
+						$("#show_html").css("display","none");
+						$("#refurbish").css("display","block");
+					}else{
+
+					}
+				}
+			});
+		}
+
+		function refurbish(){
+			var url="/api/system/getQrCode?new";
+			$.ajax({
+				type:"POST",
+				url:url,
+				data:"",
+				success:function(data){
+					if(data.code == "1001"){
+						sid=parseInt(data.sid);
+						$(".show_text").css("display","block");
+						$("#refurbish").css("display","none");
+						$("#srcCode").attr("src",data.img);
+						code_loop = setInterval("loginWe()", 2000);
+					}
+				}
+			})
+		}
+
+		function fanhui(){
+			stopLoop();
+			code_loop=null;
+			sid=null;
+			$(".show p").parents('.show').prev('form').show();
+			$('.alert').show();
+			$(".show p").parent().hide();
+			$("#head_title").html("用户登录");
+			$("#srcCode").attr("src","");
+            $("#wx_img").css('display','block');
+            $("#pc_img").css('display','none');
+		}
+
+
+		function login(){
+			if(!$("#username").val()){
+//				$(".warn").css("opacity","1");
+				$("#warm").html("账号不能为空");
+			}else if(!$("#password").val()){
+//				$(".warn").css("opacity","1");
+				$("#warm").html("密码不能为空");
+			}else{
+				var url="{:url('Login/login')}";
+				if($("input[type='checkbox']").is(':checked')){
+					localStorage.username=$("#username").val();
+				}
+				$.ajax({
+					type:"POST",
+					url:url,
+					data:{username:$("#username").val(),password:$("#password").val()},
+					success:function(data){
+						if(data.code == "1001"){
+                            $.messager.progress({
+                                msg:'登录成功,请稍后...'
+                            });
+                            setTimeout(function(){
+                                location.href="{:url('erp/index/index')}";
+                                $.messager.progress('close');
+                            },1500);
+
+
+						}else{
+//							$(".warn").css("opacity","1");
+							$("#warm").html("账号或密码错误");
+						}
+					}
+				})
+			}
+		}
+	</script>
+</body>
+
+</html>
+

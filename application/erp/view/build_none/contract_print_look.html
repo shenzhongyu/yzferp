@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="com_tb" style="height:auto;padding-left: 10px;">
+        <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="contractDesign()">打印预算</a>
+        <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="backReturn()">返回</a>
+    </div>
+</div>
+<div id="pro_dlog">
+</div>
+
+<table id="pro_contract" title="发包预算" style="width: 100%"></table>
+
+
+
+
+
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function(){
+
+
+        $("#pro_contract").treegrid({
+            idField:'guid',
+            //treeField:'name',
+            url:'{$contract_url}',
+            columns:[[
+                {field:'xuhao',title:'序号',width:"8%",align:'center'},
+                {field:'name',title:'工程名称',width:"15%",align:'center'},
+                {field:'unit',title:'单位',width:"10%",align:'center',},
+                {field:'number',title:'数量',width:"10%",align:'center',},
+                {field:'control_price',title:'单价',width:"10%",align:'center',},
+                {field:'price_sum',title:'金额',width:"15%",align:'center',},
+                {field:'desc',title:'说明',width:"30%",align:'center',
+//                    formatter:function(value,row,index){
+//                        var str='<a href="javascript:;" onclick="lookBuildDetailed(&apos;'+row.guid+'&apos;)">查看明细</a>&nbsp;&nbsp;&nbsp;';
+////                        str+='<a href="javascript:;" onclick="buildPlan(&apos;'+row.guid+'&apos;)">施工计划</a>&nbsp;&nbsp;&nbsp;';
+////                        if(row.project_completion=="0" && row.project_comp=="0"){
+////                            str+='<a href="javascript:;" onclick="projectCompletion(&apos;'+row.guid+'&apos;)">完工申请</a>&nbsp;&nbsp;&nbsp;';                        }
+////
+//                        return str;
+//                    }
+                },
+            ]],
+            showFooter:true,
+            singleSelect: false,
+            toolbar: '#com_tb',
+            method: 'post',
+            nowrap:false,
+        });
+    });
+
+    function contractDesign() {  //打印发包预算
+        window.open('{:url("showContractDesignBook",["pro_id"=>$pro_id])}');
+    }
+
+    function backReturn() {
+        window.parent.closeTab("发包预算预览");
+    }
+</script>
+</body>
+</html>

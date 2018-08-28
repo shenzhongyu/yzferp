@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>施工阶段明细</title>
+    {include file="base_mui/weui_wechat"/}
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="details">
+<header class="mui-bar mui-bar-nav ">
+    <a class=" mui-icon mui-icon-left-nav mui-pull-left mui-action-back"  ></a>
+    <h1 class="mui-title">施工内容</h1>
+</header>
+
+
+<div class="addBoss" v-cloak>
+<div class="">
+    <div class="addPro ">项目工程</div>
+    <div class="addFirst" v-for="item in info ">
+        <!--<div class="addPro ">施工内容</div>-->
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">工程类别：</div>
+            <div class="detailRightOnly">
+                {{item.categories_name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">工程价格：</div>
+            <div class="detailRightOnly">
+                {{item.categories_price}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">施工天数：</div>
+            <div class="detailRightOnly">
+                {{item.build_days}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+            <div class="detailLeftOnly">开始时间：</div>
+            <div class="detailRightOnly">
+                {{item.build_time}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">结束时间：</div>
+            <div class="detailRightOnly">
+            {{item.build_end_time}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">工期提醒：</div>
+            <div class="detailRightOnly">
+                <span v-if="item.type==1">&nbsp;</span>
+                <span >{{item.build_status}}</span>
+                <!--<span v-show="item.build_status_type!=1" style="color: red">延期{{item.build_status}}</span>-->
+            </div>
+        </div>
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">施工人员：</div>
+            <div class="detailRightOnly">
+               <a @click="look(item.guid)">查看</a>
+            </div>
+        </div>
+        <div class="detailBoss">
+
+            <div class="detailLeftOnly">操作：</div>
+            <div class="detailRightOnly">
+                <a @click="content(item.guid)">查看明细</a><a style="margin-left: 0.3rem" @click="photo(item.guid)">施工图片</a>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+    <div style="width: 100%;border-top: 1px solid black;"></div>
+</div>
+
+
+
+<div v-if="res==''" class="text-center">暂无信息</div>
+
+
+</div>
+
+
+    <div class="addPro " >领款明细</div>
+    <div class="addBoss" v-cloak style="margin-top: 0.2rem !important;margin-bottom: 0.2rem !important;">
+    <div class="addFirst" v-for="item in res ">
+        <!--<div class="addPro ">施工内容</div>-->
+
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">工程类别：</div>
+            <div class="detailRightOnly">
+                {{item.category_name}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+
+            <div class="detailLeftOnly">领款比例：</div>
+            <div class="detailRightOnly">
+                {{item.value}}
+            </div>
+        </div>
+        <div class="detailBoss detail_line">
+            <div class="detailLeftOnly">领款金额：</div>
+            <div class="detailRightOnly">
+                {{item.price}}
+            </div>
+        </div>
+        <div class="detailBoss">
+
+            <div class="detailLeftOnly">操作：</div>
+            <div class="detailRightOnly">
+                <a @click="apply(item.category_id)" v-if="(item.get_price!=1&item.get_price!=0&item.apply_status == 1)">领款申请</a>
+                <span v-if="(item.get_price) == 1" style="color:darkgray;">已领取</span>
+                <span v-if="(item.get_price) == 0">已申请</span>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('{:url("erp/build_none/showprojectpriceofmy",["pro_id"=>$pro_id])}', {
+
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            timeout: 10000,//超时时间设置为10秒；
+            success: function (response) {
+
+                mui.ajax('{:url("erp/build_none/lookbuildofmy",["guid"=>$pro_id])}', {
+
+
+                    dataType: 'json',//服务器返回json格式数据
+                    type: 'post',//HTTP请求类型
+                    timeout: 10000,//超时时间设置为10秒；
+                    success: function (data) {
+                        console.log(data);
+                        console.log(response);
+
+                        console.log(data.rows);
+                        for(var i=0;i<data.rows.length;i++ ){
+                            if(data.rows[i].type==1){
+                                data.rows[i].build_status="已完工";
+                                continue;
+                            }
+                            if (data.rows[i].build_status_type==1){
+                                if(data.rows[i].build_status==""){
+                                    data.rows[i].build_status=data.rows[i].build_status
+                                }else{
+                                    data.rows[i].build_status="剩余"+data.rows[i].build_status.toFixed(1)+"天";
+                                }
+
+
+                            }else{
+                                if(data.rows[i].build_status==""){
+                                    data.rows[i].build_status=data.rows[i].build_status
+                                }else{
+                                    data.rows[i].build_status="延期"+data.rows[i].build_status.toFixed(1)+"天";
+                                }
+
+
+                            }
+
+                        }
+
+                        dataA.res = response;
+                        dataA.info = data.rows;
+                        var vue = new Vue({
+                            el: '#details',
+                            data: dataA,
+                            methods: {
+                                look:function (guid) {
+                                    mui.openWindow({
+                                        url: "{:url('project/workingManDetails',['pro_id'=>$pro_id])}/guid/"+guid
+                                    })
+                                },
+                                content:function (guid) {
+                                    mui.openWindow({
+                                        url: "{:url('project/workingMyDetails',['pro_id'=>$pro_id])}/guid/"+guid
+                                    })
+                                },
+                                photo:function (guid) {
+                                    mui.openWindow({
+                                    url: "{:url('project/workingPhotoNew',['pro_id'=>$pro_id])}/guid/"+guid
+                                    })
+                                },
+                                apply:function (guid) {
+                                    mui.openWindow({
+                                        url: "{:url('project/workApplyMoney',['pro_id'=>$pro_id])}/guid/"+guid
+                                    })
+                                }
+
+                            }
+                        })
+
+                    }
+
+                })
+
+
+
+            }
+        })
+    }
+</script>

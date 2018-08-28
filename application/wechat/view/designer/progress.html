@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>我的进度</title>
+    {include file="base_mui/weui_wechat_picker"/}
+    <!--<script type="text/javascript" src="/static/mui/js/mui.picker.min.js"></script>-->
+    <!--<link href="/static/mui/css/mui.picker.min.css" rel="stylesheet"/>-->
+</head>
+<body>
+<div id="app">
+
+
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <h1 class="mui-title">项目进度</h1>
+        <a class="mui-icon mui-icon mui-icon mui-icon-more mui-pull-right" style="font-size:30px;"
+           href="#topPopover"></a>
+    </header>
+    <div class="addBoss" >
+        <div id="topPopover" class="mui-popover "
+             style="display:none; top: 57px; left: 35px;height: 1rem;width: 2.5rem">
+            <div class="mui-popover-arrow" style="left:2.48rem"></div>
+            <div class="mui-scroll-wrapper" data-scroll="1">
+                <div class="mui-scroll" style="transform: translate3d(0px, 0px, 0px) translateZ(0px);">
+                    <ul class="mui-table-view">
+
+                        <li class="mui_popver" id="addT"><a href="#">新增进度</a>
+                        </li>
+                        <!--<li class="mui-table-view-cell" @click="ask" id="ask"><a href="#">申请转部</a>-->
+                        <!--</li>-->
+                        <!--<li class="mui_popver" @click="addLogclick"><a href="#">项目详情</a>-->
+                        <!--</li>-->
+
+
+                    </ul>
+                </div>
+                <div class="mui-scrollbar mui-scrollbar-vertical">
+                    <div class="mui-scrollbar-indicator"
+                         style="transition-duration: 0ms; display: none; height: 8px; transform: translate3d(0px, -8px, 0px) translateZ(0px);"></div>
+                </div>
+            </div>
+
+        </div>
+        <div class="addPro"> （{$pro_info["project_name"]}）进度</div>
+        <div class="addFirst" v-for="item in res" v-cloak>
+
+
+            <div class="detailBoss detail_line">
+
+                <div  class="detailLeftOnly">项目名称：</div>
+                <div class="detailRightOnly">
+                    {$pro_info["project_name"]}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">进度类型：</div>
+                <div class="detailRightOnly">
+                   <span v-if="item.design_type == 1">量房阶段</span>
+                    <span v-if="item.design_type == 2">设计阶段</span>
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">设计阶段：</div>
+                <div class="detailRightOnly">
+                    {{item.design_phase}}
+                </div>
+            </div>
+
+
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">开始日期：</div>
+                <div class="detailRightOnly">
+                    {{item.start_data}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">验收日期：</div>
+                <div class="detailRightOnly">
+                    {{item.acceptance_date}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">负责人：</div>
+                <div class="detailRightOnly">
+                    {{item.design_user}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">完工日期：</div>
+                <div class="detailRightOnly">
+                    {{item.completion_date}}
+                    <span class="detailRightOnly red" v-if="item.completion_date==''">
+                    未完工
+                </span>
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+
+                <div class="detailLeftOnly">预计天数：</div>
+                <div class="detailRightOnly">
+                    {{item.expected_days}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">状态：</div>
+                <div class="detailRightOnly">
+                    <span v-if="item.status == 1&&(!item.app_status)" style="color: red">未完成</span>
+                    <span v-if="item.app_status == 1&&item.app_status == 1" style="color: green">已完成，等待审核</span>
+                    <span v-if="item.status == 2" style="color: green">完成</span>
+
+                    <!--{{item.create_time}}-->
+                </div>
+            </div>
+            <div class="detailBoss ">
+                <div class="detailLeftOnly">操作：</div>
+                <div class="detailRightOnly">
+                    <button type="button" @click="img(item.guid)" v-if="item.app_status !=1">图片</button>
+                    <button type="button" @click="appendix(item.guid)" v-if="item.app_status !=1">附件</button>
+                    <button type="button" @click="yanshou(item.guid)"
+                            v-if="item.status == 1&&(!item.app_status)" id="yanshou">申请验收
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="addprogress">
+    <div class="text-center">验收申请</div>
+    <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+        <div class="detailLeftOnly">申请原因：</div>
+        <textarea class="textArea" style="font-size: 0.26rem" id="remind" name="desc"></textarea>
+    </div>
+
+    <div  class="text-center mt30">
+        <button id="add" type="button">申请</button>
+        <button class="ml30" type="button" id="close">关闭</button>
+    </div>
+</div>
+<div class="add_ask" style="display: none">
+    <div style="text-align: center;">转部申请</div>
+    <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+        <div style="display:inline-block; width: 25%;text-align: left;float: left">申请原因：</div>
+        <textarea style="width: 75%;display:inline-block;;height: 1.5rem;font-size: 0.26rem " id="content" name="desc"></textarea>
+    </div>
+    <div style="margin-top: 0.3rem;text-align: center">
+        <button id="add_ask" type="button">申请</button>
+        <button style="margin-left: 0.3rem" type="button" id="close_ask">关闭</button>
+    </div>
+
+</div>
+<div class="addColl">
+    <div class="text-center">新增进度</div>
+    <form method="post" name="form" id="form_add">
+        <div class="progress_title">
+            <div class="btn1 " style="width: 23%;display: inline-block">设计阶段：</div>
+            <input type="text" style="width: 72%;height:0.5rem; display:inline-block;font-size: 0.26rem" name="design_phase" id="step">
+        </div>
+        <div style="width: 100%;padding-top: 0.1rem;">
+            <div  class="btn1 " style="width: 23%;display: inline-block">阶段类型：</div>
+            <!--<input type="text" style="width: 75%;height:0.5rem; display:inline-block;" name="design_phase">-->
+            <select style="width: 75%;height:0.5rem; display:inline-block;background: lavender;font-size: 12px;padding-top: 0rem;padding-bottom: 0rem" name="design_type">
+                <option value="1">量房阶段</option>
+                <option value="2">设计阶段</option>
+            </select>
+        </div>
+        <div style="width: 100%;">
+            <div  class="btn1 " style="width: 23%;display: inline-block">开始日期：</div>
+            <input type="text" style="width: 75%;height:0.5rem;background: lavender; display:inline-block;font-size: 0.26rem"
+                   id="remind_time" name="start_data">
+        </div>
+        <div style="width: 100%;">
+            <div style="display:inline-block; width: 23%;text-align: left;float: left" class="btn1">预计天数：</div>
+            <input type="text" style="width: 75%;height:0.5rem; display:inline-block;font-size: 0.26rem" name="expected_days" id="design_days">
+        </div>
+        <div style="width: 100%;padding-top: 0.1rem;padding-bottom: 0.1rem">
+            <div style="display:inline-block; width: 23%;text-align: left;float: left">备注：</div>
+            <textarea style="width: 75%;display:inline-block;;height: 1.5rem;font-size: 0.26rem" id="remind_content"
+                      name="design_desc"></textarea>
+        </div>
+
+        <div style="margin-top: 0.3rem;text-align: center">
+            <button id="addColl" type="button">添加</button>
+            <button style="margin-left: 0.3rem" id="closeColl" type="button">关闭</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        mui.ajax('{:url("",["guid"=>$project_guid,"typeHasDone"=>$typeHasDone])}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                console.log(response);
+                dataA.res = response.rows;
+                var vue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    mounted: function () {
+                        $("#addT").on("tap", function () {
+                            $(".addColl").css("display", "block");
+                                $("#topPopover").css("display", "none");
+                            $(".mui-backdrop").css("display", "none")
+
+                        });
+
+                        $("#closeColl").on("tap", function () {
+                            $(".addColl").css("display", "none")
+                        });
+
+                        $("#addColl").on('tap', function () {
+                            if(!$("#step").val()){
+                                mui.toast("设计阶段不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if(!$("#remind_time").val()){
+                                mui.toast("开始日期不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            if(!$("#design_days").val()){
+                                mui.toast("预计天数不能为空", {duration: 'short', type: 'div'});
+                                return false;
+                            }
+                            var text = $("#form_add").serialize();
+                            var url = "{:url('erp/design/saveaddbudgetdata',['guid'=>$Request.param.guid])}";
+                            mui.ajax(url, {
+                                data: text,
+                                dataType: 'json',//服务器返回json格式数据
+                                type: 'post',//HTTP请求类型
+                                success: function (response) {
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    $(".addColl").css("display", "none");
+                                    window.location.reload();
+                                },
+                                error: function (error) {
+                                    //异常处理；
+                                    mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                }
+                            })
+                        });
+                        var content;
+                        (function (rr) {
+                            var result1 = document.getElementById("remind_time");
+                            var btn1 = $('#remind_time');
+                            btn1.each(function (i, btn) {
+                                btn.addEventListener('tap', function () {
+                                    var optionsJson = this.getAttribute('data-options') || '{}';
+                                    var options = JSON.parse(optionsJson);
+                                    var id = this.getAttribute('id');
+                                    var picker = new rr.DtPicker(options);
+                                    picker.show(function (rs) {
+                                        result1.value = rs.text;
+                                        picker.dispose();
+                                        content = rs.text;
+                                    });
+                                }, false);
+                            });
+                        })(mui, document);
+
+                    },
+                    methods: {
+                        addLogclick: function () {
+
+
+                            mui.openWindow({
+
+                                url: "{:url('designer/projectDetailsDesigner',['guid'=>$Request.param.guid])}"
+                            })
+//                            mui.openWindow({
+//
+//                                url: "{:url('project/projectdetails',['guid'=>$Request.param.guid])}"
+//                            })
+                        },
+//                        linkBack: function () {
+//
+//                            mui.openWindow({
+//                                url: "{:url('index/index')}"
+//                            })
+//                        },
+                        img: function (id) {
+                            mui.openWindow({
+                                url: "{:url('designer/progressImg',['id'=>$Request.param.guid])}/guid/" + id
+                            })
+                        },
+                        appendix: function (id) {
+                            mui.openWindow({
+                                url: "{:url('designer/progressFile',['id'=>$Request.param.guid])}/guid/" + id
+                            })
+                        },
+                        ask: function () {
+
+                            $(".add_ask").css("display", "block");
+                            $("#topPopover").css("display", "none");
+                            $(".mui-backdrop").css("display", "none");
+                            $("#close_ask").on('tap', function () {
+                                $(".add_ask").css("display", "none")
+                            });
+                            $("#add_ask").on('click', function () {
+                                if ($("#content").val() == '') {
+                                    mui.toast("申请原因不能为空", {duration: 'short', type: 'div'});
+                                    return false;
+                                }
+                                var dataa = {};
+                                dataa.transfer_desc = $("#content").val();
+                                var url = "{:url('erp/project/addprojectauditedit',['guid'=>$Request.param.guid,'type'=>'2'])}";
+                                mui.ajax(url, {
+                                    data: dataa,
+                                    dataType: 'json',//服务器返回json格式数据
+                                    type: 'post',//HTTP请求类型
+                                    success: function (response) {
+                                        if(response.code == 1001){
+                                            mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                            setTimeout(function () {
+                                                window.location.reload()
+                                            },2000)
+                                        }
+                                    },
+                                    error: function (error) {
+                                        //异常处理；
+                                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    }
+                                })
+
+                            })
+                        },
+                        yanshou:function (id) {
+                            $(".addprogress").css("display", "block");
+                            $("#close").on('tap', function () {
+                                $(".addprogress").css("display", "none")
+                            });
+                            $("#add").on('click', function () {
+                                if ($("#remind").val() == '') {
+                                    mui.toast("申请原因不能为空", {duration: 'short', type: 'div'});
+                                    return false;
+                                }
+                                var dataa = {};
+                                console.log(id);
+                                dataa.pro_id = "{$Request.param.guid}";
+                                dataa.guid = id;
+                                dataa.desc = $("#remind").val();
+                                var url = "{:url('erp/design/applycheck')}";
+                                mui.ajax(url, {
+                                    data: dataa,
+                                    dataType: 'json',//服务器返回json格式数据
+                                    type: 'post',//HTTP请求类型
+                                    success: function (response) {
+                                        if(response.code == 1001){
+                                            mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                            $(".addprogress").css("display", "none");
+                                            setTimeout(function () {
+                                                window.location.reload();
+                                            },2000)
+                                        }
+                                    },
+                                    error: function (error) {
+                                        //异常处理；
+                                        mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                    }
+                                })
+
+                            })
+
+                        }
+                    }
+                })
+            }
+        })
+    }
+</script>

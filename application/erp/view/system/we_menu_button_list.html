@@ -1,0 +1,134 @@
+we_menu_buttonlist.html{extend name="base/base_nosearch_list" /}
+
+{block name="title"}{$title}{/block}
+
+
+
+{block name="columns"}
+[[{ field: "chk", "checkbox": true, movable: false }
+, { field: 'menu', title: '菜单', width: '160', align: 'center', sortable: true,{:widget('Easyui/formatter')}  }
+, { field: 'name', title: '按钮', width: '180', align: 'center', sortable: true}
+, { field: 'pid', title: '父按钮', width: '100', align: 'center', sortable: true,{:widget('Easyui/formatter')} }
+, { field: 'url', title: '网址', width: 100,align: 'center', sortable: true}
+, { field: 'key', title: '关键字', width: 180,align: 'center', sortable: true}
+, { field: 'type', title: '按钮类型', width: 180,align: 'center', sortable: true,{:widget('Easyui/formatter')}}
+, { field: 'sort', title: '排序', width: 180,align: 'center', sortable: true}
+]]{/block}
+
+
+
+{block name="value"}
+{:widget('Easyui/showAll', ["type","button_type"] )}
+{:widget('Easyui/showValueByUrl',["menu","menu_json"])}
+{:widget('Easyui/showArrayByUrl',["menu","menu_json"])}
+{:widget('Easyui/showValueByUrl',["pid","button_json"])}
+{:widget('Easyui/showArrayByUrl',["pid","button_json"])}
+
+{/block}
+
+{block name="formatter"}function(value,row,index,field){
+if (field == 'status'){
+//这是个格式化实例
+return eval("value_" + field)[value] ? eval("value_" + field)[value] : '-';
+}else if (field == 'opera') {
+return '<a href="javascript:mikkleClass.editForm(420,240);" style="margin-right: 10px;">编辑</a>'
++'<a href="javascript:mikkleClass.delForm();"  >禁用</a>';
+}else if (eval("value_" + field)[value]){
+return eval("value_" + field)[value];
+} else if (field[value]){
+return field[value];
+} else {
+return value;
+}
+}{/block}
+
+{block name="url"}
+datagrid:'#list',
+dialog:'#dialog_div',
+datagrid_url:'{$data_url??url()}'
+{/block}
+
+{block name="my_js"}
+    <script>
+        function addMenuButton(width,height){
+            $(mikkleClass.dialog).dialog({
+                title: '添加按钮',
+                iconCls: 'icon-save',
+                width: width,
+                height: height,
+                cache: false,
+                href: "{$url}",
+                modal: true,
+                collapsible: false,
+                minimizable: false,
+                resizable: false,
+                maximizable: false,
+                buttons: mikkleClass.button_add("{$url}","添 加"),
+            });
+        }
+        function editMenuButton(width,height){
+            var url1='{$edit}';
+            var id=mikkleClass.getSelectRows("修改");
+            var url=url1+"/guid/"+id;
+            if(id){
+                $(mikkleClass.dialog).dialog({
+                    title: '修改按钮',
+                    iconCls: 'icon-save',
+                    width: width,
+                    height: height,
+                    cache: false,
+                    href: "{$url}",
+                    modal: true,
+                    collapsible: false,
+                    minimizable: false,
+                    resizable: false,
+                    maximizable: false,
+                    buttons: mikkleClass.button_add(url,"修 改"),
+                });
+                formLoad(id);
+            }
+
+        }
+        function delMenuButton(){
+            var url='{$delurl}';
+            var id=mikkleClass.getSelectRows("修改");
+            alert(id);
+            if(id== ''){
+                layer.msg('未选择会员', {icon: 2});
+                return false;
+            }
+            $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+                if(!result) return false;
+                $.messager.progress({text:'处理中，请稍候...'});
+                $.post(url, {guid: id,}, function(data){
+                    $.messager.progress('close');
+                    if (data.code != 1001) {
+                        layer.msg(data.msg, {icon: 2});
+                    } else {
+                        layer.msg(data.msg, {icon: 1});
+                        mikkleClass.refresh();
+                    }
+                }, 'json');
+            });
+        }
+        function formLoad(id){
+            var url='{$loadurl}';
+            if ($('#fm').length==0){
+                setTimeout(function(){formLoad(id);},500);
+            }else{
+                $('#fm').form('load',url+"/guid/"+id);
+            }
+        }
+    </script>
+{/block}
+
+
+{block name="toolbar"}[
+{ text:'添加', iconCls: 'icon-add', handler:function(){ addMenuButton(420,300)} },'-',
+{ text:'修改', iconCls: 'icon-edit',  handler:function(){ editMenuButton(420,300);} },'-',
+{ text:'删除', iconCls: 'icon-cancel', handler: function(){ delMenuButton();} },'-',
+{ text:'刷新', iconCls: 'icon-reload',  handler: function(){mikkleClass.refresh(); }},'-',
+{ text:'回收站', iconCls: 'icon-remove',  handler: function(){mikkleClass.recycle(); }},'-',
+{ text:'显示全部', iconCls: 'icon-filter',  handler: function(){mikkleClass.showAll(); }},'-',
+{ text:'帮助', iconCls: 'icon-help',  handler: function(){alert('帮助按钮')} },'-'
+]{/block}

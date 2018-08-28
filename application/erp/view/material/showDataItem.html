@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+    {include file="base/js" /}
+    <!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+    <!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+    <!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+</head>
+<body>
+<p>
+    <button style="margin-left: 10px;cursor: pointer" onclick="addData()">批量移入</button>
+    <a style="margin-left: 10px;margin-right: 15px;">搜索条件:</a>
+    基装定额类型：<input id="baseId" class="easyui-combobox"  name="basestyle" value=""
+           data-options="valueField: 'guid',textField: 'base_name',url:'{:url('showBaseStyleJson')}',method:'get',
+        onSelect:function(a){
+            if(a.guid){
+                addFiled(a.guid,'base_id','dataId','data_id');
+            }else{
+                var id=$('#dataId').combobox('getValue');
+
+                if(id){
+                    remData(id,'data_id');
+                }else{
+
+                }
+            }
+
+
+        }">
+    数据类别：<input id="dataId" class="easyui-combobox"  name="datastyle" value=""
+           data-options="valueField: 'guid',textField: 'categories_name',url:'{:url('showdatastylejson')}',method:'get',
+        onSelect:function(a){
+            if(a.guid){
+                addFiled(a.guid,'data_id','baseId','base_id');
+            }else{
+                var id=$('#baseId').combobox('getValue');
+
+                if(id){
+                    remData(id,'base_id');
+                }else{
+
+                }
+            }
+
+
+        }">
+    <button style="margin-left: 10px;cursor: pointer;" onclick="showAll()">显示全部</button>
+</p>
+<table id="dg">
+</table>
+
+<script type="text/javascript">
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    $(function(){
+        $('#dg').datagrid({
+            url:'{$url}',
+            height:600,
+            rownumbers:true,
+            singleSelect:false,
+            pagination:true,
+            method:'get',
+            pageSize:20,
+            columns:[[{ field: "chk", "checkbox": true},
+                {field:'dataitem_name',title:'项目名称',width:120,align:'center'},
+                {field:'item_specifications',title:'规格',width:120,align:'center'},
+                {field:'item_unit_name',title:'单位',width:120,align:'center',
+                    formatter:function(value,row,index){
+                        if (eval("value_unit_name")[value]) {
+                            return eval("value_unit_name" )[value];
+                        }
+                    }
+                },
+                {field:'unit_price_sum',title:'单价(元)',width:120,align:'center'},
+                {field:'item_status',title:'项目状态',width:120,align:'center',
+                    formatter:function(value,row,index){
+                        if(value=="1"){
+                            return '<a style="color: #0c9d72">已移入</a>'
+                        }else{
+                            return '<a>未移入</a>';
+                        }
+                    }
+                }
+            ]]
+        });
+    });
+    function showAll() {
+        $("#baseId").combobox('setValue','');
+        $("#dataId").combobox('setValue','');
+        $('#dg').datagrid('load',{});
+    }
+
+
+    function addFiled(a,txt,id,t){
+        var b=$('#'+id).combobox('getValue');
+        var str="";
+        str+='[{"field":"'+txt+'","op":"equal","value":"'+a+'","type":"text"}';
+        if(b){
+            str+=',{"field":"'+t+'","op":"equal","value":"'+b+'","type":"text"}';
+        }
+        str+=']';
+        $('#dg').datagrid({
+            queryParams: {
+                filterRules:str,
+            }
+        });
+    }
+    function remData(id,txt){
+        $('#dg').datagrid({
+            queryParams: {
+                filterRules:'[{"field":"'+txt+'","op":"equal","value":"'+id+'","type":"text"}]',
+            }
+        });
+    }
+    function addData(){
+        var rows = $('#dg').datagrid('getSelections');
+        if(rows.length==0){
+            layer.msg('请选择要移入的数据！', {icon: 2});
+            return false;
+        }
+        var arr=[];
+        $.each(rows,function (i,t) {
+            arr.push(t.guid);
+        });
+        var url='{:url("savaData")}';
+        $.post(url,{budget_id:'{$guid}',material_id:arr,'type':'1'},function(obj){
+            if(obj.code=="1001"){
+                layer.msg('添加成功', {icon: 1});
+                $('#dg').datagrid('reload');
+                mikkleClass.refresh();
+            }else{
+                layer.msg('添加失败，请联系管理员', {icon: 3});
+            }
+        },"json")
+    }
+</script>
+</body>
+</html>

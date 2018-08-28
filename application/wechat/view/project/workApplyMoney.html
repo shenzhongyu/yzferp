@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>领款申请</title>
+    {include file="base_mui/weui_wechat_picker"/}
+
+</head>
+<body>
+<div id="app">
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back" ></a>
+        <h1 class="mui-title">领款申请</h1>
+    </header>
+    <div class="addBoss">
+        <div class="addFirst" >
+            <form id="form_data">
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly" style="line-height: 0.8rem;font-size: 0.26rem">项目名称：</div>
+
+
+                    <div class="detailRightOnly" style="margin-bottom: 0px;height: 0.8rem;line-height: 0.8rem">
+                        {{data.name}}
+                    </div>
+
+
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly" style="line-height: 0.8rem;font-size: 0.26rem">款项类型：</div>
+                <div class="detailRightOnly">
+
+                    <select name="collect_type" style="margin-bottom: 0px;height: 0.8rem">
+                        <option v-for="a in res" :value="a.guid" style="font-size: 0.26rem">{{a.collect_name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly" style="line-height: 0.8rem">款型名称：</div>
+                <div class="detailRightOnly">
+                 <span ></span>
+                  <input type="text" style="margin-bottom: 0px;height: 0.8rem" name="collect_name">
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly" style="line-height: 0.8rem">金额：</div>
+                <div class="detailRightOnly">
+                   <input type="text" style="margin-bottom: 0px;height: 0.8rem" name="collect_price">
+                </div>
+            </div>
+            <div class="detailBoss detail_line" @click="kaifapiao">
+                <div class="detailLeftOnly" style="line-height: 0.6rem">开发票：</div>
+                <div class="detailRightOnly">
+                <input type="checkbox" style="height: 0.6rem;margin-bottom: 0px"  >
+                </div>
+            </div>
+            <div class="detailBoss detail_line" style="display: none" id="kaifapiao">
+                <div class="detailLeftOnly" style="line-height: 0.8rem">发票金额：</div>
+                <div class="detailRightOnly">
+                    <input type="text" style="margin-bottom: 0px;height: 0.8rem" :value = "data.value" name="invoice_price">
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly" style="line-height: 0.8rem">领款日期：</div>
+                <div class="detailRightOnly" style="height: 0.8rem">
+                    <input type="text"
+                           id="remind_time" name="collect_date" style="margin-bottom: 0px;height: 0.8rem;" >
+                </div>
+            </div>
+
+            <div class="detailBoss ">
+                <div class="detailLeftOnly" style="line-height: 1.5rem">款项说明：</div>
+                <div class="detailRightOnly" >
+                    <div style="margin-top: 0.2rem"><textarea style="height: 1.5rem;font-size: 0.26rem; width: 100%;" name="desc"></textarea>
+                </div>
+            </div>
+                <input value="0" name="invoice_value" type="hidden" id="value_fapiao">
+                <input type="hidden" name="book_number" :value="data.number">
+
+        </div>
+            </form>
+        </div>
+        <div class="mui-button-row">
+            <button type="button" class="mui-btn mui-btn-primary w80 h50 fz15" id="leave_add" @click="toTails">申请</button>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+
+<script type="text/javascript">
+    window.onload = function () {
+        var dataA = {};
+        var id = ""
+        mui.ajax('{:url("erp/project_deposit/showcollectjson")}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (response) {
+                mui.ajax('{:url("",["pro_id"=>$pro_id,"guid"=>$guid])}', {
+                    dataType: 'json',//服务器返回json格式数据
+                    type: 'post',//HTTP请求类型
+                    success: function (data) {
+
+                        dataA.res = response;
+                        dataA.data = data;
+                        console.log( response);
+                        var vue = new Vue({
+                            el: '#app',
+                            data: dataA,
+                            methods: {
+                                toTails:function () {
+
+var form_data = $("#form_data").serialize()
+
+                                    mui.ajax('{:url("erp/build_none/projectpriceapply",["pro_id"=>$pro_id,"guid"=>$guid])}', {
+                                        dataType: 'json',//服务器返回json格式数据
+                                        type: 'post',//HTTP请求类型
+                                        data:form_data,
+                                        success: function (response) {
+                                            if(response.code == 1003){
+                                                mui.toast(response.msg, {duration: 'short', type: 'div'});
+//                                                setTimeout(function () {
+//                                            mui.openWindow({
+//                                                url: "{:url('project/designerPendingList')}"
+//                                            })
+//                                                history.back()
+//                                                },2000)
+
+                                            }else{
+                                                mui.toast(response.msg, {duration: 'short', type: 'div'});
+                                            }
+
+
+                                        }
+                                    })
+
+
+                                },
+                                kaifapiao:function () {
+
+                                    if($("input[type='checkbox']").is(':checked')) {
+                                        $("#kaifapiao").css("display","block");
+                                        $("#value_fapiao").val(1)
+                                    }else {
+                                        $("#kaifapiao").css("display","none");
+                                        $("#value_fapiao").val(0)
+                                    }
+
+
+                                }
+
+                            },
+                            mounted:function () {
+                                (function (rr) {
+                                    var result1 = document.getElementById("remind_time");
+                                    var btn1 = $('#remind_time');
+                                    btn1.each(function (i, btn) {
+                                        btn.addEventListener('tap', function () {
+                                            var optionsJson = this.getAttribute('data-options') || '{}';
+                                            var options = JSON.parse(optionsJson);
+                                            var id = this.getAttribute('id');
+                                            var picker = new rr.DtPicker(options);
+                                            picker.show(function (rs) {
+                                                result1.value = (rs.text).substr(0,10);
+                                                picker.dispose();
+                                                content = rs.text;
+                                            });
+                                        }, false);
+                                    });
+                                })(mui, document);
+                            }
+                        })
+
+
+                    }
+                })
+
+
+
+            }
+        })
+
+    }
+</script>
+</html>

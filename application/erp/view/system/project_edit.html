@@ -1,0 +1,91 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <section>
+        <label class="label_1" style="">项目名称:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="project_name"
+                   data-options="required:true,validType:'length[1,10]'" placeholder="请填写项目名称"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">预算总工期:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="expected_duration"
+                   data-options="required:true,validType:'length[1,15]'" placeholder="请填写预算总工期"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">装修面积:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="decoration_area"
+                   data-options="required:true,validType:'length[1,15]'" placeholder="请填写装修面积"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">工程预算:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="project_budget"
+                   data-options="required:true,validType:'length[1,15]'" placeholder="请填写工程预算"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">工程地址:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="project_address"
+                   data-options="" placeholder="请填写工程预算"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">装修档次:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="decoration_grade"
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/decoration_grade')}',method:'get',"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">色彩取向:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="color_orientation"
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/color_orientation')}',method:'get',"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">装修风格:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="decoration_style"
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/decoration_style')}',method:'get',"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">装修类型:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="decoration_type"
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/decoration_type')}',method:'get',"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">客户来源:</label>
+        <label class="label_2" style="">
+            <input class="easyui-combobox" type="text" name="customer_source"
+                   data-options="editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/customer_source')}',method:'get',"
+                   style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">项目要求:</label>
+        <label class="label_2" style="">
+            <input class="easyui-textbox" type="text" name="project_description"
+                   placeholder="请填写项目要求"
+                   style="width:80%;">
+        </label>
+    </section>
+</form>
+

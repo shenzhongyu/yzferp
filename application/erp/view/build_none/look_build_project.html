@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/default/easyui.css">-->
+    <!--<link rel="stylesheet" type="text/css" href="/static/easyui_151/themes/icon.css">-->
+    <!--<link rel="stylesheet" href="/static/erp/css/submit.css">-->
+    {include file="base/css" /}
+</head>
+<body>
+<div style="width: 92%;float: left">
+    <div id="pro_tb" style="height:auto;padding-left: 10px;">
+        <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="contractPrint()">发包预算</a>
+        <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="supervision()">分配监理</a>
+        <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="supUser()">发包施工方</a>
+        <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="designBook()">合同预算浏览</a>
+        <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="designBookPrint()">合同预算打印</a>
+        <a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="contractPrintLook()">发包预算预览</a>
+        <!--<a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="backReturn()">分配监理</a>-->
+        <!--<a style="margin: 0 10px;" href="javascript:void(0)" class="easyui-linkbutton"  onclick="changeProject()">项目变更</a>-->
+    </div>
+</div>
+<div id="pro_dlog">
+</div>
+
+<table id="pro_dg" title="{$title}" style="width: 100%;"></table>
+<div style="height: 15px;"></div>
+
+<table id="pro_price" title="领款明细" style="width: 100%;"></table>
+
+
+
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+{include file="base/js" /}
+<script type="text/javascript">
+    $(function(){
+        $('#pro_dg').datagrid({
+            url:'{$data_url}',
+            columns:[[
+                {field:"chk", "checkbox": true, movable: false},
+                {field:'categories_name',title:'工程类别',width:"13%",align:'center'},
+                {field:'categories_price',title:'工程价格',width:"9%",align:'center',},
+                {field:'build_time',title:'施工开始日期',width:"9%",align:'center',},
+                {field:'build_end_time',title:'施工结束日期',width:"9%",align:'center',},
+                {field:'build_status',title:'工期提醒',width:"9%",align:'center',
+                    formatter:function(value,row,index){
+                        if (row.build_status){
+                            if(row.type=="1"){
+                                return '<a style="color: green">已完工</a>';
+                            }
+                            var a=value.toFixed(1);
+                            if (row.build_status_type==1){
+                                return '<span>剩余'+a+'天</span>';
+                            }else{
+                                return '<span style="color: red">延期'+a+'天</span>';
+                            }
+                        }
+                    }
+                },
+                {field:'build_days',title:'施工天数',width:"9%",align:'center',},
+                {field:'sup_name',title:'工程监理',width:"13%",align:'center',},
+                {field:'build_user',title:'发包施工方',width:"10%",align:'center',
+                    formatter:function(value,row,index){
+                        if (row.id){
+                            return '<a href="javascript:;" onclick="lookBuildUser(&apos;'+row.guid+'&apos;)">查看</a>';
+                        }
+                    }
+                },
+                {field:'op',title:'操作',width:"18%",align:'center',
+                    formatter:function(value,row,index){
+                        if (row.id){
+                            var str='<a href="javascript:;" onclick="lookBuildDetailed(&apos;'+row.guid+'&apos;)">查看明细</a>&nbsp;&nbsp;';
+                            if(row.type==0){
+                                str+='<a href="javascript:;" onclick="supervisionTem(&apos;'+row.guid+'&apos;)">公司自营</a>&nbsp;&nbsp;';
+                                str+='<a href="javascript:;" onclick="percentage(&apos;'+row.guid+'&apos;)">领款比例</a>&nbsp;&nbsp;';
+                                str+='<a href="javascript:;" onclick="timeBuild(&apos;'+row.guid+'&apos;)">施工时间</a>&nbsp;&nbsp;';
+                            }
+                        }
+                        return str;
+                    }
+                },
+            ]],
+            showFooter:true,
+            singleSelect: false,
+            toolbar: '#pro_tb',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+        $('#pro_price').datagrid({
+            url:'{:url("showProjectPrice",["pro_id"=>$pro_id])}',
+            columns:[[
+                {field:'category_name',title:'工程类别',width:"15%",align:'center'},
+                {field:'value',title:'领款百分比',width:"10%",align:'center',},
+                {field:'price',title:'领款金额',width:"15%",align:'center',},
+//                {field:'build_end_time',title:'施工结束日期',width:"15%",align:'center',},
+//                {field:'build_days',title:'施工天数',width:"10%",align:'center',},
+//                {field:'build_user',title:'施工人员',width:"10%",align:'center',
+//                    formatter:function(value,row,index){
+//                        return '<a href="javascript:;" onclick="lookBuildUser(&apos;'+row.guid+'&apos;)">查看</a>';
+//                    }
+//                },
+//                {field:'op',title:'操作',width:"20%",align:'center',
+//                    formatter:function(value,row,index){
+//                        var str='<a href="javascript:;" onclick="lookBuildDetailed(&apos;'+row.guid+'&apos;)">查看明细</a>&nbsp;&nbsp;';
+//                        str+='<a href="javascript:;" onclick="supervisionTem(&apos;'+row.guid+'&apos;)">分配施工队</a>&nbsp;&nbsp;';
+//                        str+='<a href="javascript:;" onclick="percentage(&apos;'+row.guid+'&apos;)">领款百分比</a>&nbsp;&nbsp;';
+////
+//                        return str;
+//                    }
+//                },
+            ]],
+            showFooter:true,
+            singleSelect: false,
+            toolbar: '',
+            method: 'post',
+            nowrap:false,
+            pageSize:20,
+            pagination:true,
+        });
+
+    });
+    function lookBuildDetailed(a) {
+        window.parent.addTab("工程明细",'{:url("lookBuildDetailed",["pro_id"=>$pro_id])}/id/'+a,'close');
+    }
+    function designBookPrint() {  //打印发包预算
+        window.open('{:url("Design/showBook",["guid"=>$pro_id])}');
+    }
+    function contractPrintLook() {  //发包预览
+        window.parent.addTab('发包预算预览','{:url("contractPrintLook",["pro_id"=>$pro_id])}','close');
+    }
+    function changeProject() {
+
+        window.parent.addTab("增减项目",'{:url("changeProject",["pro_id"=>$pro_id])}','close');
+    }
+
+    function timeBuild(a) { //施工时间
+        var href="{:url('timeBuild',['pro_id'=>$pro_id])}/category_id/"+a;
+        $("#pro_dlog").dialog({
+            title: "施工时间",
+            iconCls: 'icon-save',
+            width: '450',
+            height: '600',
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#pro_dlog').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(href,$(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#pro_dlog').dialog('close');
+                                    $('#pro_dg').datagrid('load',{});
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#pro_dlog').dialog('close');
+                }
+            }],
+        });
+    }
+    function supUser(){
+        var href="{:url('supUser',['pro_id'=>$pro_id])}";
+        var arr=$("#pro_dg").datagrid("getSelections");
+        if(arr.length=="0"){
+            layer.msg('未选择工程'  , {icon: 2});
+            return false;
+        }else{
+            var category_id=[];
+            $.each(arr,function (i,t) {
+                category_id.push(t.guid);
+            });
+            console.log(arr);
+            $("#pro_dlog").dialog({
+                title: "发包经理",
+                iconCls: 'icon-save',
+                width: '450',
+                height: '400',
+                cache: false,
+                href: href,
+                modal: true,
+                collapsible: false,
+                minimizable: false,
+                resizable: false,
+                maximizable: false,
+                buttons:[{
+                    text:' 确 定 ',
+                    iconCls: 'icon-save',
+                    handler:function(){
+                        $('#pro_dlog').find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                var user_arr=[];
+                                if ($("#user").datagrid("getSelections").length==0){
+                                    layer.msg('未选择人员'  , {icon: 2});
+                                    $('#pro_dlog').dialog('close');
+                                    return false;
+                                }else{
+                                    $.each($("#user").datagrid("getSelections"),function (i,t) {
+                                        user_arr.push(t.uuid);
+                                    })
+                                }
+                                var obj={
+                                    'user_id':user_arr[0],
+                                    'category_id':category_id,
+                                };
+                                $.post(href,obj, function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                    } else {
+                                        layer.msg(data.msg  , {icon: 1});
+                                        $('#pro_dlog').dialog('close');
+                                        $('#pro_dg').datagrid('load',{});
+                                    }
+                                }, 'json');
+                                return false;
+
+                            }
+                        });
+                    }
+                },{
+                    text:' 关 闭 ',
+                    iconCls:'icon-clear',
+                    handler:function(){
+                        $('#pro_dlog').dialog('close');
+                    }
+                }],
+            });
+        }
+    }
+    function percentage(id) { //领款百分比
+        var href="{:url('projectPercentage',['pro_id'=>$pro_id])}/guid/"+id;
+        $("#pro_dlog").dialog({
+            title: "领款百分比",
+            iconCls: 'icon-save',
+            width: '450',
+            height: '250',
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#pro_dlog').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            $.post(href,$(this).serialize(), function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#pro_dlog').dialog('close');
+                                    $('#pro_dg').datagrid('load',{});
+
+                                    $('#pro_price').datagrid('load',{});
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#pro_dlog').dialog('close');
+                }
+            }],
+        });
+    }
+    function lookBuildUser(a) {  //查看施工人员
+        var href="{:url('lookBuildUser',['pro_id'=>$pro_id])}/guid/"+a;
+        $("#pro_dlog").dialog({
+            title: "施工队",
+            iconCls: 'icon-save',
+            width: '65%',
+            height: '400',
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+        })
+    }
+
+    function contractPrint() {  //发包预算
+        var arr=$("#pro_dg").datagrid("getSelections");
+        if(arr.length=="0"){
+            layer.msg("未选择工程",{icon:2});
+            return false;
+        }else{
+            var  guid_arr=[];
+            $.each(arr,function (i,t) {
+                guid_arr.push(t.guid);
+            });
+            var href="{:url('contractPrint',['pro_id'=>$pro_id])}";
+            $("#pro_dlog").dialog({
+                title: "发包打印",
+                iconCls: 'icon-save',
+                width: '450',
+                height: '250',
+                cache: false,
+                href: href,
+                modal: true,
+                collapsible: false,
+                minimizable: false,
+                resizable: false,
+                maximizable: false,
+                buttons:[{
+                    text:' 确 定 ',
+                    iconCls: 'icon-save',
+                    handler:function(){
+                        $('#pro_dlog').find('form').eq(0).form('submit', {
+                            onSubmit: function () {
+                                var isValid = $(this).form('validate');
+                                if (!isValid) return false;
+                                $.messager.progress({text: '处理中，请稍候...'});
+                                var rate_arr=getInput();
+                                var obj={
+                                    'category_id':guid_arr,
+                                    'rate_id':rate_arr,
+                                };
+                                $.post(href,obj, function (data) {
+                                    $.messager.progress('close');
+                                    if (data.code != 1001) {
+                                        layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                    } else {
+                                        layer.msg(data.msg  , {icon: 1});
+                                        $('#pro_dlog').dialog('close');
+                                        $('#pro_dg').datagrid('load',{});
+                                        $('#pro_price').datagrid('load',{});
+                                    }
+                                }, 'json');
+                                return false;
+
+                            }
+                        });
+                    }
+                },{
+                    text:' 关 闭 ',
+                    iconCls:'icon-clear',
+                    handler:function(){
+                        $('#pro_dlog').dialog('close');
+                    }
+                }],
+            });
+        }
+    }
+    function getInput() {
+        var spCodesTemp=[];
+        $('input:checkbox[name=rate]:checked').each(function(i){
+            if(0==i){
+                spCodesTemp.push( $(this).val());
+            }else{
+                spCodesTemp.push($(this).val());
+            }
+        });
+        return spCodesTemp;
+    }
+    function supervision() {  //分配监理
+        var href="{:url('supervision',['pro_id'=>$pro_id])}";
+        $("#pro_dlog").dialog({
+            title: "分配监理",
+            iconCls: 'icon-save',
+            width: '450',
+            height: '450',
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#pro_dlog').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            var user_arr=[];
+                            if ($("#user").datagrid("getSelections").length==0){
+                                layer.msg('未选择人员'  , {icon: 2});
+                                $('#pro_dlog').dialog('close');
+                                return false;
+                            }else{
+                                $.each($("#user").datagrid("getSelections"),function (i,t) {
+                                    user_arr.push(t.uuid);
+                                })
+                            }
+                            var obj={
+                                'user_id':user_arr,
+                            };
+                            $.post(href,obj, function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#pro_dlog').dialog('close');
+                                    $('#pro_dg').datagrid('load',{});
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#pro_dlog').dialog('close');
+                }
+            }],
+        });
+        
+    }
+    function supervisionTem(a) { //分配施工队
+        var href="{:url('supervisionTem',['pro_id'=>$pro_id])}/category_id/"+a;
+        $("#pro_dlog").dialog({
+            title: "分配施工队",
+            iconCls: 'icon-save',
+            width: '450',
+            height: '600',
+            cache: false,
+            href: href,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            resizable: false,
+            maximizable: false,
+            buttons:[{
+                text:' 确 定 ',
+                iconCls: 'icon-save',
+                handler:function(){
+                    $('#pro_dlog').find('form').eq(0).form('submit', {
+                        onSubmit: function () {
+                            var isValid = $(this).form('validate');
+                            if (!isValid) return false;
+                            $.messager.progress({text: '处理中，请稍候...'});
+                            var user_arr=[];
+                            if ($("#user").datagrid("getSelections").length==0){
+                                layer.msg('未选择人员'  , {icon: 2});
+                                $('#pro_dlog').dialog('close');
+                                return false;
+                            }else{
+                                $.each($("#user").datagrid("getSelections"),function (i,t) {
+                                    user_arr.push(t.uuid);
+                                })
+                            }
+                            var obj={
+                                'user_id':user_arr,
+                                'build_time':$("#build_time").datebox('getValue'),
+                                'build_days':$("#build_days").textbox('getValue'),
+                                'desc':$("#desc").val(),
+                            };
+                            $.post(href,obj, function (data) {
+                                $.messager.progress('close');
+                                if (data.code != 1001) {
+                                    layer.msg(data.msg ? data.msg : "请联系管理员"  , {icon: 2});
+                                } else {
+                                    layer.msg(data.msg  , {icon: 1});
+                                    $('#pro_dlog').dialog('close');
+                                    $('#pro_dg').datagrid('load',{});
+                                }
+                            }, 'json');
+                            return false;
+
+                        }
+                    });
+                }
+            },{
+                text:' 关 闭 ',
+                iconCls:'icon-clear',
+                handler:function(){
+                    $('#pro_dlog').dialog('close');
+                }
+            }],
+        });
+    }
+    function designBook() {  //预算书查看
+        window.parent.addTab('预算书查看','{:url("designBook",["guid"=>$pro_id])}','close');
+    }
+</script>
+</body>
+</html>

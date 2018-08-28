@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/easyui_151/themes/icon.css">
+</head>
+<body>
+<table id="dg" class="easyui-datagrid" title="{$title}" style="width:100%;height:auto"
+       data-options="
+                nowrap:false,
+				iconCls: 'icon-edit',
+				singleSelect: true,
+				toolbar: '#tb',
+				url: '{$data_url}',
+				method: 'post',
+				nowrap:false,
+				onDblClickCell: onClickRow,
+				pagination:true,
+				pageSize:30,
+			">
+    <thead>
+    <tr>
+        <th data-options="field:'style',width:150,align:'center',editor:'textbox',">预算类型</th>
+        <th data-options="field:'name',width:150,align:'center',editor:'textbox',">预算书名称</th>
+        <th data-options="field:'address',width:150,align:'center',editor:'textbox'">封面地址</th>
+        <th data-options="field:'telephone',width:150,align:'center',editor:'numberbox'">封面电话</th>
+        <th data-options="field:'desc',width:200,align:'center',editor:'numberbox'">预算协议</th>
+        <th data-options="field:'op',width:200,align:'center',
+                        formatter:function(value,row){
+							return del(row.guid);
+                        },">操作</th>
+    </tr>
+    </thead>
+</table>
+
+<div id="tb" style="height:auto">
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">新增</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeit()">取消当前编辑</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
+    <!--<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">返回</a>-->
+    <!--<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="getChanges()">GetChanges</a>-->
+</div>
+{include file="base/js" /}
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/jquery.easyui.min.js"></script>-->
+<!--<script type="text/javascript" src="/static/easyui_151/easyui-lang-zh_CN.js"></script>-->
+<!--<script type="text/javascript" src="/static/layer/layer.js"></script>-->
+<script type="text/javascript">
+    {:widget('Easyui/showValueByUrl',["category_id","category_json",$map])}
+    {:widget('Easyui/showArrayByUrl',["category_id","category_json",$map])}
+    {:widget('Easyui/showAll', ["unit_name","unit_name"] )}
+    var editIndex = undefined;
+    setInterval(function(){
+        var rows = $('#dg').datagrid('getChanges');
+        if(rows.length!=0){
+            accept();
+        }
+    },60000);
+    function del(a) {
+        return '<a href="javascript:delData(&apos;'+a+'&apos;);">删除</a>';
+    }
+    function endEditing(){
+        if (editIndex == undefined){return true}
+        if ($('#dg').datagrid('validateRow', editIndex)){
+//            var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'category_id'});
+//            var categoryname = $(ed.target).combobox('getText');
+//            $('#dg').datagrid('getRows')[editIndex]['category_id'] = categoryname;
+            $('#dg').datagrid('endEdit', editIndex);
+            editIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function onClickRow(index){
+        if (editIndex != index){
+            if (endEditing()){
+                $('#dg').datagrid('selectRow', index)
+                    .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dg').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    function append(){
+        if (endEditing()){
+            $('#dg').datagrid('appendRow',{
+                loss_coefficient:0.00,
+                mechanical_coefficient:0.00,
+            });
+            editIndex = $('#dg').datagrid('getRows').length-1;
+            $('#dg').datagrid('selectRow', editIndex)
+                .datagrid('beginEdit', editIndex);
+        }
+    }
+    function removeit(){
+        if (editIndex == undefined){return}
+        $('#dg').datagrid('cancelEdit', editIndex)
+            .datagrid('deleteRow', editIndex);
+        editIndex = undefined;
+        $("#dg").datagrid('reload');
+    }
+    function accept(){
+        if (endEditing()){
+            var rows = $('#dg').datagrid('getChanges');  //获取到正在改变的行数据
+            ajax('{:url("addDataWithBudgetStyle")}',rows[0]);
+        }
+    }
+    function reject(){
+        $('#dg').datagrid('rejectChanges');
+        editIndex = undefined;
+    }
+    //    function getChanges(){
+    //        var rows = $('#dg').datagrid('getChanges'); //获取到正在改变的行数据
+    //        alert(rows.length);
+    //    }
+    function ajax(url,obj){
+        $.ajax({
+            type: "POST",
+            url: url,
+            data:obj ,
+            dataType: "json",
+            success: function(data){
+                if (data.code=="1001"){
+                    $('#dg').datagrid('acceptChanges');
+                }else{
+                    $('#dg').datagrid('acceptChanges');
+                    layer.msg(data.msg+',请点击重新填写，否则该数据不存在',{icon:2});
+                }
+            }
+        });
+    }
+    function delData(a){
+        $.messager.confirm('提示信息', '确定要删除吗？', function(result){
+            if(!result) return false;
+            $.messager.progress({text:'处理中，请稍候...'});
+            $.post('{:url("Material/delDataWithBudgetStyle")}', {id: a}, function(data){
+                $.messager.progress('close');
+                if (data.code != 1001) {
+                    layer.msg(data.msg, {icon: 2});
+                } else {
+                    layer.msg(data.msg, {icon: 1});
+                    $("#dg").datagrid('reload');
+                }
+            }, 'json');
+        });
+
+    }
+</script>
+</body>
+</html>

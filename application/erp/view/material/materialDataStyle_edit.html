@@ -1,0 +1,22 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <!--<section>-->
+        <!--<label class="label_1" style="">基装类型:</label>-->
+        <!--<label class="label_2" style="">-->
+            <!--<input class="easyui-combobox"  name="base_id" id="base_id"-->
+                   <!--data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'base_name',required:true,url:'{:url('showBaseStyleJson')}',method:'get',">-->
+        <!--</label>-->
+    <!--</section>-->
+    <section>
+        <label class="label_1" style="">数据类别:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="categories_name" id="categories_name"
+                   data-options="required:true,validType:'length[1,15]'" style="width:80%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1">备注:</label>
+        <label class="label_2">
+            <textarea placeholder="请填写模板类型备注" name="categories_desc" style="width:80%;height: 60px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+</form>

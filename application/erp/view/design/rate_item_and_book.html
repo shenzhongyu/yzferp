@@ -1,0 +1,19 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <div id="dep" style="width: 90%;margin-top:10px;padding:0px 5% 10px 5%;border: 1px solid #95B8E7;">
+        <p style="margin-left: 10px;">预算书模板选择</p>
+        {volist name="bookDefault" id="vo"  empty="暂时没有预算书封面信息，请联系管理员添加"}
+        <label><input name="book" {$i==1 ? 'checked' : ''} type="radio" value="{$vo.guid}" />{$vo.style} </label>
+        {/volist}
+        <br/>
+        <p style="margin-left: 10px;">预算类型选择</p>
+        <input class="easyui-combobox"  id="budget_type"  name="budget_type" style="width:80%;" value="1"
+               data-options="required:true,invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'value',textField: 'text',required:true,url:'{:url('/erp/api/showFieldJson/name/budget_type')}',method:'get',">
+        <br/>
+        <p style="margin-left: 10px;">可选费率选择</p>
+        {volist name="rateDefault" id="data"  empty="暂时没有可选择费率"}
+        <!--<label style="width: 40%;display: inline-block"><input name="rate"   {$data.type=='1' ? 'checked disabled' : ''  }    type="checkbox" value="{$data.guid}" />{$data.rate_name}</label>-->
+        <label style="width: 40%;display: inline-block"><input name="rate"      type="checkbox" value="{$data.guid}" />{$data.rate_name}</label>
+        {$i%2!=0 ? '': '<br/>' }
+        {/volist}
+    </div>
+</form>

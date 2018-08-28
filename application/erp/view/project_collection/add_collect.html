@@ -1,0 +1,134 @@
+<form id="fm" style="padding:0 30px;" method="post" name="form">
+    <p>
+        <span>合同编号：</span>
+        <span>{$number}</span>
+        <span style="margin-left: 30%">项目名称：</span>
+        <span>{$name}</span>
+    </p>
+    <input type="hidden" name="book_number" value="{$number}">
+    <section>
+        <label  class="label_1">单据号:</label>
+        <label  class="label_2">
+            自 动 编 号
+        </label>
+    </section>
+    <section >
+        <label  class="label_1">款项类型:</label>
+        <label  class="label_2">
+            <input class="easyui-combobox"  id="collect_type"  name="collect_type" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'guid',textField: 'collect_name',required:true,url:'{:url('showCollectJson')}',method:'get',
+                    onSelect:function(rec){
+                        if(rec.guid!=0){
+                            $('#collect_name').textbox('setValue',rec.collect_name);
+                        }
+
+
+                    }
+">
+        </label>
+    </section>
+    <section id="colS" style="display: none;">
+        <label  class="label_1"></label>
+        <label  class="label_2">
+            应收：<span id="col" style="margin-right: 20%"></span> 余额：<span id="coc"></span>
+        </label>
+    </section>
+    <section >
+        <label class="label_1" style="">款项名称:</label>
+        <label class="label_2" style="">
+            <input class="easyui-textbox" type="text" id="collect_name" name="collect_name"
+                   data-options="required:true,"
+                   style="width:75%">
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">金额:</label>
+        <label class="label_2" style="">
+            <input class="easyui-validatebox" type="text" name="collect_price"
+                   data-options="required:true,"
+                   style="width:75%"> 元
+        </label>
+    </section>
+    <section >
+        <label  class="label_1">是否开发票:</label>
+        <label  class="label_2">
+            <input type="checkbox" onchange="inv(this)"   {$check=='true'?'checked':''}> 开发票
+        </label>
+    </section>
+    <section id="invoice" style="display: {$check=='true'?'block':'none'} ">
+        <label class="label_1">发票金额:</label>
+        <label class="label_2" >
+            <input class="easyui-textbox" type="text" name="invoice_price"
+                   data-options="required:true," value="0"
+                   style="width:80%">元
+        </label>
+    </section>
+    <section>
+        <label class="label_1" style="">计划收款日期:</label>
+        <label class="label_2" style="">
+            <input id="collect_date" class= "easyui-datebox" name="collect_date" data-options="editable:false"  style="width:80%">
+        </label>
+    </section>
+    <section >
+        <label  class="label_1">出纳人:</label>
+        <label  class="label_2">
+            <input class="easyui-combobox"  id="cashier_uuid"  name="cashier_uuid" style="width:80%;" value=""
+                   data-options="invalidMessage:'该项为必选项',missingMessage:'该项为必选项',editable:false,valueField: 'uuid',textField: 'uuid_name',required:true,url:'{:url('showCashierUserJson')}',method:'get',">
+        </label>
+    </section>
+    <section>
+        <label  class="label_1">款项说明:</label>
+        <label class="label_2">
+            <textarea placeholder="" id="desc" name="desc" style="width:80%;height: 100px;outline:none;resize:none;"></textarea>
+        </label>
+    </section>
+    <input type="hidden" id="invoice_value" name="invoice_value" value="0">
+</form>
+
+<script>
+    function inv(obj){
+        if($(obj).prop("checked")){
+            $('#invoice_value').val('1');
+            $('#invoice').css('display','block');
+        }else{
+            $('#invoice_value').val('0');
+            $('#invoice').css('display','none');
+        }
+    }
+//    $(function(){
+//        $('#collect_date').datebox('setValue', getCurentDateStr());
+//        $('#collect_date').datebox('calendar').calendar({
+//            validator : function(date){
+//                var now = new Date();
+//                var d1 = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+//                return date <= d1;
+//            }
+//        });
+//    });
+//
+//
+//    function getCurentDateStr(){
+//        var now = new Date();
+//        var year = now.getFullYear();       //年
+//        var month = now.getMonth() + 1;     //月
+//        var day = now.getDate();            //日
+//        var clock = year + "-";
+//        if(month < 10) clock += "0";
+//        clock += month + "-";
+//        if(day < 10) clock += "0";
+//        clock += day;
+//        return clock;
+//    }
+//    onSelect:function(rec){
+//        if(rec.guid==0){
+//            $('#colS').css('display','none');
+//        }else{
+//            $('#colS').css('display','block');
+//            var num=Number(rec.collect_value)*Number({$surplus_price});
+//            $('#col').html(num+' 元');
+//            $('#coc').html( ( Number({$surplus_price})-num ) +' 元');
+//            $('#collect_name').textbox('setValue',rec.collect_name);
+//        }
+//    }
+
+</script>

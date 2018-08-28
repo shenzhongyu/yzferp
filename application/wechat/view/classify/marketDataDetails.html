@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>业绩详情</title>
+    {include file="base_mui/weui_wechat"/}
+
+    <script type="text/javascript" src="/static/mui/js/mui.picker.min.js"></script>
+    <!--<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=6OWgWaTFHxegVSOLgLD8QOU3w9aBOGc7"></script>-->
+    <link href="/static/mui/css/mui.picker.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="app">
+
+
+    <header class="mui-bar mui-bar-nav ">
+        <a class=" mui-icon mui-icon-left-nav mui-pull-left  mui-action-back"></a>
+        <h1 class="mui-title">业绩详情</h1>
+        <a class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>
+    </header>
+    <div class="addBoss">
+
+
+    </div>
+    <div id="topPopover" class="mui-popover "
+         style="font-size: 14px;display: none; top: 57px; left: 35px;height: 1.8rem;width: 2.5rem">
+        <div class="mui-popover-arrow" style="left:2.48rem"></div>
+        <div class="mui-scroll-wrapper" data-scroll="1">
+            <div class="mui-scroll" style="transform: translate3d(0px, 0px, 0px) translateZ(0px);">
+                <ul class="mui-table-view">
+
+                    <li class="mui_popver mui-action-menu " onclick="month(1)" id="thismon"><a href="#">本月</a>
+                    </li>
+                    <li class="mui_popver mui-action-menu" onclick="month(2)"><a href="#">上月</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="mui-scrollbar mui-scrollbar-vertical">
+                <div class="mui-scrollbar-indicator"
+                     style="transition-duration: 0ms; display: none; height: 8px; transform: translate3d(0px, -8px, 0px) translateZ(0px);"></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="addBoss" v-cloak>
+        <div class="addFirst">
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">姓名：</div>
+                <div class="detailRightOnly">
+                    {{res.info.name}}
+                </div>
+            </div>
+
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">总客户量：</div>
+                <div class="detailRightOnly">
+                    {{res.all}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">签单量：</div>
+                <div style="display: inline-block;width: 77%;">
+                    {{res.has}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly">废单量：</div>
+                <div style="display: inline-block;width: 77%;">
+                    {{res.waste}}
+                </div>
+            </div>
+            <div class="detailBoss detail_line">
+                <div class="detailLeftOnly ">跟踪量：</div>
+                <div style="display: inline-block;width: 77%;">
+                    {{res.now}}
+                </div>
+            </div>
+            <div class="detailBoss ">
+                <div class="detailLeftOnly">转换率：</div>
+                <div style="display: inline-block;width: 77%;">
+                    {{res.num}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    var myvue;
+    function myAjax() {
+
+        mui.ajax('{$url}', {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+
+            success: function (response) {
+                var dataA = {};
+                dataA.res = response;
+                myvue = new Vue({
+                    el: '#app',
+                    data: dataA,
+                    methods: {}
+                })
+            }
+        })
+    }
+    function month(type) {
+        mui.ajax('{$url}' + "/type/" + type, {
+            dataType: 'json',//服务器返回json格式数据
+            type: 'post',//HTTP请求类型
+            success: function (data) {
+                myvue.$set(myvue.$data, 'res', data);
+                $("#topPopover").removeClass("mui-active");
+                $("#topPopover").css("display", "none");
+                $(".mui-backdrop").css("display", "none")
+            }
+        })
+
+    }
+    window.onload = function () {
+        myAjax();
+    }
+</script>
+
